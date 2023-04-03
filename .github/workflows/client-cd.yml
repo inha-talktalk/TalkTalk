@@ -1,0 +1,29 @@
+name: 'client-cd'
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - client/**
+  workflow_dispatch:
+
+jobs:
+  client-cd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: client-cd
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.FE_HOST }}
+          username: ${{ secrets.FE_USERNAME }}
+          password: ${{ secrets.FE_PASSWORD }}
+          port: ${{ secrets.FE_PORT }}
+          script: |
+            cd ~/TalkTalk/client
+            git checkout -- .
+            git pull
+            pm2 stop client
+            yarn install
+            yarn build
+            pm2 restart client
