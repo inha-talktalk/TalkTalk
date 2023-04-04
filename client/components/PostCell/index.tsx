@@ -2,32 +2,34 @@ import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import Button from '../Button';
 import { style } from './style';
 
-export default function PostCell() {
+interface PostCellProps {
+  group: GroupStudy;
+  owner: UserProfile;
+}
+
+export default function PostCell({ group, owner }: PostCellProps) {
   const { theme } = useGlobalTheme();
 
   return (
-    <div css={style.container}>
+    <div css={style.container(true, theme.gray)}>
       <div css={style.top}>
         <Button
-          backgroundColor={theme.secondary}
-          value={'모집중'}
+          backgroundColor={group.isFinished ? theme.darkerGray : theme.secondary}
+          value={group.isFinished ? '모집완료' : '모집중'}
           width={'72px'}
           height={'27px'}
           fontSize={'14px'}
         />
-        <span css={style.title}>토익 스피킹</span>
+        <span css={style.title}>{group.groupName}</span>
       </div>
-      <p>
-        안녕하세요. 개인적으로 네명정도 토익 스피킹 스터디 진행하실 분 모십니다. 매주 2일 스터디를
-        진행할 예정이며 현재 2명 모집되었습니다. 앞으로 두...
-      </p>
+      <p>{group.introduction}</p>
       <div css={style.tagContainer(theme.blueWhite)}>
-        <span># 토익 스피킹</span>
-        <span># 4명</span>
-        <span># 매주 2일</span>
+        {group.tags.map((tagName, index) => (
+          <span key={index}>{tagName}</span>
+        ))}
       </div>
       <div css={style.bottom(theme.secondaryDark)}>
-        <p>홍길동 · 1일 전</p>
+        <p>{owner.nickName} · 1일 전</p>
         <p>조회수 230</p>
       </div>
     </div>

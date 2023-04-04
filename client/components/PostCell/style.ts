@@ -1,9 +1,11 @@
 import { css } from '@emotion/react';
 
 export const style = {
-  container: css`
+  container: (isLastOne: boolean, borderColor: string) => css`
     width: 1000px;
-    height: 173px;
+    border-top: 1px solid ${borderColor};
+    ${isLastOne && `border-bottom: 1px solid ${borderColor};`}
+    padding: 5px;
   `,
   top: css`
     display: flex;
