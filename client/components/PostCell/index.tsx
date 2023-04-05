@@ -5,13 +5,14 @@ import { style } from './style';
 interface PostCellProps {
   group: GroupStudy;
   owner: UserProfile;
+  isLast: boolean;
 }
 
-export default function PostCell({ group, owner }: PostCellProps) {
+export default function PostCell({ group, owner, isLast }: PostCellProps) {
   const { theme } = useGlobalTheme();
 
   return (
-    <div css={style.container(true, theme.gray)}>
+    <div css={style.container(isLast, theme.gray)}>
       <div css={style.top}>
         <Button
           backgroundColor={group.isFinished ? theme.darkerGray : theme.secondary}
