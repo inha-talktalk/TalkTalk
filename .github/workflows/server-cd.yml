@@ -1,0 +1,28 @@
+name: 'server-cd'
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - server/**
+  workflow_dispatch:
+
+jobs:
+  server-cd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: server-cd
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.BE_HOST }}
+          username: ${{ secrets.BE_USERNAME }}
+          password: ${{ secrets.BE_PASSWORD }}
+          port: ${{ secrets.BE_PORT }}
+          script: |
+            cd ~/TalkTalk/server
+            git checkout -- .
+            git pull
+            pm2 stop server
+            ./gradlew build
+            pm2 restart server
