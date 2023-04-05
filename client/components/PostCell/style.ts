@@ -5,7 +5,9 @@ export const style = {
     width: 1000px;
     border-top: 1px solid ${borderColor};
     ${isLastOne && `border-bottom: 1px solid ${borderColor};`}
-    padding: 5px;
+    padding: 10px 5px 5px 5px;
+    user-select: none;
+    cursor: pointer;
   `,
   top: css`
     display: flex;

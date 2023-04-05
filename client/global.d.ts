@@ -1,5 +1,6 @@
 /* eslint-disable unused-imports/no-unused-vars */
 interface GroupStudy {
+  state: 'ongoing' | 'done' | 'waiting' | undefined;
   groupId: string;
   languageId: string;
   groupName: string;
@@ -11,7 +12,8 @@ interface GroupStudy {
   isFinished: boolean;
 }
 
-type GroupStudyPostResponse = GroupStudyPost;
+type GroupStudyPostResponse = GroupStudy;
+type GroupStudyListResponse = GroupStudy[];
 
 interface UserProfile {
   userName: string;
