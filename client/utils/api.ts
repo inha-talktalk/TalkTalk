@@ -8,10 +8,10 @@ export const apiAxiosInstance = axios.create({
   baseURL: BASE_URL,
 });
 
-export async function getUserProfile(userId: string) {
+export async function getUserProfile(userId: string): Promise<UserProfileResponse> {
   return (await apiAxiosInstance.get(`/user/profile/${userId}`)).data;
 }
 
-export async function getGroupStudyList() {
+export async function getGroupStudyList(): Promise<GroupStudyListResponse> {
   return (await apiAxiosInstance.get('/group-study/list')).data;
 }
