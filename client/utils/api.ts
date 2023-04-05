@@ -11,3 +11,7 @@ export const apiAxiosInstance = axios.create({
 export async function getUserProfile(userId: string) {
   return (await apiAxiosInstance.get(`/user/profile/${userId}`)).data;
 }
+
+export async function getGroupStudyList() {
+  return (await apiAxiosInstance.get('/group-study/list')).data;
+}
