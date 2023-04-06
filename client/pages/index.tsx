@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import NavBar from '@/components/NavBar';
+import GNB from '@/components/GNB';
 import PostCell from '@/components/PostCell';
 import { getGroupStudyList, getUserProfile } from '@/utils/api';
 import { css } from '@emotion/react';
@@ -71,7 +71,7 @@ export default function Home() {
   return (
     <>
       <div css={style.nav}>
-        <NavBar />
+        <GNB />
       </div>
       <div css={style.mainImage}>
         <Image src={'/main.png'} alt={'main'} fill={true} />
