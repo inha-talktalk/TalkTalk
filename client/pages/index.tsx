@@ -1,5 +1,4 @@
 import Footer from '@/components/Footer';
-import GNB from '@/components/GNB';
 import PostCell from '@/components/PostCell';
 import { getGroupStudyList, getUserProfile } from '@/utils/api';
 import { css } from '@emotion/react';
@@ -7,13 +6,6 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 export default function Home() {
   const style = {
-    nav: css`
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 100;
-    `,
     mainImage: css`
       margin-top: 75px;
       width: 100%;
@@ -70,9 +62,6 @@ export default function Home() {
 
   return (
     <>
-      <div css={style.nav}>
-        <GNB />
-      </div>
       <div css={style.mainImage}>
         <Image src={'/main.png'} alt={'main'} fill={true} />
       </div>
