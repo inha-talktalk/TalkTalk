@@ -15,7 +15,7 @@ export default function Home() {
       z-index: 100;
     `,
     mainImage: css`
-      margin-top: 94px;
+      margin-top: 75px;
       width: 100%;
       height: 500px;
       position: relative;
