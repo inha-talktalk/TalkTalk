@@ -22,7 +22,7 @@ export default function MyAchievement({ title, count, string }: MyAchievementPro
       position: relative;
       left: 0;
       top: 50%;
-      padding: 0 15px;
+      padding: 0 20px;
       transform: translate(0, -50%);
 
       & > p {
@@ -35,6 +35,7 @@ export default function MyAchievement({ title, count, string }: MyAchievementPro
       & > span {
         font-size: 32px;
         font-weight: 500;
+        margin-right: 3px;
       }
     `,
   };
