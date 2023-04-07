@@ -4,9 +4,10 @@ import { css } from '@emotion/react';
 interface MyAchievementProps {
   title: string;
   count: number;
+  string?: string;
 }
 
-export default function MyAchievement({ title, count }: MyAchievementProps) {
+export default function MyAchievement({ title, count, string }: MyAchievementProps) {
   const { theme } = useGlobalTheme();
   const style = {
     container: css`
@@ -43,7 +44,8 @@ export default function MyAchievement({ title, count }: MyAchievementProps) {
       <div css={style.inner}>
         <p>{title}</p>
         <br />
-        <span>{count}</span>개
+        <span>{count}</span>
+        {string ?? '개'}
       </div>
     </div>
   );
