@@ -15,3 +15,7 @@ export async function getUserProfile(userId: string): Promise<UserProfileRespons
 export async function getGroupStudyList(): Promise<GroupStudyListResponse> {
   return (await apiAxiosInstance.get('/group-study/list')).data;
 }
+
+export async function getUserAchievement(userId: string): Promise<UserAcheivementResponse> {
+  return (await apiAxiosInstance.get(`/user/achievement/${userId}`)).data;
+}
