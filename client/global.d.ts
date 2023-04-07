@@ -23,3 +23,12 @@ interface UserProfile {
 }
 
 type UserProfileResponse = UserProfile;
+
+interface UserAcheivement {
+  teamMateCount: number;
+  studyLanguageCount: number;
+  joinTime: string;
+  completedSelfStudyCount: number;
+}
+
+type UserAcheivementResponse = UserAcheivement;

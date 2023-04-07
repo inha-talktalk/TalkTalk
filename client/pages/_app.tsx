@@ -20,7 +20,13 @@ export default function App({ Component, pageProps }: AppProps) {
         >
           <GNB />
         </div>
-        <Component {...pageProps} />
+        <div
+          css={css`
+            padding-top: 75px;
+          `}
+        >
+          <Component {...pageProps} />
+        </div>
       </RecoilRoot>
     </GlobalThemeProvider>
   );

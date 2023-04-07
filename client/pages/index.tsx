@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 export default function Home() {
   const style = {
     mainImage: css`
-      margin-top: 75px;
       width: 100%;
       height: 500px;
       position: relative;
