@@ -2,11 +2,26 @@ import Button from '@/components/Button';
 import InputBar from '@/components/InputBar';
 import LazyImage from '@/components/LazyImage';
 import MyAchievementList from '@/components/MyAchievementList';
+import StudyCardList from '@/components/StudyCardList';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { getUserAchievement } from '@/utils/api';
 import { DEAFULT_PLACEHOLDER_GRAY } from '@/utils/image';
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
+
+const testGroupData: GroupStudy = {
+  state: 'ongoing',
+  groupId: 'test',
+  languageId: 'qwer',
+  groupName: 'groupName',
+  groupPersonnel: 3,
+  tags: ['# 태그1', '# 태그2'],
+  introduction:
+    '안녕하세요. 개인적으로 네명정도 토익 스피킹 스터디 진행하실 분 모십니다. 매주 2일 스터디를 진행할 예정이며 현재 2명 모집되었습니다. 앞으로 두...',
+  groupDuration: new Date(),
+  ownerId: 'asdfsadf',
+  isFinished: false,
+};
 
 export default function MyPage() {
   const { theme } = useGlobalTheme();
@@ -22,7 +37,7 @@ export default function MyPage() {
       margin: auto;
       padding-top: 30px;
 
-      & > h2 {
+      & h2 {
         font-weight: normal;
         font-size: 24px;
         color: ${theme.secondaryDark};
@@ -117,6 +132,23 @@ export default function MyPage() {
             innerCss={style.profileImageButton}
           />
         </div>
+      </div>
+      <div>
+        <br />
+        <br />
+        <h2>진행중인 스터디</h2>
+        <StudyCardList
+          studyList={[testGroupData, testGroupData, testGroupData, testGroupData, testGroupData]}
+        />
+        <h2>완료된 스터디</h2>
+        <StudyCardList
+          studyList={[testGroupData, testGroupData, testGroupData, testGroupData, testGroupData]}
+        />
+        <h2>신청한 스터디</h2>
+        <StudyCardList
+          studyList={[testGroupData, testGroupData, testGroupData, testGroupData, testGroupData]}
+          isRegistered={false}
+        />
       </div>
     </div>
   );
