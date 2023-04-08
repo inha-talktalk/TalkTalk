@@ -7,6 +7,7 @@ export const style = {
     border-radius: 10px;
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
     padding: 20px;
+    margin: 5px 10px;
 
     & > p {
       margin: 5px 0;
