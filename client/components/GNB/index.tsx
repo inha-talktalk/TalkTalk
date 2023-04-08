@@ -36,7 +36,7 @@ export default function GNB() {
   }, [router.isReady, router.pathname]);
 
   return (
-    <div css={style.container}>
+    <div css={style.container(theme.offWhite)}>
       <div css={style.left}>
         <Logo />
         <div>

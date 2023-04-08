@@ -4,6 +4,7 @@ import GlobalThemeProvider from '@/styles/GlobalThemeContext';
 import { RecoilRoot } from 'recoil';
 import GNB from '@/components/GNB';
 import { css } from '@emotion/react';
+import 'react-horizontal-scrolling-menu/dist/styles.css';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
