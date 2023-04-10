@@ -1,5 +1,6 @@
 package com.inha.server.oauth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +15,7 @@ public class OAuthController {
     private final OAuthService OAuthService;
 
     @GetMapping("/kakao")
-    public String kakaoLongin(@RequestParam String code) {
+    public SocialUserDto kakaoLongin(@RequestParam String code) throws JsonProcessingException {
         return OAuthService.kakoLogin(code);
     }
 }
