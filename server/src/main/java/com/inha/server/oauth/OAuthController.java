@@ -14,7 +14,7 @@ public class OAuthController {
     private final OAuthService OAuthService;
 
     @GetMapping("/kakao")
-    public ClientToken kakaoLongin(@RequestParam String code) {
+    public String kakaoLongin(@RequestParam String code) {
         return OAuthService.kakoLogin(code);
     }
 }

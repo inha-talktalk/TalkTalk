@@ -21,11 +21,21 @@ public class OAuthService {
     @Value("${oauth.kakao.client-id}")
     private String clientId;
 
+    @Value("${oauth.kakao.url.host}")
+    private String redirectHost;
+
     private final RestTemplate restTemplate;
 
-    public ClientToken kakoLogin(String authorize_code) {
+    public String kakoLogin(String authorize_code) {
+        // 인가코드를 통해서 access_token 발급
+        String access_token = getAccessToken(authorize_code);
+
+        return access_token;
+    }
+
+    private String getAccessToken(String authorize_code) {
         String url = authUrl + "/oauth/token";
-        String reUrl = "http://localhost:8080/oauth/kakao";
+        String reUrl = redirectHost + "/oauth/kakao";
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -42,7 +52,6 @@ public class OAuthService {
 
         KakaoTokens response = restTemplate.postForObject(url,request, KakaoTokens.class);
 
-        return new ClientToken(response.getAccessToken(), response.getRefreshToken());
+        return response.getAccessToken();
     }
-
 }
