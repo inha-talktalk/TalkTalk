@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class ClientToken {
+
     private String access_token;
     private String refresh_token;
 }

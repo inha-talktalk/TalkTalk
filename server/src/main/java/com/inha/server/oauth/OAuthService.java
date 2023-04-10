@@ -18,18 +18,15 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @RequiredArgsConstructor
 public class OAuthService {
-    private static final String GRANT_TYPE = "authorization_code";
 
+    private static final String GRANT_TYPE = "authorization_code";
+    private final RestTemplate restTemplate;
     @Value("${oauth.kakao.url.auth}")
     private String authUrl;
-
     @Value("${oauth.kakao.client-id}")
     private String clientId;
-
     @Value("${oauth.kakao.url.host}")
     private String redirectHost;
-
-    private final RestTemplate restTemplate;
 
     public SocialUserDto kakoLogin(String authorize_code) throws JsonProcessingException {
         // 인가코드를 통해서 access_token 발급
@@ -50,7 +47,6 @@ public class OAuthService {
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 
-
         body.add("grant_type", GRANT_TYPE);
         body.add("client_id", clientId);
         body.add("redirect_uri", reUrl);
@@ -58,7 +54,7 @@ public class OAuthService {
 
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
-        KakaoTokens response = restTemplate.postForObject(url,request, KakaoTokens.class);
+        KakaoTokens response = restTemplate.postForObject(url, request, KakaoTokens.class);
 
         return response.getAccessToken();
     }
