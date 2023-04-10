@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OAuthController {
 
-    private final KakaoApiClient kakaoApiClient;
+    private final OAuthService OAuthService;
 
     @GetMapping("/kakao")
-    public ClientToken kakaoCallback(@RequestParam String code) {
-        return kakaoApiClient.requestAccessToken(code);
+    public ClientToken kakaoLongin(@RequestParam String code) {
+        return OAuthService.kakoLogin(code);
     }
 }

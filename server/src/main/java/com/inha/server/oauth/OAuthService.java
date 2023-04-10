@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
-public class KakaoApiClient {
+public class OAuthService {
     private static final String GRANT_TYPE = "authorization_code";
 
     @Value("${oauth.kakao.url.auth}")
@@ -23,7 +23,7 @@ public class KakaoApiClient {
 
     private final RestTemplate restTemplate;
 
-    public ClientToken requestAccessToken(String authorize_code) {
+    public ClientToken kakoLogin(String authorize_code) {
         String url = authUrl + "/oauth/token";
         String reUrl = "http://localhost:8080/oauth/kakao";
 
