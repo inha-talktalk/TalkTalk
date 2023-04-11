@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
 
 export const style = {
-  container: css`
+  container: (backgroundColor: string) => css`
     width: 100%;
-    height: 94px;
-    background-color: white;
+    height: 75px;
+    background-color: ${backgroundColor};
     display: flex;
     align-items: center;
     justify-content: space-between;

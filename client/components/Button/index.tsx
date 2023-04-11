@@ -9,6 +9,7 @@ interface ButtonProps {
   height: string;
   fontSize: string;
   innerCss?: SerializedStyles;
+  onClick?: () => void;
 }
 
 export default function Button({
@@ -19,6 +20,7 @@ export default function Button({
   height,
   fontSize,
   innerCss,
+  onClick,
 }: ButtonProps) {
   const { theme } = useGlobalTheme();
 
@@ -39,5 +41,9 @@ export default function Button({
     }
   `;
 
-  return <div css={[style(width, height), innerCss]}>{value}</div>;
+  return (
+    <div css={[style(width, height), innerCss]} onClick={onClick}>
+      {value}
+    </div>
+  );
 }
