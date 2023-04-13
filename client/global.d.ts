@@ -32,3 +32,21 @@ interface UserAcheivement {
 }
 
 type UserAcheivementResponse = UserAcheivement;
+
+interface SelfStudy {
+  userId: string;
+  selfStudyName: string;
+  selfStudyId: string;
+  files: []; // TODO: 추후에 구현 예정
+  duration: number;
+  tags: string[];
+  script: string[];
+}
+
+type SelfStudyResponse = SelfStudy;
+
+interface SelfStudyList {
+  selfStudyIds: string[];
+}
+
+type SelfStudyListResponse = SelfStudyList;
