@@ -28,14 +28,12 @@ public class OAuthService {
     @Value("${oauth.kakao.url.host}")
     private String redirectHost;
 
-    public SocialUserDto kakoLogin(String authorize_code) throws JsonProcessingException {
+    public SocialUserDto kakaoLogin(String authorize_code) throws JsonProcessingException {
         // 인가코드를 통해서 access_token 발급
         String accessToken = getAccessToken(authorize_code);
 
         // access_token 으로 회원정보 받아오기
-        SocialUserDto socialUserDto = getKakaoUserInfo(accessToken);
-
-        return socialUserDto;
+        return getKakaoUserInfo(accessToken);
     }
 
     private String getAccessToken(String authorize_code) {

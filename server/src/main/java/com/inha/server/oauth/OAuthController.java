@@ -16,6 +16,6 @@ public class OAuthController {
 
     @GetMapping("/kakao")
     public SocialUserDto kakaoLongin(@RequestParam String code) throws JsonProcessingException {
-        return OAuthService.kakoLogin(code);
+        return OAuthService.kakaoLogin(code);
     }
 }
