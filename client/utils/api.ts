@@ -8,24 +8,25 @@ export const apiAxiosInstance = axios.create({
   baseURL: BASE_URL,
 });
 
-async function call(url: string, functionName: string) {
+async function get<T>(url: string, functionName: string): Promise<T> {
   try {
     return (await apiAxiosInstance.get(url)).data;
   } catch (e) {
     if (e instanceof Error) {
       console.error(`API call error ${functionName}`);
     }
+    throw e;
   }
 }
 
-export async function getUserProfile(userId: string): Promise<UserProfileResponse> {
-  return await call(`/user/profile/${userId}`, 'getUserProfile');
+export async function getUserProfile(userId: string) {
+  return await get<UserProfileResponse>(`/user/profile/${userId}`, 'getUserProfile');
 }
 
-export async function getGroupStudyList(): Promise<GroupStudyListResponse> {
-  return await call('/group-study/list', 'getGroupStudyList');
+export async function getGroupStudyList() {
+  return await get<GroupStudyListResponse>('/group-study/list', 'getGroupStudyList');
 }
 
-export async function getUserAchievement(userId: string): Promise<UserAcheivementResponse> {
-  return await call(`/user/achievement/${userId}`, 'getUserAchievement');
+export async function getUserAchievement(userId: string) {
+  return await get<UserAcheivementResponse>(`/user/achievement/${userId}`, 'getUserAchievement');
 }
