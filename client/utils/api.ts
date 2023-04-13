@@ -30,3 +30,11 @@ export async function getGroupStudyList() {
 export async function getUserAchievement(userId: string) {
   return await get<UserAcheivementResponse>(`/user/achievement/${userId}`, 'getUserAchievement');
 }
+
+export async function getSelfStudyList() {
+  return await get<SelfStudyListResponse>(`/self-study/list`, 'getSelfStudyList');
+}
+
+export async function getSelfStudy(selfStudyId: string) {
+  return await get<SelfStudyResponse>(`/self-study/${selfStudyId}`, 'getSelfStudy');
+}
