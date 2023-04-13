@@ -1,4 +1,4 @@
-package com.inha.server.oauth;
+package com.inha.server.oauth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

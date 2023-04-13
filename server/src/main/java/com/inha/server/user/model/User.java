@@ -1,4 +1,4 @@
-package com.inha.server.user;
+package com.inha.server.user.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,6 +12,7 @@ public class User {
     private int kakaoId;
     private String email;
     private String nickname;
+    private String password;
 
     private String profileImage;
 }

@@ -1,4 +1,4 @@
-package com.inha.server.oauth;
+package com.inha.server.oauth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
