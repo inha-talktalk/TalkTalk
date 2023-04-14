@@ -34,7 +34,7 @@ export default function TagInputBar({ width, height, maxCount, tagController }: 
   };
   const handleButtonClick = (targetIdx: number) => {
     tagController.setTags((tags) => {
-      return [...tags.filter((_, idx) => idx !== targetIdx)];
+      return [...tags.filter((tag, idx) => idx !== targetIdx || !tag.isRemovable)];
     });
   };
   const handleNewTag = (ev: KeyboardEvent<HTMLInputElement>) => {
@@ -54,7 +54,7 @@ export default function TagInputBar({ width, height, maxCount, tagController }: 
   };
 
   return (
-    <div css={style.container(width, height, theme.gray)}>
+    <div css={style.container(width, height)}>
       {tagController.tags.map((tag, idx) => (
         <span key={idx} css={style.tag(theme.blueWhite)}>
           {tag.value}

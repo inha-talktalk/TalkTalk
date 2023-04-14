@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
 export const style = {
-  container: (width: number, height: number, borderColor: string) => css`
+  container: (width: number, height: number) => css`
     max-width: ${width}px;
     min-height: ${height}px;
     display: flex;
@@ -25,11 +25,11 @@ export const style = {
     margin: 0 10px 0 0;
     height: 26px;
     text-align: center;
-    line-height: 26px;
     font-size: 16px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    user-select: none;
 
     & > button {
       border: none;
