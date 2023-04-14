@@ -76,8 +76,8 @@ export default function SelfStudy() {
       <br />
       <h2>최근 스터디</h2>
       {user &&
-        selfStudyList.slice(0, 5).map((selfStudy, idx) => (
-          <StudyCell selfStudy={selfStudy} owner={user} isLast={false} key={idx} /> // TODO: change idx to selfStudyId
+        selfStudyList.slice(0, 5).map((selfStudy, idx, arr) => (
+          <StudyCell selfStudy={selfStudy} owner={user} isLast={idx === arr.length - 1} key={idx} /> // TODO: change idx to selfStudyId
         ))}
     </div>
   );
