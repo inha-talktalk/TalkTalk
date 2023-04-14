@@ -6,7 +6,6 @@ interface InputBarProps {
   width: number;
   height?: number;
   placeholder?: string;
-  multiline?: boolean;
   fontSize?: number;
 
   text: string;
