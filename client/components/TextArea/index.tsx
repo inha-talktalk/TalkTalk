@@ -1,0 +1,26 @@
+import { useGlobalTheme } from '@/styles/GlobalThemeContext';
+import { css } from '@emotion/react';
+
+interface TextAreaProps {
+  height: number;
+  width: number;
+  placeholder?: string;
+}
+
+export default function TextArea({ height, width, placeholder }: TextAreaProps) {
+  const { theme } = useGlobalTheme();
+  const style = {
+    textarea: css`
+      resize: none;
+      height: ${height}px;
+      width: ${width}px;
+      border: 1px solid ${theme.gray};
+      border-radius: 15px;
+      font: inherit;
+      font-size: 20px;
+      padding: 10px;
+    `,
+  };
+
+  return <textarea css={style.textarea} placeholder={placeholder} />;
+}
