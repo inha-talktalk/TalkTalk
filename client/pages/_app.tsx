@@ -5,6 +5,8 @@ import { RecoilRoot } from 'recoil';
 import GNB from '@/components/GNB';
 import { css } from '@emotion/react';
 import 'react-horizontal-scrolling-menu/dist/styles.css';
+import 'react-calendar/dist/Calendar.css';
+import '@/styles/calendar.css';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
