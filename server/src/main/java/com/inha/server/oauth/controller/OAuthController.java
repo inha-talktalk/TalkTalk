@@ -1,6 +1,8 @@
-package com.inha.server.oauth;
+package com.inha.server.oauth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.inha.server.oauth.dto.JwtDto;
+import com.inha.server.oauth.service.OAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OAuthController {
 
-    private final OAuthService OAuthService;
+  private final OAuthService oAuthService;
 
-    @GetMapping("/kakao")
-    public SocialUserDto kakaoLongin(@RequestParam String code) throws JsonProcessingException {
-        return OAuthService.kakoLogin(code);
-    }
+  @GetMapping("/kakao")
+  public JwtDto kakaoLongin(@RequestParam String code) throws JsonProcessingException {
+    return oAuthService.kakaoLogin(code);
+  }
 }
