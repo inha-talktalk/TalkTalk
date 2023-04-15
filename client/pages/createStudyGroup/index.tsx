@@ -60,6 +60,7 @@ export default function CreateGroupStudyPage() {
   const [personnel, setPersonnel] = useState<number>(2);
   const [isAlways, setIsAlways] = useState<boolean>(true);
   const [finishDate, setFinishDate] = useState<Date>(new Date());
+  const [content, setContent] = useState<string>('');
 
   // to change default tag
   useEffect(() => {
@@ -124,7 +125,7 @@ export default function CreateGroupStudyPage() {
           </div>
         )}
       </div>
-      <TextArea height={416} width={528} />
+      <TextArea height={416} width={528} text={content} setText={setContent} />
       <div css={style.buttonContainer}>
         <Button
           value={'취소'}
