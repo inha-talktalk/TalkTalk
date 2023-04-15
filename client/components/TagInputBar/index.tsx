@@ -73,6 +73,7 @@ export default function TagInputBar({ width, height, maxCount, tagController }: 
         onChange={handleInputChange}
         css={style.input(height)}
         onKeyDown={handleNewTag}
+        placeholder="태그를 입력하세요"
       />
     </div>
   );
