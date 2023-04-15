@@ -56,7 +56,8 @@ export default function CreateGroupStudyPage() {
         isRemovable: false,
       },
     ]);
-  }, [language, tagController]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, tagController.setTags]);
 
   return (
     <div css={style.container}>
