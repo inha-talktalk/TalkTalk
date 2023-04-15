@@ -1,15 +1,20 @@
+import Button from '@/components/Button';
 import TagInputBar, { useTagController } from '@/components/TagInputBar';
+import TextArea from '@/components/TextArea';
 import TitleInputBar from '@/components/TitleInputBar';
+import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
+import Calendar from 'react-calendar';
 import Select from 'react-select';
 
 export default function CreateGroupStudyPage() {
+  const { theme } = useGlobalTheme();
   const style = {
     container: css`
       width: 550px;
       margin: auto;
-      padding-top: 50px;
+      padding: 50px 0 40px 0;
     `,
     flex: css`
       position: relative;
@@ -21,6 +26,13 @@ export default function CreateGroupStudyPage() {
     `,
     selectConteiner: css`
       width: 70%;
+    `,
+    buttonContainer: css`
+      width: 100%;
+      display: flex;
+      flex-direction: row-reverse;
+      gap: 10px;
+      margin-top: 15px;
     `,
   };
 
@@ -46,7 +58,8 @@ export default function CreateGroupStudyPage() {
 
   const [language, setLanguage] = useState(languages[0]);
   const [personnel, setPersonnel] = useState<number>(2);
-  const [isAlways, setIsAlways] = useState<boolean>(false);
+  const [isAlways, setIsAlways] = useState<boolean>(true);
+  const [finishDate, setFinishDate] = useState<Date>(new Date());
 
   // to change default tag
   useEffect(() => {
@@ -92,6 +105,36 @@ export default function CreateGroupStudyPage() {
             onChange={(e) => setIsAlways(e?.value ?? true)}
           />
         </div>
+      </div>
+      <div css={style.flex}>
+        <p></p>
+        {!isAlways && (
+          <div css={style.selectConteiner}>
+            <Calendar
+              locale="ko"
+              minDate={new Date()}
+              minDetail="year"
+              calendarType="US"
+              onChange={(val) => {
+                if (val instanceof Date) {
+                  setFinishDate(val);
+                }
+              }}
+            />
+          </div>
+        )}
+      </div>
+      <TextArea height={416} width={528} />
+      <div css={style.buttonContainer}>
+        <Button
+          value={'취소'}
+          width={'93px'}
+          height={'51px'}
+          fontSize={'20px'}
+          backgroundColor={theme.offWhite}
+          color={theme.black}
+        />
+        <Button value={'등록'} width={'93px'} height={'51px'} fontSize={'20px'} />
       </div>
     </div>
   );
