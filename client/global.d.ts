@@ -50,3 +50,7 @@ interface SelfStudyList {
 }
 
 type SelfStudyListResponse = SelfStudyList;
+
+interface LoginResponse {
+  token: string;
+}
