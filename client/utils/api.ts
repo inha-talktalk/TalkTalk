@@ -38,3 +38,7 @@ export async function getSelfStudyList() {
 export async function getSelfStudy(selfStudyId: string) {
   return await get<SelfStudyResponse>(`/self-study/${selfStudyId}`, 'getSelfStudy');
 }
+
+export async function login(code: string) {
+  return await get<LoginResponse>(`/oauth/kakao?code=${code}`, 'login');
+}
