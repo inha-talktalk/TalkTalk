@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { useRouter } from 'next/router';
 import Button from '../Button';
 
 const style = {
@@ -23,6 +24,13 @@ interface UserStateProps {
 export default function UserState({ isLoggedIn }: UserStateProps) {
   const signUpUrl = '';
   const myPageUrl = '';
+  const router = useRouter();
+
+  const handleButtonClick = () => {
+    if (!isLoggedIn) {
+      router.push('/login');
+    }
+  };
 
   return (
     <div css={style.container}>
@@ -34,6 +42,7 @@ export default function UserState({ isLoggedIn }: UserStateProps) {
         width={'93px'}
         height={'48px'}
         fontSize={'20px'}
+        onClick={handleButtonClick}
       />
     </div>
   );
