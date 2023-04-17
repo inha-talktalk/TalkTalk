@@ -8,14 +8,33 @@ export const apiAxiosInstance = axios.create({
   baseURL: BASE_URL,
 });
 
-export async function getUserProfile(userId: string): Promise<UserProfileResponse> {
-  return (await apiAxiosInstance.get(`/user/profile/${userId}`)).data;
+async function get<T>(url: string, functionName: string): Promise<T> {
+  try {
+    return (await apiAxiosInstance.get(url)).data;
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(`API call error ${functionName}`);
+    }
+    throw e;
+  }
 }
 
-export async function getGroupStudyList(): Promise<GroupStudyListResponse> {
-  return (await apiAxiosInstance.get('/group-study/list')).data;
+export async function getUserProfile(userId: string) {
+  return await get<UserProfileResponse>(`/user/profile/${userId}`, 'getUserProfile');
 }
 
-export async function getUserAchievement(userId: string): Promise<UserAcheivementResponse> {
-  return (await apiAxiosInstance.get(`/user/achievement/${userId}`)).data;
+export async function getGroupStudyList() {
+  return await get<GroupStudyListResponse>('/group-study/list', 'getGroupStudyList');
+}
+
+export async function getUserAchievement(userId: string) {
+  return await get<UserAcheivementResponse>(`/user/achievement/${userId}`, 'getUserAchievement');
+}
+
+export async function getSelfStudyList() {
+  return await get<SelfStudyListResponse>(`/self-study/list`, 'getSelfStudyList');
+}
+
+export async function getSelfStudy(selfStudyId: string) {
+  return await get<SelfStudyResponse>(`/self-study/${selfStudyId}`, 'getSelfStudy');
 }
