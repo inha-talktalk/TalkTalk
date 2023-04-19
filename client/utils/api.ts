@@ -53,3 +53,17 @@ export async function getSelfStudy(selfStudyId: string) {
 export async function login(code: string) {
   return await post<LoginResponse>(`/oauth/kakao?code=${code}`, {}, 'login');
 }
+
+export async function getGroupStudySearch(keyword: string, page?: number) {
+  return await get<GroupStudySearchResponse>(
+    `/group-study?keyword=${keyword}${page ? `&page=${page}` : ''}`,
+    'getGroupStudySearch',
+  );
+}
+
+export async function getGroupStudyPost(groupStudyId: string) {
+  return await get<GroupStudyPostResponse>(
+    `/group-study/${groupStudyId}/post`,
+    'getGroupStudyPost',
+  );
+}
