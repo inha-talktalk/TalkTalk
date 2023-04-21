@@ -100,9 +100,11 @@ public class OAuthService {
 
     Long id = jsonNode.get("id").asLong();
     String email = jsonNode.get("kakao_account").get("email").asText();
+    String profileImage = jsonNode.get("properties").get("profile_image").asText();
     String nickname = jsonNode.get("properties").get("nickname").asText();
 
-    return new OAuthUserDto(id, nickname, email);
+
+    return new OAuthUserDto(id, nickname, email, profileImage);
   }
 
   @Transactional
@@ -111,12 +113,12 @@ public class OAuthService {
     Long kakaoId = oAuthUserDto.getId();
     String email = oAuthUserDto.getEmail();
     String nickname = oAuthUserDto.getNickname();
+    String profile = oAuthUserDto.getProfileImage();
 
     User user = userRepository.findByEmail(email).orElse(null);
 
     if (user == null) {
       String password = passwordEncoder.encode(UUID.randomUUID().toString());
-      String profile = "";
       user = new User(kakaoId, email, nickname, password, profile, LocalDateTime.now());
       userRepository.save(user);
     }
