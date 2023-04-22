@@ -12,15 +12,17 @@ public class User {
   private String id;
   private final Long kakaoId;
   private final String email;
+  private final String name;
   private final String nickname;
   private final String password;
   private final String profileImage;
   private final LocalDateTime joinTime;
 
-  public User(Long kakaoId, String email, String nickname, String password, String profileImage,
+  public User(Long kakaoId, String name, String email, String nickname, String password, String profileImage,
       LocalDateTime joinTime) {
     this.kakaoId = kakaoId;
     this.email = email;
+    this.name = name;
     this.nickname = nickname;
     this.password = password;
     this.profileImage = profileImage;
