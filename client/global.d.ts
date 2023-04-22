@@ -50,3 +50,13 @@ interface SelfStudyList {
 }
 
 type SelfStudyListResponse = SelfStudyList;
+
+interface LoginResponse {
+  token: string;
+}
+
+interface GroupStudySearchResponse {
+  groupIds: string[];
+  totalPage: number;
+  currentPage: number;
+}

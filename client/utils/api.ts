@@ -19,6 +19,17 @@ async function get<T>(url: string, functionName: string): Promise<T> {
   }
 }
 
+async function post<T>(url: string, body: object, functionName: string): Promise<T> {
+  try {
+    return (await apiAxiosInstance.post(url, body)).data;
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(`API call error ${functionName}`);
+    }
+    throw e;
+  }
+}
+
 export async function getUserProfile(userId: string) {
   return await get<UserProfileResponse>(`/user/profile/${userId}`, 'getUserProfile');
 }
@@ -37,4 +48,22 @@ export async function getSelfStudyList() {
 
 export async function getSelfStudy(selfStudyId: string) {
   return await get<SelfStudyResponse>(`/self-study/${selfStudyId}`, 'getSelfStudy');
+}
+
+export async function login(code: string) {
+  return await post<LoginResponse>(`/oauth/kakao?code=${code}`, {}, 'login');
+}
+
+export async function getGroupStudySearch(keyword: string, page?: number) {
+  return await get<GroupStudySearchResponse>(
+    `/group-study?keyword=${keyword}${page ? `&page=${page}` : ''}`,
+    'getGroupStudySearch',
+  );
+}
+
+export async function getGroupStudyPost(groupStudyId: string) {
+  return await get<GroupStudyPostResponse>(
+    `/group-study/${groupStudyId}/post`,
+    'getGroupStudyPost',
+  );
 }

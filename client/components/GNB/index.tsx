@@ -4,6 +4,8 @@ import UserState from '../UserState';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { style } from './style';
+import { useRecoilValue } from 'recoil';
+import { jwtState } from '@/states/login';
 
 const navLinks = [
   {
@@ -28,12 +30,19 @@ export default function GNB() {
   const { theme } = useGlobalTheme();
   const router = useRouter();
   const [currentPath, setCurrentPath] = useState<string>('');
+  const [loginStatus, setLoginStatus] = useState<boolean>(false);
+  const jwt = useRecoilValue(jwtState);
 
   useEffect(() => {
     if (router.isReady) {
       setCurrentPath(router.pathname);
     }
   }, [router.isReady, router.pathname]);
+
+  // to know login status
+  useEffect(() => {
+    setLoginStatus(jwt !== '');
+  }, [jwt]);
 
   return (
     <div css={style.container(theme.offWhite)}>
@@ -51,7 +60,7 @@ export default function GNB() {
           ))}
         </div>
       </div>
-      <UserState isLoggedIn={false} />
+      <UserState isLoggedIn={loginStatus} />
     </div>
   );
 }
