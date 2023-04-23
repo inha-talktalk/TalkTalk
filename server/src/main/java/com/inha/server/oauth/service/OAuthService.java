@@ -129,6 +129,7 @@ public class OAuthService {
     UsernamePasswordAuthenticationToken authenticationToken =
         new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword());
     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
     return tokenProvider.createToken(authenticationToken);
   }
 }
