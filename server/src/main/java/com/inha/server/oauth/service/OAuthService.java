@@ -117,7 +117,13 @@ public class OAuthService {
     if (user == null) {
       String nickname = "";
       String password = passwordEncoder.encode(UUID.randomUUID().toString());
-      user = new User(kakaoId, email, name, nickname, password, profile, LocalDateTime.now());
+      user = User.builder()
+          .nickname(nickname)
+          .name(name)
+          .email(email)
+          .kakaoId(kakaoId)
+          .profileImage(profile)
+          .build();
       userRepository.save(user);
     }
     return user;

@@ -1,11 +1,13 @@
 package com.inha.server.user.model;
 
 import java.time.LocalDateTime;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
+@Builder
 @Document(collection = "user")
 public class User {
   @Id
