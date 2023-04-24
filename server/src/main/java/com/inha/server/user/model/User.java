@@ -8,10 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Document(collection = "user")
 public class User {
-
   @Id
   private String id;
-
   private final Long kakaoId;
   private final String email;
   private final String nickname;
