@@ -1,4 +1,4 @@
-package com.inha.server.mypage.dto;
+package com.inha.server.mypage.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
