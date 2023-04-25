@@ -1,6 +1,7 @@
 package com.inha.server.study.group.service;
 
 import com.inha.server.study.group.dto.request.PostGroupStudyReq;
+import com.inha.server.study.group.dto.response.DeleteGroupStudyRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.GroupStudyRes;
@@ -113,5 +114,20 @@ public class GroupStudyService {
 
   private GroupStudy getGroupStudy(String groupStudyId) {
     return groupStudyRepository.findById(groupStudyId).orElse(null);
+  }
+
+  @Transactional
+  public DeleteGroupStudyRes delete(String jwt, String groupStudyId) {
+    String userId = getUserId(jwt);
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
+
+    validate(groupStudy == null, "group study not found");
+    validate(!userId.equals(groupStudy.getOwnerId()), "user do not have delete permission");
+    groupStudyRepository.delete(groupStudy);
+
+    return DeleteGroupStudyRes.builder()
+        .groupStudyId(groupStudy.getId())
+        .ownerId(userId)
+        .build();
   }
 }
