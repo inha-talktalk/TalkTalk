@@ -1,7 +1,8 @@
 package com.inha.server.mypage.service;
 
 
-import com.inha.server.mypage.dto.ProfileInfoRes;
+import com.inha.server.mypage.dto.request.ProfileNameAndNicknameReq;
+import com.inha.server.mypage.dto.response.ProfileInfoRes;
 import com.inha.server.user.model.User;
 import com.inha.server.user.repository.UserRepository;
 import com.inha.server.user.util.TokenProvider;
@@ -18,6 +19,15 @@ public class MyPageService {
         if (TokenProvider.getSubject(jwt) == null) {
             throw new IllegalStateException("존재하지 않는 사용자입니다.");
         }
+    }
+
+    private static String getUserId(String jwt) {
+        String userId = TokenProvider.getSubject(jwt);
+
+        if (userId == null) {
+            throw new IllegalStateException("존재하지 않는 사용자입니다.");
+        }
+        return userId;
     }
 
     public ProfileInfoRes getProfile(String jwt, String userId) {
@@ -37,5 +47,17 @@ public class MyPageService {
             .build();
 
         return profileInfoRes;
+    }
+
+    public void updateProfileNameAndNickname(String jwt, ProfileNameAndNicknameReq profileReq) {
+        String userId = getUserId(jwt);
+
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자입니다."));
+
+        // User 의 이름과 닉네임 수정
+        user.setNameAndNickname(profileReq.getUserName(), profileReq.getNickName());
+
+        userRepository.save(user);
     }
 }
