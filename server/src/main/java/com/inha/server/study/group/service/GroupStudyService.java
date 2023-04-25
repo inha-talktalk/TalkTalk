@@ -1,6 +1,7 @@
 package com.inha.server.study.group.service;
 
 import com.inha.server.study.group.dto.request.PostGroupStudyReq;
+import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.GroupStudyRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
@@ -24,9 +25,7 @@ public class GroupStudyService {
   private static String getUserId(String jwt) {
     String userId = TokenProvider.getSubject(jwt);
 
-    if (userId == null) {
-      throw new IllegalStateException("존재하지 않는 사용자입니다.");
-    }
+    validate(userId == null, "존재하지 않는 사용자입니다.");
     return userId;
   }
 
@@ -55,6 +54,7 @@ public class GroupStudyService {
     return groupStudy;
   }
 
+  @Transactional
   public GetGroupStudyListRes getGroupStudyList(Pageable pageable) {
     List<GroupStudy> groupStudyList = groupStudyRepository.findAll(
         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())).getContent();
@@ -85,5 +85,33 @@ public class GroupStudyService {
       groupStudyResList.add(groupStudyRes);
     }
     return groupStudyResList;
+  }
+
+  @Transactional
+  public GetGroupStudyDetailRes getGroupStudyDetail(String groupStudyId) {
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
+    validate(groupStudy == null, "group study not found");
+
+    return GetGroupStudyDetailRes.builder()
+        .groupId(groupStudy.getId())
+        .languageId(groupStudy.getLanguageId())
+        .groupName(groupStudy.getGroupName())
+        .groupPersonnel(groupStudy.getGroupPersonnel())
+        .tags(groupStudy.getTags())
+        .introduction(groupStudy.getIntroduction())
+        .groupDuration(groupStudy.getGroupDuration())
+        .ownerId(groupStudy.getOwnerId())
+        .isFinished(groupStudy.getIsFinished())
+        .build();
+  }
+
+  private static void validate(boolean groupStudy, String group_study_not_found) {
+    if (groupStudy) {
+      throw new IllegalStateException(group_study_not_found);
+    }
+  }
+
+  private GroupStudy getGroupStudy(String groupStudyId) {
+    return groupStudyRepository.findById(groupStudyId).orElse(null);
   }
 }
