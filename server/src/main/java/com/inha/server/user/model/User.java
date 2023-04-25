@@ -13,11 +13,16 @@ public class User {
 
     private final Long kakaoId;
     private final String email;
-    private final String name;
-    private final String nickname;
+    private String name;
+    private String nickname;
     private final String password;
     private final String profileImage;
     private final LocalDateTime joinTime;
     @Id
     private String id;
+
+    public void setNameAndNickname(String name, String nickname) {
+        this.name = name;
+        this.nickname = nickname;
+    }
 }
