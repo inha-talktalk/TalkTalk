@@ -98,10 +98,10 @@ public class OAuthService {
     Long id = jsonNode.get("id").asLong();
     String email = jsonNode.get("kakao_account").get("email").asText();
     String profileImage = jsonNode.get("properties").get("profile_image").asText();
-    String nickname = jsonNode.get("properties").get("nickname").asText();
+    String name = jsonNode.get("properties").get("nickname").asText();
 
 
-    return new OAuthUserDto(id, nickname, email, profileImage);
+    return new OAuthUserDto(id, name, email, profileImage);
   }
 
   @Transactional
@@ -109,14 +109,21 @@ public class OAuthService {
     // DB 에 중복된 email이 있는지 확인
     Long kakaoId = oAuthUserDto.getId();
     String email = oAuthUserDto.getEmail();
-    String nickname = oAuthUserDto.getNickname();
+    String name = oAuthUserDto.getName();
     String profile = oAuthUserDto.getProfileImage();
 
     User user = userRepository.findByEmail(email).orElse(null);
 
     if (user == null) {
+      String nickname = "";
       String password = passwordEncoder.encode(UUID.randomUUID().toString());
-      user = new User(kakaoId, email, nickname, password, profile, LocalDateTime.now());
+      user = User.builder()
+          .nickname(nickname)
+          .name(name)
+          .email(email)
+          .kakaoId(kakaoId)
+          .profileImage(profile)
+          .build();
       userRepository.save(user);
     }
     return user;

@@ -1,29 +1,28 @@
 package com.inha.server.user.model;
 
 import java.time.LocalDateTime;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
+@Builder
 @Document(collection = "user")
 public class User {
-  @Id
-  private String id;
-  private final Long kakaoId;
-  private final String email;
-  private final String nickname;
-  private final String password;
-  private final String profileImage;
-  private final LocalDateTime joinTime;
 
-  public User(Long kakaoId, String email, String nickname, String password, String profileImage,
-      LocalDateTime joinTime) {
-    this.kakaoId = kakaoId;
-    this.email = email;
-    this.nickname = nickname;
-    this.password = password;
-    this.profileImage = profileImage;
-    this.joinTime = joinTime;
-  }
+    private final Long kakaoId;
+    private final String email;
+    private String name;
+    private String nickname;
+    private final String password;
+    private final String profileImage;
+    private final LocalDateTime joinTime;
+    @Id
+    private String id;
+
+    public void setNameAndNickname(String name, String nickname) {
+        this.name = name;
+        this.nickname = nickname;
+    }
 }
