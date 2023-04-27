@@ -36,6 +36,7 @@ export default function UserState({ isLoggedIn }: UserStateProps) {
     } else {
       // TODO: 추후에 로그아웃 API 호출하도록 수정 예정
       setJwt('');
+      window.localStorage.removeItem('jwt');
     }
   };
 

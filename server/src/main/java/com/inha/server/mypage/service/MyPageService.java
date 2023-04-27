@@ -8,6 +8,8 @@ import com.inha.server.user.repository.UserRepository;
 import com.inha.server.user.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class MyPageService {
         return userId;
     }
 
+    @Transactional
     public ProfileInfoRes getProfile(String jwt, String userId) {
         // 요청한 사용자가 존재하는지 확인
         userCheck(jwt);
@@ -49,6 +52,7 @@ public class MyPageService {
         return profileInfoRes;
     }
 
+    @Transactional
     public void updateProfileNameAndNickname(String jwt, ProfileNameAndNicknameReq profileReq) {
         String userId = getUserId(jwt);
 
@@ -57,6 +61,20 @@ public class MyPageService {
 
         // User 의 이름과 닉네임 수정
         user.setNameAndNickname(profileReq.getUserName(), profileReq.getNickName());
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+
+    public void updateProfileImg(String jwt, String updateURI) {
+        String userId = getUserId(jwt);
+
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자입니다."));
+
+        // User 의 이름과 닉네임 수정
+        user.setImgURI(updateURI);
 
         userRepository.save(user);
     }
