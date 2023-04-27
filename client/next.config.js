@@ -10,12 +10,14 @@ const nextConfig = (phase) => {
         emotion: true,
       },
       async rewrites() {
-        return [
-          {
-            source: '/api/oauth/kakao:slug*',
-            destination: `http://101.101.209.150:8080/oauth/kakao:sulg*`,
-          },
-        ];
+        return {
+          fallback: [
+            {
+              source: '/api/:path*',
+              destination: `http://localhost:8080/:path*`,
+            },
+          ],
+        };
       },
     };
   } else {
