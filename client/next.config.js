@@ -13,7 +13,7 @@ const nextConfig = (phase) => {
         return [
           {
             source: '/api/oauth/kakao:slug*',
-            destination: `http://localhost:8080/oauth/kakao:sulg*`,
+            destination: `http://101.101.209.150:8080/oauth/kakao:sulg*`,
           },
         ];
       },
