@@ -20,6 +20,7 @@ export default function KakaoOauthPage() {
         const result = await login(code);
 
         setJwt(result.token);
+        globalThis.window.localStorage.setItem('jwt', result.token);
       } catch (e) {
         alert('로그인 실패');
       }
