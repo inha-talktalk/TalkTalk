@@ -3,10 +3,9 @@ package com.inha.server.oauth.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inha.server.oauth.dto.JwtDto;
 import com.inha.server.oauth.dto.OAuthUserDto;
 import com.inha.server.oauth.model.KakaoTokens;
-import com.inha.server.security.jwt.TokenProvider;
+import com.inha.server.user.util.TokenProvider;
 import com.inha.server.user.model.User;
 import com.inha.server.user.repository.UserRepository;
 import java.time.LocalDateTime;
@@ -18,8 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +42,7 @@ public class OAuthService {
   @Value("${oauth.kakao.url.host}")
   private String redirectHost;
 
-  public JwtDto kakaoLogin(String authorize_code) throws JsonProcessingException {
+  public String kakaoLogin(String authorize_code) throws JsonProcessingException {
     // 인가코드를 통해서 access_token 발급
     String accessToken = getAccessToken(authorize_code);
     // access_token 으로 회원정보 받아오기
@@ -53,7 +50,7 @@ public class OAuthService {
     // 회원가입
     User user = signUpIfNotRegisteredUser(oAuthUserDto);
     // 로그인 후 jwt 리턴
-    return new JwtDto(login(user));
+    return login(user);
   }
 
   private String getAccessToken(String authorize_code) {
@@ -101,10 +98,10 @@ public class OAuthService {
     Long id = jsonNode.get("id").asLong();
     String email = jsonNode.get("kakao_account").get("email").asText();
     String profileImage = jsonNode.get("properties").get("profile_image").asText();
-    String nickname = jsonNode.get("properties").get("nickname").asText();
+    String name = jsonNode.get("properties").get("nickname").asText();
 
 
-    return new OAuthUserDto(id, nickname, email, profileImage);
+    return new OAuthUserDto(id, name, email, profileImage);
   }
 
   @Transactional
@@ -112,23 +109,27 @@ public class OAuthService {
     // DB 에 중복된 email이 있는지 확인
     Long kakaoId = oAuthUserDto.getId();
     String email = oAuthUserDto.getEmail();
-    String nickname = oAuthUserDto.getNickname();
+    String name = oAuthUserDto.getName();
     String profile = oAuthUserDto.getProfileImage();
 
     User user = userRepository.findByEmail(email).orElse(null);
 
     if (user == null) {
+      String nickname = "";
       String password = passwordEncoder.encode(UUID.randomUUID().toString());
-      user = new User(kakaoId, email, nickname, password, profile, LocalDateTime.now());
+      user = User.builder()
+          .nickname(nickname)
+          .name(name)
+          .email(email)
+          .kakaoId(kakaoId)
+          .profileImage(profile)
+          .build();
       userRepository.save(user);
     }
     return user;
   }
 
   private String login(User user) {
-    UsernamePasswordAuthenticationToken authenticationToken =
-        new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword());
-    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-    return tokenProvider.createToken(authenticationToken);
+    return tokenProvider.createToken(user);
   }
 }
