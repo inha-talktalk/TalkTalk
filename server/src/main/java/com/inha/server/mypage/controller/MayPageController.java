@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,11 +29,11 @@ public class MayPageController {
     /*
      * 회원 정보를 가지고 옴
      * @param jwt 사용자 정보 인증
-     * @param userId 조회하고자 하는 사용자의 id
+     * @PathVariable userId 조회하고자 하는 사용자의 id
      * */
-    @GetMapping("/profile")
+    @GetMapping("/profile/{userId}")
     public ProfileInfoRes getProfileInfo(@RequestHeader(value = "x-access-token") String jwt,
-        @RequestParam String userId) {
+        @PathVariable String userId) {
         return myPageService.getProfile(jwt, userId);
     }
 
