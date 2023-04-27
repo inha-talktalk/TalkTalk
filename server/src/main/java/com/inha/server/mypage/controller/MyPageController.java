@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-public class MayPageController {
+public class MyPageController {
 
     private final S3Service s3Service;
     private final MyPageService myPageService;
