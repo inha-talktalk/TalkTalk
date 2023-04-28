@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,12 +29,22 @@ public class MyPageController {
 
     /*
      * 회원 정보를 가지고 옴
-     * @param jwt 사용자 정보 인증
      * @PathVariable userId 조회하고자 하는 사용자의 id
      * */
     @GetMapping("/profile/{userId}")
-    public ResponseEntity<ProfileInfoRes> getProfileInfo(@PathVariable String userId) {
-        return myPageService.getProfile(userId);
+    public ResponseEntity<ProfileInfoRes> getOthersProfileInfo(@PathVariable String userId) {
+        return myPageService.getOthersProfile(userId);
+    }
+
+    /*
+     * 회원 정보를 가지고 옴
+     * @param jwt 사용자 정보 인증
+     * @PathVariable userId 조회하고자 하는 사용자의 id
+     * */
+    @GetMapping("/profile/self")
+    public ResponseEntity<ProfileInfoRes> getSelfProfileInfo(
+        @RequestHeader(value = "x-access-token") String jwt) {
+        return myPageService.getSelfProfile(jwt);
     }
 
     /*
