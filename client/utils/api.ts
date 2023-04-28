@@ -82,3 +82,18 @@ export async function getGroupStudyPost(groupStudyId: string) {
     'getGroupStudyPost',
   );
 }
+
+export async function patchMyProfile(userName: string, nickName: string) {
+  patch(
+    `/user/profile`,
+    {
+      userName,
+      nickName,
+    },
+    'patchMyProfile',
+  );
+}
+
+export async function postUserProfileImage(formData: FormData) {
+  post(`/user/profile/img`, formData, 'postUserProfileImage');
+}
