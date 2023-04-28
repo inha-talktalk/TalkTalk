@@ -19,6 +19,14 @@ const nextConfig = (phase) => {
           ],
         };
       },
+      images: {
+        remotePatterns: [
+          {
+            protocol: 'http',
+            hostname: 'k.kakaocdn.net',
+          },
+        ],
+      },
     };
   } else {
     return {
