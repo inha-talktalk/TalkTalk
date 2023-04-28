@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { style } from './style';
 import { useRecoilValue } from 'recoil';
 import { jwtState } from '@/states/login';
+import { apiAxiosInstance } from '@/utils/api';
 
 const navLinks = [
   {
@@ -42,6 +43,8 @@ export default function GNB() {
   // to know login status
   useEffect(() => {
     setLoginStatus(jwt !== '');
+
+    apiAxiosInstance.defaults.headers.common['x-access-token'] = jwt;
   }, [jwt]);
 
   return (
