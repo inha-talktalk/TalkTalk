@@ -22,13 +22,26 @@ public class MyPageService {
         String userId = TokenProvider.getSubject(jwt);
 
         if (userId == null) {
-            throw new IllegalStateException("존재하지 않는 사용자입니다.");
+            throw new IllegalStateException();
         }
         return userId;
     }
 
     @Transactional
-    public ResponseEntity<ProfileInfoRes> getProfile(String userId) {
+    public ResponseEntity<ProfileInfoRes> getSelfProfile(String jwt) {
+        String userId;
+
+        try {
+            userId = getUserId(jwt);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        return getOthersProfile(userId);
+    }
+
+    @Transactional
+    public ResponseEntity<ProfileInfoRes> getOthersProfile(String userId) {
 
         // 요청한 사용자가 존재하지 않으면 예외 발생
         User user = userRepository.findById(userId).orElse(null);
@@ -51,7 +64,13 @@ public class MyPageService {
     @Transactional
     public HttpStatus updateProfileNameAndNickname(String jwt,
         ProfileNameAndNicknameReq profileReq) {
-        String userId = getUserId(jwt);
+        String userId;
+
+        try {
+            userId = getUserId(jwt);
+        } catch (Exception e) {
+            return HttpStatus.UNAUTHORIZED;
+        }
 
         User user = userRepository.findById(userId).orElse(null);
 
@@ -70,7 +89,13 @@ public class MyPageService {
     @Transactional
 
     public HttpStatus updateProfileImg(String jwt, String updateURI) {
-        String userId = getUserId(jwt);
+        String userId;
+
+        try {
+            userId = getUserId(jwt);
+        } catch (Exception e) {
+            return HttpStatus.UNAUTHORIZED;
+        }
 
         User user = userRepository.findById(userId).orElse(null);
 
