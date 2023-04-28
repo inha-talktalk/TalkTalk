@@ -4,7 +4,7 @@ import LazyImage from '@/components/LazyImage';
 import MyAchievementList from '@/components/MyAchievementList';
 import StudyCardList from '@/components/StudyCardList';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
-import { getUserAchievement } from '@/utils/api';
+import { getMyProfile, getUserAchievement } from '@/utils/api';
 import { DEAFULT_PLACEHOLDER_GRAY } from '@/utils/image';
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
@@ -25,6 +25,7 @@ const testGroupData: GroupStudy = {
 
 export default function MyPage() {
   const { theme } = useGlobalTheme();
+  const [titleName, setTitleName] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [nickName, setNickName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -80,20 +81,25 @@ export default function MyPage() {
   // to get user achievement
   useEffect(() => {
     (async () => {
-      try {
-        setAchievement(await getUserAchievement('test'));
-      } catch (e) {
-        if (e instanceof Error) {
-          console.error(`Error by getUserAchievement on myPage\n${e.message}`);
-        }
-      }
+      setAchievement(await getUserAchievement('test'));
+    })();
+  }, []);
+
+  // to get my profile
+  useEffect(() => {
+    (async () => {
+      const myProfile = await getMyProfile();
+      setTitleName(myProfile.userName);
+      setName(myProfile.userName);
+      setEmail(myProfile.email);
+      setImageUrl(myProfile.profileIconUrl);
     })();
   }, []);
 
   return (
     <div css={style.container}>
       <h1 css={style.title}>
-        <span>{name}님</span>의 성장 여정이예요.
+        <span>{titleName}님</span>의 성장 여정이예요.
       </h1>
       <MyAchievementList achievement={achievement} />
 

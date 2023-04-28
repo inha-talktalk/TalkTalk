@@ -30,6 +30,10 @@ async function post<T>(url: string, body: object, functionName: string): Promise
   }
 }
 
+export async function getMyProfile() {
+  return await get<UserProfileResponse>(`/user/profile/self`, 'getMyProfile');
+}
+
 export async function getUserProfile(userId: string) {
   return await get<UserProfileResponse>(`/user/profile/${userId}`, 'getUserProfile');
 }
