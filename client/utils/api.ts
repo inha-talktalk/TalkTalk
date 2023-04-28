@@ -30,6 +30,17 @@ async function post<T>(url: string, body: object, functionName: string): Promise
   }
 }
 
+async function patch<T>(url: string, body: object, functionName: string): Promise<T> {
+  try {
+    return (await apiAxiosInstance.patch(url, body)).data;
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(`API call error ${functionName}`);
+    }
+    throw e;
+  }
+}
+
 export async function getMyProfile() {
   return await get<UserProfileResponse>(`/user/profile/self`, 'getMyProfile');
 }
