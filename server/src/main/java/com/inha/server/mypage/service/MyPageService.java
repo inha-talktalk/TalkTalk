@@ -47,7 +47,7 @@ public class MyPageService {
         User user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
-            return new ResponseEntity<>(HttpStatus.valueOf(404));
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         // 정보 반환
@@ -58,7 +58,7 @@ public class MyPageService {
             .profileIconUrl(user.getProfileImage())
             .build();
 
-        return new ResponseEntity<>(profileInfoRes, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(profileInfoRes, HttpStatus.OK);
     }
 
     @Transactional
