@@ -1,11 +1,14 @@
 package com.inha.server.mypage.controller;
 
 import com.inha.server.mypage.dto.request.ProfileNameAndNicknameReq;
+import com.inha.server.mypage.dto.response.AchievementRes;
 import com.inha.server.mypage.dto.response.MyStudiesRes;
 import com.inha.server.mypage.dto.response.ProfileInfoRes;
 import com.inha.server.mypage.service.MyPageService;
 import com.inha.server.s3.service.S3Service;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -110,5 +113,17 @@ public class MyPageController {
         }
 
         return new ResponseEntity<>(myApplyStudiesResList, HttpStatus.OK);
+    }
+
+    @GetMapping("/achieve")
+    public ResponseEntity<AchievementRes> getAchievement () {
+        
+        AchievementRes achievementRes = AchievementRes.builder()
+            .teamMateCount(6)
+            .studyLanguageCount(2)
+            .joinTime(LocalDate.from(LocalDateTime.now()))
+            .completedSelfStudyCount(10)
+            .build();
+        return new ResponseEntity<>(achievementRes, HttpStatus.OK);
     }
 }
