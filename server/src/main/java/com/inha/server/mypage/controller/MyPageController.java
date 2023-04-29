@@ -1,10 +1,16 @@
 package com.inha.server.mypage.controller;
 
 import com.inha.server.mypage.dto.request.ProfileNameAndNicknameReq;
+import com.inha.server.mypage.dto.response.AchievementRes;
+import com.inha.server.mypage.dto.response.MyStudiesRes;
 import com.inha.server.mypage.dto.response.ProfileInfoRes;
 import com.inha.server.mypage.service.MyPageService;
 import com.inha.server.s3.service.S3Service;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,5 +79,51 @@ public class MyPageController {
         String updateImageURI = s3Service.upload(uploadImg, "profileImg", jwt);
 
         return myPageService.updateProfileImg(jwt, updateImageURI);
+    }
+
+    @GetMapping("/study/{status}")
+    public ResponseEntity<List<MyStudiesRes>> getStudies (@PathVariable String status) {
+        List<MyStudiesRes> myStudiesResList = new ArrayList<>();
+
+        for (int i=100; i<103; i++) {
+            myStudiesResList.add(
+                MyStudiesRes.builder()
+                    .groupId("ei39dfajkdf" + i)
+                    .groupName(status + i)
+                    .tags(List.of("영어", "토익"))
+                    .build()
+            );
+        }
+
+        return new ResponseEntity<>(myStudiesResList, HttpStatus.OK);
+    }
+
+    @GetMapping("/study/apply")
+    public ResponseEntity<List<MyStudiesRes>> getApplyStudies () {
+        List<MyStudiesRes> myApplyStudiesResList = new ArrayList<>();
+
+        for (int i=100; i<102; i++) {
+            myApplyStudiesResList.add(
+                MyStudiesRes.builder()
+                    .groupId("ei39dfajkdf" + i)
+                    .groupName("신청한 스터디" + i)
+                    .tags(List.of("영어", "스피킹"))
+                    .build()
+            );
+        }
+
+        return new ResponseEntity<>(myApplyStudiesResList, HttpStatus.OK);
+    }
+
+    @GetMapping("/achieve")
+    public ResponseEntity<AchievementRes> getAchievement () {
+        
+        AchievementRes achievementRes = AchievementRes.builder()
+            .teamMateCount(6)
+            .studyLanguageCount(2)
+            .joinTime(LocalDate.from(LocalDateTime.now()))
+            .completedSelfStudyCount(10)
+            .build();
+        return new ResponseEntity<>(achievementRes, HttpStatus.OK);
     }
 }
