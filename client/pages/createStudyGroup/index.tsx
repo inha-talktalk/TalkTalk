@@ -61,6 +61,7 @@ export default function CreateGroupStudyPage() {
   const [isAlways, setIsAlways] = useState<boolean>(true);
   const [finishDate, setFinishDate] = useState<Date>(new Date());
   const [content, setContent] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
 
   // to change default tag
   useEffect(() => {
@@ -75,7 +76,13 @@ export default function CreateGroupStudyPage() {
 
   return (
     <div css={style.container}>
-      <TitleInputBar width={548} height={44} placeholder="스터디 명" />
+      <TitleInputBar
+        width={548}
+        height={44}
+        placeholder="스터디 명"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
       <TagInputBar width={548} height={44} tagController={tagController} />
       <div css={style.flex}>
         <span>언어</span>
