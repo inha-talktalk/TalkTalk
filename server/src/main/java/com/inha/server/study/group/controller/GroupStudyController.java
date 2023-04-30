@@ -4,7 +4,9 @@ import com.inha.server.study.group.dto.request.PostGroupStudyReq;
 import com.inha.server.study.group.dto.response.DeleteGroupStudyRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
+import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
+import com.inha.server.study.group.dto.response.WaitingListRes;
 import com.inha.server.study.group.service.GroupStudyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -48,5 +50,24 @@ public class GroupStudyController {
   public DeleteGroupStudyRes delete(@RequestHeader(value = "x-access-token") String jwt,
       @RequestParam(value = "groupStudyId") String groupStudyId) {
     return groupStudyService.delete(jwt, groupStudyId);
+  }
+
+  @PostMapping("/apply")
+  public WaitingListRes apply(@RequestHeader(value = "x-access-token") String jwt,
+      @RequestParam(value = "groupStudyId") String groupStudyId) {
+    return groupStudyService.apply(jwt, groupStudyId);
+  }
+
+  @GetMapping("/waiting-list")
+  public WaitingListRes readWaitingList(@RequestHeader(value = "x-access-token") String jwt,
+      @RequestParam(value = "groupStudyId") String groupStudyId) {
+    return groupStudyService.readWaitingList(jwt, groupStudyId);
+  }
+
+  @PostMapping("/approve")
+  public PostGroupStudyAcceptRes approve(@RequestHeader(value = "x-access-token") String jwt,
+      @RequestParam(value = "groupStudyId") String groupStudyId,
+      @RequestParam(value = "userId") String userId) {
+    return groupStudyService.approve(jwt, groupStudyId, userId);
   }
 }
