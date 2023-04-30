@@ -2,7 +2,7 @@ import MyAchievementList from '@/components/MyAchievementList';
 import StudyBanner from '@/components/StudyBanner';
 import StudyCell from '@/components/StudyCell';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
-import { getSelfStudyList, getSelfStudy, getUserAchievement, getUserProfile } from '@/utils/api';
+import { getSelfStudyList, getSelfStudy, getUserAchievement, getMyProfile } from '@/utils/api';
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 
@@ -32,14 +32,14 @@ export default function SelfStudy() {
   // to get user achievement
   useEffect(() => {
     (async () => {
-      setAcheivement(await getUserAchievement('test'));
+      setAcheivement(await getUserAchievement());
     })();
   }, []);
 
   // to get user profile
   useEffect(() => {
     (async () => {
-      setUser(await getUserProfile('test'));
+      setUser(await getMyProfile());
     })();
   }, []);
 
