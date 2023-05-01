@@ -88,7 +88,7 @@ export default function MyPage() {
   // to get user achievement
   useEffect(() => {
     (async () => {
-      setAchievement(await getUserAchievement('test'));
+      setAchievement(await getUserAchievement());
     })();
   }, []);
 

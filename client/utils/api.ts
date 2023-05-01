@@ -53,8 +53,8 @@ export async function getGroupStudyList() {
   return await get<GroupStudyListResponse>('/group-study/list', 'getGroupStudyList');
 }
 
-export async function getUserAchievement(userId: string) {
-  return await get<UserAcheivementResponse>(`/user/achievement/${userId}`, 'getUserAchievement');
+export async function getUserAchievement() {
+  return await get<UserAcheivementResponse>(`/user/achieve`, 'getUserAchievement');
 }
 
 export async function getSelfStudyList() {
@@ -84,7 +84,7 @@ export async function getGroupStudyPost(groupStudyId: string) {
 }
 
 export async function patchMyProfile(userName: string, nickName: string) {
-  patch(
+  await patch(
     `/user/profile`,
     {
       userName,
@@ -95,5 +95,5 @@ export async function patchMyProfile(userName: string, nickName: string) {
 }
 
 export async function postUserProfileImage(formData: FormData) {
-  post(`/user/profile/img`, formData, 'postUserProfileImage');
+  await post(`/user/profile/img`, formData, 'postUserProfileImage');
 }

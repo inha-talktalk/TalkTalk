@@ -1,12 +1,21 @@
 import { css } from '@emotion/react';
+import { ChangeEventHandler } from 'react';
 
 interface TitleInputBarProps {
   width: number;
   height: number;
   placeholder?: string;
+  value: string;
+  onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
-export default function TitleInputBar({ width, height, placeholder }: TitleInputBarProps) {
+export default function TitleInputBar({
+  width,
+  height,
+  placeholder,
+  value,
+  onChange,
+}: TitleInputBarProps) {
   const style = css`
     font: inherit;
     font-size: 36px;
@@ -18,5 +27,7 @@ export default function TitleInputBar({ width, height, placeholder }: TitleInput
     height: ${height}px;
   `;
 
-  return <input css={style} type="text" placeholder={placeholder} />;
+  return (
+    <input css={style} type="text" placeholder={placeholder} value={value} onChange={onChange} />
+  );
 }
