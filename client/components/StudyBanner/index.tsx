@@ -1,6 +1,7 @@
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { css } from '@emotion/react';
 import Button from '../Button';
+import { useRouter } from 'next/router';
 
 const style = {
   container: (backgroundColor: string) => css`
@@ -25,6 +26,15 @@ const style = {
 
 export default function StudyBanner() {
   const { theme } = useGlobalTheme();
+  const router = useRouter();
+
+  const handleReadButtonClick = () => {
+    router.push('/selfStudy/create/read');
+  };
+
+  const handleWriteButtonClick = () => {
+    router.push('/selfStudy/create/write');
+  };
 
   return (
     <div css={style.container(theme.blueWhite)}>
@@ -39,7 +49,13 @@ export default function StudyBanner() {
       <br />
       <br />
       <div css={style.buttons}>
-        <Button value={'스크립트 읽기'} width={'205px'} height={'59px'} fontSize={'30px'} />
+        <Button
+          value={'스크립트 읽기'}
+          width={'205px'}
+          height={'59px'}
+          fontSize={'30px'}
+          onClick={handleReadButtonClick}
+        />
         &nbsp;
         <Button
           value={'스크립트 쓰기'}
@@ -48,6 +64,7 @@ export default function StudyBanner() {
           fontSize={'30px'}
           backgroundColor={theme.blueWhite}
           color={theme.primary}
+          onClick={handleWriteButtonClick}
         />
       </div>
     </div>

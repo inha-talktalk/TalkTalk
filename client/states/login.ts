@@ -1,6 +1,17 @@
-import { atom } from 'recoil';
+import { atom, selector } from 'recoil';
 
-export const jwtState = atom<string>({
+const jwt = atom<string | null>({
+  key: 'jwtAtom',
+  default: null,
+});
+
+export const jwtState = selector<string>({
   key: 'jwt',
-  default: '',
+  get: ({ get }) => {
+    if (typeof window === 'undefined') return get(jwt) ?? '';
+    return get(jwt) ?? window.localStorage.getItem('jwt') ?? '';
+  },
+  set: ({ set }, newValue) => {
+    set(jwt, newValue);
+  },
 });

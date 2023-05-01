@@ -30,6 +30,21 @@ async function post<T>(url: string, body: object, functionName: string): Promise
   }
 }
 
+async function patch<T>(url: string, body: object, functionName: string): Promise<T> {
+  try {
+    return (await apiAxiosInstance.patch(url, body)).data;
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(`API call error ${functionName}`);
+    }
+    throw e;
+  }
+}
+
+export async function getMyProfile() {
+  return await get<UserProfileResponse>(`/user/profile/self`, 'getMyProfile');
+}
+
 export async function getUserProfile(userId: string) {
   return await get<UserProfileResponse>(`/user/profile/${userId}`, 'getUserProfile');
 }
@@ -38,8 +53,8 @@ export async function getGroupStudyList() {
   return await get<GroupStudyListResponse>('/group-study/list', 'getGroupStudyList');
 }
 
-export async function getUserAchievement(userId: string) {
-  return await get<UserAcheivementResponse>(`/user/achievement/${userId}`, 'getUserAchievement');
+export async function getUserAchievement() {
+  return await get<UserAcheivementResponse>(`/user/achieve`, 'getUserAchievement');
 }
 
 export async function getSelfStudyList() {
@@ -66,4 +81,19 @@ export async function getGroupStudyPost(groupStudyId: string) {
     `/group-study/${groupStudyId}/post`,
     'getGroupStudyPost',
   );
+}
+
+export async function patchMyProfile(userName: string, nickName: string) {
+  await patch(
+    `/user/profile`,
+    {
+      userName,
+      nickName,
+    },
+    'patchMyProfile',
+  );
+}
+
+export async function postUserProfileImage(formData: FormData) {
+  await post(`/user/profile/img`, formData, 'postUserProfileImage');
 }

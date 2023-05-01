@@ -5,7 +5,9 @@ import com.inha.server.study.group.dto.response.DeleteGroupStudyRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.GroupStudyRes;
+import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
+import com.inha.server.study.group.dto.response.WaitingListRes;
 import com.inha.server.study.group.model.GroupStudy;
 import com.inha.server.study.group.repository.GroupStudyRepository;
 import com.inha.server.user.util.TokenProvider;
@@ -28,6 +30,12 @@ public class GroupStudyService {
 
     validate(userId == null, "존재하지 않는 사용자입니다.");
     return userId;
+  }
+
+  private static void validate(boolean groupStudy, String group_study_not_found) {
+    if (groupStudy) {
+      throw new IllegalStateException(group_study_not_found);
+    }
   }
 
   public PostGroupStudyRes create(String jwt, PostGroupStudyReq request) {
@@ -106,12 +114,6 @@ public class GroupStudyService {
         .build();
   }
 
-  private static void validate(boolean groupStudy, String group_study_not_found) {
-    if (groupStudy) {
-      throw new IllegalStateException(group_study_not_found);
-    }
-  }
-
   private GroupStudy getGroupStudy(String groupStudyId) {
     return groupStudyRepository.findById(groupStudyId).orElse(null);
   }
@@ -128,6 +130,61 @@ public class GroupStudyService {
     return DeleteGroupStudyRes.builder()
         .groupStudyId(groupStudy.getId())
         .ownerId(userId)
+        .build();
+  }
+
+  @Transactional
+  public WaitingListRes apply(String jwt, String groupStudyId) {
+    String userId = getUserId(jwt);
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
+    String ownerId = groupStudy.getOwnerId();
+    List<String> waitingList = groupStudy.getWaitingList();
+
+    validate(userId.equals(ownerId), "owner can not apply for study.");
+    validate(waitingList.contains(userId), "Already applied.");
+
+    waitingList.add(userId);
+    groupStudyRepository.save(groupStudy);
+
+    return WaitingListRes.builder()
+        .groupId(groupStudyId)
+        .waitingList(waitingList)
+        .build();
+  }
+
+  @Transactional
+  public WaitingListRes readWaitingList(String jwt, String groupStudyId) {
+    String userId = getUserId(jwt);
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
+
+    validate(!userId.equals(groupStudy.getOwnerId()), "General user can not read waiting list.");
+
+    return WaitingListRes.builder()
+        .groupId(groupStudyId)
+        .waitingList(groupStudy.getWaitingList())
+        .build();
+  }
+
+  @Transactional
+  public PostGroupStudyAcceptRes approve(String jwt, String groupStudyId, String userId) {
+    String ownerId = getUserId(jwt);
+
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
+    List<String> waitingList = groupStudy.getWaitingList();
+    List<String> studyMate = groupStudy.getStudyMate();
+
+    validate(!ownerId.equals(groupStudy.getOwnerId()), "Only study owners can approve.");
+    validate(!waitingList.contains(userId), "user did not apply.");
+    validate(!studyMate.contains(userId), "Already approved.");
+
+    waitingList.remove(userId);
+    studyMate.add(userId);
+
+    groupStudyRepository.save(groupStudy);
+
+    return PostGroupStudyAcceptRes.builder()
+        .groupId(groupStudyId)
+        .studyMate(studyMate)
         .build();
   }
 }
