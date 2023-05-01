@@ -13,11 +13,11 @@ export default function SelfStudyPanel() {
     container: css`
       width: 70%;
       height: 820px;
-      border: 1px solid ${theme.gray};
       border-radius: 10px;
       margin: 15px;
       padding: 15px;
       position: relative;
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
     `,
     bubbleContainer: css`
       height: 90%;
