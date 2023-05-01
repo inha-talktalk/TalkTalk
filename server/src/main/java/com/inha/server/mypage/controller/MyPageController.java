@@ -6,6 +6,14 @@ import com.inha.server.mypage.dto.response.MyStudiesRes;
 import com.inha.server.mypage.dto.response.ProfileInfoRes;
 import com.inha.server.mypage.service.MyPageService;
 import com.inha.server.s3.service.S3Service;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@Tag(name = "마이페이지", description = "마이페이지 API Document")
 public class MyPageController {
 
     private final S3Service s3Service;
@@ -37,7 +46,27 @@ public class MyPageController {
      * 회원 정보를 가지고 옴
      * @PathVariable userId 조회하고자 하는 사용자의 id
      * */
-    @GetMapping("/profile/{userId}")
+    @Operation(
+        summary = "다른 유저 정보 조회",
+        description = "원하는 유저의 정보를 조회하는 메서드",
+        responses = {
+            @ApiResponse(responseCode = "401", ref = "unAuthorizedAPI"),
+            @ApiResponse(responseCode = "404", ref = "notFoundAPI"),
+            @ApiResponse (
+                responseCode = "200",
+                content = @Content(
+                    mediaType = "application/json",
+                    examples = {
+                        @ExampleObject(
+                            value = "{\"userName\" : \"홍길동\", \"nickName\" : \"놀부\", \"email\" : \"test@mail.com\", \"profileIconUrl\" : \"dfjadsfjldfjsal.img\"}"
+                        )
+                    }
+                )
+            )
+        }
+    )
+    @GetMapping("profile/{userId}")
+    @Parameter(name = "userId", example = "sdfjkasjfeifj3r3ej")
     public ResponseEntity<ProfileInfoRes> getOthersProfileInfo(@PathVariable String userId) {
         return myPageService.getOthersProfile(userId);
     }
@@ -82,10 +111,10 @@ public class MyPageController {
     }
 
     @GetMapping("/study/{status}")
-    public ResponseEntity<List<MyStudiesRes>> getStudies (@PathVariable String status) {
+    public ResponseEntity<List<MyStudiesRes>> getStudies(@PathVariable String status) {
         List<MyStudiesRes> myStudiesResList = new ArrayList<>();
 
-        for (int i=100; i<103; i++) {
+        for (int i = 100; i < 103; i++) {
             myStudiesResList.add(
                 MyStudiesRes.builder()
                     .groupId("ei39dfajkdf" + i)
@@ -99,10 +128,10 @@ public class MyPageController {
     }
 
     @GetMapping("/study/apply")
-    public ResponseEntity<List<MyStudiesRes>> getApplyStudies () {
+    public ResponseEntity<List<MyStudiesRes>> getApplyStudies() {
         List<MyStudiesRes> myApplyStudiesResList = new ArrayList<>();
 
-        for (int i=100; i<102; i++) {
+        for (int i = 100; i < 102; i++) {
             myApplyStudiesResList.add(
                 MyStudiesRes.builder()
                     .groupId("ei39dfajkdf" + i)
@@ -116,8 +145,8 @@ public class MyPageController {
     }
 
     @GetMapping("/achieve")
-    public ResponseEntity<AchievementRes> getAchievement () {
-        
+    public ResponseEntity<AchievementRes> getAchievement() {
+
         AchievementRes achievementRes = AchievementRes.builder()
             .teamMateCount(6)
             .studyLanguageCount(2)
