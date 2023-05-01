@@ -15,9 +15,9 @@ export default function ChatBubble({ position, value }: ChatBubbleProps) {
       max-width: 40%;
       min-width: 5px;
       min-height: 14px;
-      white-space: pre;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
       font-size: 14px;
+      word-wrap: break-word;
     `,
     right: css`
       background-color: ${theme.secondary};
