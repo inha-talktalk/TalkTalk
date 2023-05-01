@@ -54,7 +54,6 @@ export default function ChatInputBar({
     button: css`
       width: 40px;
       height: 40px;
-      background-color: ${theme.primary};
       border-radius: 50%;
 
       &:active {
@@ -89,7 +88,7 @@ export default function ChatInputBar({
         onKeyDown={handleKeyDown}
       />
       <div css={style.button}>
-        <IoSendSharp size={24} fill={'white'} css={style.sendImage} />
+        <IoSendSharp size={24} fill={theme.primary} css={style.sendImage} />
       </div>
     </div>
   );
