@@ -101,3 +101,8 @@ export async function postUserProfileImage(formData: FormData) {
 export async function postApplyGroupStudy(groupId: string) {
   await post(`/group-study/apply?groupStudyId=${groupId}`, {}, 'postApplyGroupStudy');
 }
+
+export async function getLanguages() {
+  return get<LanguageResponse>(`/language`, 'getLanguages');
+}
+

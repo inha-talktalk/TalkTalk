@@ -60,3 +60,11 @@ interface GroupStudySearchResponse {
   totalPage: number;
   currentPage: number;
 }
+
+interface Language {
+  label: string;
+  id: string;
+}
+
+type LanguageResponse = Language[];
+
