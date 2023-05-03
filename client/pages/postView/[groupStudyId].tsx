@@ -1,21 +1,19 @@
 import Button from '@/components/Button';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
-import { DEAFULT_PLACEHOLDER_GRAY } from '@/utils/image';
+import { getGroupStudyPost, getUserProfile, postApplyGroupStudy } from '@/utils/api';
 import { css } from '@emotion/react';
+import { AxiosError } from 'axios';
 import Image from 'next/image';
-
-const data = `저는 영어를 공부하면서 외국인 친구들과 대화를 나누는 것이 매우 중요하다고 생각합니다. 하지만 제가 사는 지역에서는 영어를 사용하는 기회가 많이 없어서, 온라인 스터디 그룹을 찾아보고 있습니다.
-
-그래서 같이 공부하고 싶은 분들을 모집하려고 합니다. 저와 함께 영어 실력을 향상시킬 분들이면 누구든지 환영합니다. 스터디는 매주 한 번 정도 1시간 정도 진행할 예정이며, 스터디 시간과 날짜는 참여자들끼리 협의하여 정하겠습니다.
-
-스터디에서는 간단한 일상 대화나 영어 회화 실력을 향상시킬 수 있는 다양한 주제를 다룰 예정입니다. 또한, 모임 중에는 서로의 발음이나 억양을 체크해주고, 영어 문법에 대한 질문도 해결해줄 수 있도록 노력할 예정입니다.
-
-관심 있는 분들은 연락 주시면 감사하겠습니다. 
-
-함께 즐겁게 영어를 공부해보아요!`;
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 export default function PostViewPage() {
   const { theme } = useGlobalTheme();
+  const router = useRouter();
+
+  const [groupId, setGroupId] = useState<string>('');
+  const [groupStudy, setGroupStudy] = useState<GroupStudy | null>(null);
+  const [owner, setOwner] = useState<UserProfile | null>(null);
 
   const style = {
     container: css`
@@ -106,6 +104,48 @@ export default function PostViewPage() {
     `,
   };
 
+  const handleApplyButtonClick = async () => {
+    try {
+      await postApplyGroupStudy(groupId);
+      alert('가입 신청이 완료됐습니다.');
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        alert(`가입에 실패했습니다.\n\n${e.response?.data.message}`);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (router.isReady && typeof router.query.groupStudyId === 'string') {
+      setGroupId(router.query.groupStudyId ?? '');
+    }
+  }, [router.isReady, router.query.groupStudyId]);
+
+  // to get group study post
+  useEffect(() => {
+    if (groupId === '') return;
+
+    (async () => {
+      setGroupStudy(await getGroupStudyPost(groupId));
+    })();
+  }, [groupId]);
+
+  // to get owner profile
+  useEffect(() => {
+    if (groupStudy === null) return;
+    (async () => {
+      setOwner(await getUserProfile(groupStudy.ownerId));
+    })();
+  }, [groupStudy]);
+
+  if (groupStudy === null || owner === null) {
+    return (
+      <div css={style.container}>
+        <div css={style.postView}></div>
+      </div>
+    );
+  }
+
   return (
     <div css={style.container}>
       <div css={style.postView}>
@@ -119,33 +159,40 @@ export default function PostViewPage() {
                 fontSize="14px"
                 backgroundColor={theme.secondary}
               />
-              <p>영어 회화 스터디</p>
+              <p>{groupStudy.groupName}</p>
             </div>
-            <p>2023.03.11 20:33 작성 · 조회수 5</p>
+            <p>2023.03.11 20:33 작성</p>
             <p>모집기간: 상시 · 현재 인원 3</p>
           </div>
           <div css={style.right}>
             <Image
               css={style.profile}
-              src={DEAFULT_PLACEHOLDER_GRAY}
+              src={owner.profileIconUrl}
               alt="profile"
               height={70}
               width={70}
             />
-            <p>김아랑</p>
+            <p>{owner.nickName}</p>
           </div>
         </div>
         <hr />
         <div css={style.textContainer}>
-          <div css={style.text}>{data}</div>
+          <div css={style.text}>{groupStudy.introduction}</div>
           <div css={style.tagContainer}>
-            <span># 태그1</span>
-            <span># 태그1</span>
+            {groupStudy.tags.map((tag, idx) => (
+              <span key={idx}>{tag}</span>
+            ))}
           </div>
         </div>
         <hr />
         <div css={style.buttonContainer}>
-          <Button value="가입하기" width="104px" height="48px" fontSize="20px" />
+          <Button
+            value="가입하기"
+            width="104px"
+            height="48px"
+            fontSize="20px"
+            onClick={handleApplyButtonClick}
+          />
         </div>
       </div>
     </div>
