@@ -106,3 +106,6 @@ export async function getLanguages() {
   return get<LanguageResponse>(`/language`, 'getLanguages');
 }
 
+export async function postGroupStudy(body: CreateGroupStudyBody) {
+  await post(`/group-study`, body, 'postGroupStudy');
+}

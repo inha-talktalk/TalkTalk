@@ -68,3 +68,11 @@ interface Language {
 
 type LanguageResponse = Language[];
 
+interface CreateGroupStudyBody {
+  languageId: string;
+  groupName: string;
+  tags: string[];
+  introduction: string;
+  groupPersonnel: number;
+  groupDuration: string | null;
+}
