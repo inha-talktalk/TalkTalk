@@ -3,6 +3,8 @@ import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { DEAFULT_PLACEHOLDER_GRAY } from '@/utils/image';
 import { css } from '@emotion/react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 const data = `저는 영어를 공부하면서 외국인 친구들과 대화를 나누는 것이 매우 중요하다고 생각합니다. 하지만 제가 사는 지역에서는 영어를 사용하는 기회가 많이 없어서, 온라인 스터디 그룹을 찾아보고 있습니다.
 
@@ -16,6 +18,9 @@ const data = `저는 영어를 공부하면서 외국인 친구들과 대화를 
 
 export default function PostViewPage() {
   const { theme } = useGlobalTheme();
+  const router = useRouter();
+
+  const [groupId, setGroupId] = useState<string>('');
 
   const style = {
     container: css`
@@ -105,6 +110,12 @@ export default function PostViewPage() {
       justify-content: right;
     `,
   };
+
+  useEffect(() => {
+    if (router.isReady && typeof router.query.groupStudyId === 'string') {
+      setGroupId(router.query.groupStudyId ?? '');
+    }
+  }, [router.isReady, router.query.groupStudyId]);
 
   return (
     <div css={style.container}>
