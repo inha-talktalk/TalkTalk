@@ -97,3 +97,7 @@ export async function patchMyProfile(userName: string, nickName: string) {
 export async function postUserProfileImage(formData: FormData) {
   await post(`/user/profile/img`, formData, 'postUserProfileImage');
 }
+
+export async function postApplyGroupStudy(groupId: string) {
+  await post(`/group-study/apply?groupStudyId=${groupId}`, {}, 'postApplyGroupStudy');
+}
