@@ -130,8 +130,7 @@ public class MyPageService {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        List<ApplyStatus> applyStatusList = applyStatusRepository.findAllByUserIdAndAccepted(userId,
-            false);
+        List<ApplyStatus> applyStatusList = applyStatusRepository.findAllByUserIdAndAccepted(userId, false);
         List<MyStudiesRes> myStudiesResList = new ArrayList<>();
 
         for (ApplyStatus apply : applyStatusList) {
@@ -148,6 +147,41 @@ public class MyPageService {
             );
         }
 
+        return new ResponseEntity<>(myStudiesResList, HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<List<MyStudiesRes>> getStudies(String jwt, String status) {
+        String userId;
+        boolean pass = true;
+        if (status.equals("progress")) {
+            pass = false;
+        }
+
+        try {
+            userId = getUserId(jwt);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        List<ApplyStatus> applyStatusList = applyStatusRepository.findAllByUserIdAndAccepted(userId, true);
+        List<MyStudiesRes> myStudiesResList = new ArrayList<>();
+
+        for (ApplyStatus apply : applyStatusList) {
+            GroupStudy groupStudy = groupStudyRepository.findById(apply.getGroupId()).orElse(null);
+
+            if (groupStudy == null || pass != groupStudy.getIsFinished()) {
+                continue;
+            }
+
+            myStudiesResList.add(
+                MyStudiesRes.builder()
+                    .groupId(apply.getGroupId())
+                    .groupName(groupStudy.getGroupName())
+                    .tags(groupStudy.getTags())
+                    .build()
+            );
+        }
         return new ResponseEntity<>(myStudiesResList, HttpStatus.OK);
     }
 }
