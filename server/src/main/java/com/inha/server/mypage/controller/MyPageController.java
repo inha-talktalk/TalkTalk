@@ -11,8 +11,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -52,7 +50,7 @@ public class MyPageController {
         responses = {
             @ApiResponse(responseCode = "401", ref = "unAuthorizedAPI"),
             @ApiResponse(responseCode = "404", ref = "notFoundAPI"),
-            @ApiResponse (
+            @ApiResponse(
                 responseCode = "200",
                 content = @Content(
                     mediaType = "application/json",
@@ -128,20 +126,21 @@ public class MyPageController {
     }
 
     @GetMapping("/study/apply")
-    public ResponseEntity<List<MyStudiesRes>> getApplyStudies() {
-        List<MyStudiesRes> myApplyStudiesResList = new ArrayList<>();
-
-        for (int i = 100; i < 102; i++) {
-            myApplyStudiesResList.add(
-                MyStudiesRes.builder()
-                    .groupId("ei39dfajkdf" + i)
-                    .groupName("신청한 스터디" + i)
-                    .tags(List.of("영어", "스피킹"))
-                    .build()
-            );
-        }
-
-        return new ResponseEntity<>(myApplyStudiesResList, HttpStatus.OK);
+    public ResponseEntity<List<MyStudiesRes>> getApplyStudies(
+        @RequestHeader(value = "x-access-token") String jwt) {
+//        List<MyStudiesRes> myApplyStudiesResList = new ArrayList<>();
+//
+//        for (int i = 100; i < 102; i++) {
+//            myApplyStudiesResList.add(
+//                MyStudiesRes.builder()
+//                    .groupId("ei39dfajkdf" + i)
+//                    .groupName("신청한 스터디" + i)
+//                    .tags(List.of("영어", "스피킹"))
+//                    .build()
+//            );
+//        }
+        return myPageService.getApplyStudies(jwt);
+//        return new ResponseEntity<>(myApplyStudiesResList, HttpStatus.OK);
     }
 
     @GetMapping("/achieve")
