@@ -37,4 +37,8 @@ public class GroupStudy {
 
   @Builder.Default
   private String groupDuration = LocalDate.of(9999, 12, 31).format(DateTimeFormatter.ISO_DATE);
+
+  public void changeStudyOwner(String userId) {
+    this.ownerId = userId;
+  }
 }

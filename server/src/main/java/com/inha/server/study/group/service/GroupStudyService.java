@@ -5,6 +5,7 @@ import com.inha.server.study.group.dto.response.DeleteGroupStudyRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.GroupStudyRes;
+import com.inha.server.study.group.dto.response.PostDelegateRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
 import com.inha.server.study.group.dto.response.WaitingListRes;
@@ -203,6 +204,25 @@ public class GroupStudyService {
     return PostGroupStudyAcceptRes.builder()
         .groupId(groupStudyId)
         .studyMate(studyMate)
+        .build();
+  }
+
+  @Transactional
+  public PostDelegateRes delegate(String jwt, String groupStudyId, String changedOwnerId) {
+    GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
+    String originOwnerId = groupStudy.getOwnerId();
+    String userId = getUserId(jwt);
+    List<String> studyMate = groupStudy.getStudyMate();
+
+    validate(!userId.equals(originOwnerId), "Only study owners can delegate.");
+    validate(!studyMate.contains(changedOwnerId), "The user is not a study member.");
+
+    groupStudy.changeStudyOwner(changedOwnerId);
+    groupStudyRepository.save(groupStudy);
+
+    return PostDelegateRes.builder()
+        .originOwnerId(originOwnerId)
+        .changedOwnerId(changedOwnerId)
         .build();
   }
 }
