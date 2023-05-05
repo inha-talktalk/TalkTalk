@@ -1,7 +1,7 @@
 package com.inha.server.study.group.controller;
 
 import com.inha.server.study.group.dto.request.PostGroupStudyReq;
-import com.inha.server.study.group.dto.response.DeleteGroupStudyRes;
+import com.inha.server.study.group.dto.response.PostGroupStudyEndRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,10 +47,10 @@ public class GroupStudyController {
     return groupStudyService.getGroupStudyDetail(groupStudyId);
   }
 
-  @DeleteMapping("")
-  public DeleteGroupStudyRes delete(@RequestHeader(value = "x-access-token") String jwt,
+  @PostMapping("/end")
+  public PostGroupStudyEndRes end(@RequestHeader(value = "x-access-token") String jwt,
       @RequestParam(value = "groupStudyId") String groupStudyId) {
-    return groupStudyService.delete(jwt, groupStudyId);
+    return groupStudyService.end(jwt, groupStudyId);
   }
 
   @PostMapping("/apply")
