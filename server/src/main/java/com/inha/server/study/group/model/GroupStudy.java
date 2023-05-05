@@ -23,12 +23,11 @@ public class GroupStudy {
   private List<String> tags;
   private Long groupPersonnel;
   private String introduction;
+  private List<String> studyMate;
 
   @Builder.Default
   private List<String> waitingList = Collections.emptyList();
 
-  @Builder.Default
-  private List<String> studyMate = Collections.emptyList();
 
   @Builder.Default
   private Boolean isFinished = false;

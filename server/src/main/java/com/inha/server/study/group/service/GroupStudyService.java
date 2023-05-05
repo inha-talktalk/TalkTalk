@@ -14,6 +14,7 @@ import com.inha.server.study.group.repository.ApplyStatusRepository;
 import com.inha.server.study.group.repository.GroupStudyRepository;
 import com.inha.server.user.util.TokenProvider;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -25,182 +26,183 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GroupStudyService {
 
-    private final GroupStudyRepository groupStudyRepository;
-    private final ApplyStatusRepository applyStatusRepository;
+  private final GroupStudyRepository groupStudyRepository;
+  private final ApplyStatusRepository applyStatusRepository;
 
-    private static String getUserId(String jwt) {
-        String userId = TokenProvider.getSubject(jwt);
+  private static String getUserId(String jwt) {
+    String userId = TokenProvider.getSubject(jwt);
 
-        validate(userId == null, "존재하지 않는 사용자입니다.");
-        return userId;
+    validate(userId == null, "존재하지 않는 사용자입니다.");
+    return userId;
+  }
+
+  private static void validate(boolean groupStudy, String group_study_not_found) {
+    if (groupStudy) {
+      throw new IllegalStateException(group_study_not_found);
     }
+  }
 
-    private static void validate(boolean groupStudy, String group_study_not_found) {
-        if (groupStudy) {
-            throw new IllegalStateException(group_study_not_found);
-        }
+  public PostGroupStudyRes create(String jwt, PostGroupStudyReq request) {
+    String userId = getUserId(jwt);
+    GroupStudy groupStudy = insertGroupStudy(userId, request);
+
+    return PostGroupStudyRes.builder()
+        .ownerId(userId)
+        .groupId(groupStudy.getId())
+        .build();
+  }
+
+  @Transactional
+  public GroupStudy insertGroupStudy(String userId, PostGroupStudyReq request) {
+    GroupStudy groupStudy = GroupStudy.builder()
+        .languageId(request.getLanguageId())
+        .ownerId(userId)
+        .groupName(request.getGroupName())
+        .tags(request.getTags())
+        .groupPersonnel(request.getGroupPersonnel())
+        .introduction(request.getIntroduction())
+        .studyMate(Collections.singletonList(userId))
+        .build();
+
+    groupStudyRepository.save(groupStudy);
+    return groupStudy;
+  }
+
+  @Transactional
+  public GetGroupStudyListRes getGroupStudyList(Pageable pageable) {
+    List<GroupStudy> groupStudyList = groupStudyRepository.findAll(
+        PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())).getContent();
+    List<GroupStudyRes> groupStudyResList = getGroupStudyResList(groupStudyList);
+
+    return GetGroupStudyListRes.builder()
+        .size(groupStudyResList.size())
+        .groupStudyList(groupStudyResList)
+        .build();
+  }
+
+  private List<GroupStudyRes> getGroupStudyResList(List<GroupStudy> groupStudyList) {
+    List<GroupStudyRes> groupStudyResList = new ArrayList<>();
+
+    for (GroupStudy groupStudy : groupStudyList) {
+      GroupStudyRes groupStudyRes = GroupStudyRes.builder()
+          .groupId(groupStudy.getId())
+          .languageId(groupStudy.getLanguageId())
+          .groupName(groupStudy.getGroupName())
+          .groupPersonnel(groupStudy.getGroupPersonnel())
+          .tags(groupStudy.getTags())
+          .introduction(groupStudy.getIntroduction())
+          .groupDuration(groupStudy.getGroupDuration())
+          .ownerId(groupStudy.getOwnerId())
+          .isFinished(groupStudy.getIsFinished())
+          .build();
+
+      groupStudyResList.add(groupStudyRes);
     }
+    return groupStudyResList;
+  }
 
-    public PostGroupStudyRes create(String jwt, PostGroupStudyReq request) {
-        String userId = getUserId(jwt);
-        GroupStudy groupStudy = insertGroupStudy(userId, request);
+  @Transactional
+  public GetGroupStudyDetailRes getGroupStudyDetail(String groupStudyId) {
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
+    validate(groupStudy == null, "group study not found");
 
-        return PostGroupStudyRes.builder()
-            .ownerId(userId)
-            .groupId(groupStudy.getId())
-            .build();
-    }
+    return GetGroupStudyDetailRes.builder()
+        .groupId(groupStudy.getId())
+        .languageId(groupStudy.getLanguageId())
+        .groupName(groupStudy.getGroupName())
+        .groupPersonnel(groupStudy.getGroupPersonnel())
+        .tags(groupStudy.getTags())
+        .introduction(groupStudy.getIntroduction())
+        .groupDuration(groupStudy.getGroupDuration())
+        .ownerId(groupStudy.getOwnerId())
+        .isFinished(groupStudy.getIsFinished())
+        .build();
+  }
 
-    @Transactional
-    public GroupStudy insertGroupStudy(String userId, PostGroupStudyReq request) {
-        GroupStudy groupStudy = GroupStudy.builder()
-            .languageId(request.getLanguageId())
-            .ownerId(userId)
-            .groupName(request.getGroupName())
-            .tags(request.getTags())
-            .groupPersonnel(request.getGroupPersonnel())
-            .introduction(request.getIntroduction())
-            .build();
+  private GroupStudy getGroupStudy(String groupStudyId) {
+    return groupStudyRepository.findById(groupStudyId).orElse(null);
+  }
 
-        groupStudyRepository.save(groupStudy);
-        return groupStudy;
-    }
+  @Transactional
+  public DeleteGroupStudyRes delete(String jwt, String groupStudyId) {
+    String userId = getUserId(jwt);
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
 
-    @Transactional
-    public GetGroupStudyListRes getGroupStudyList(Pageable pageable) {
-        List<GroupStudy> groupStudyList = groupStudyRepository.findAll(
-            PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())).getContent();
-        List<GroupStudyRes> groupStudyResList = getGroupStudyResList(groupStudyList);
+    validate(groupStudy == null, "group study not found");
+    validate(!userId.equals(groupStudy.getOwnerId()), "user do not have delete permission");
+    groupStudyRepository.delete(groupStudy);
 
-        return GetGroupStudyListRes.builder()
-            .size(groupStudyResList.size())
-            .groupStudyList(groupStudyResList)
-            .build();
-    }
+    return DeleteGroupStudyRes.builder()
+        .groupStudyId(groupStudy.getId())
+        .ownerId(userId)
+        .build();
+  }
 
-    private List<GroupStudyRes> getGroupStudyResList(List<GroupStudy> groupStudyList) {
-        List<GroupStudyRes> groupStudyResList = new ArrayList<>();
+  @Transactional
+  public WaitingListRes apply(String jwt, String groupStudyId) {
+    String userId = getUserId(jwt);
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
+    String ownerId = groupStudy.getOwnerId();
+    List<String> waitingList = groupStudy.getWaitingList();
 
-        for (GroupStudy groupStudy : groupStudyList) {
-            GroupStudyRes groupStudyRes = GroupStudyRes.builder()
-                .groupId(groupStudy.getId())
-                .languageId(groupStudy.getLanguageId())
-                .groupName(groupStudy.getGroupName())
-                .groupPersonnel(groupStudy.getGroupPersonnel())
-                .tags(groupStudy.getTags())
-                .introduction(groupStudy.getIntroduction())
-                .groupDuration(groupStudy.getGroupDuration())
-                .ownerId(groupStudy.getOwnerId())
-                .isFinished(groupStudy.getIsFinished())
-                .build();
+    validate(userId.equals(ownerId), "owner can not apply for study.");
+    validate(waitingList.contains(userId), "Already applied.");
 
-            groupStudyResList.add(groupStudyRes);
-        }
-        return groupStudyResList;
-    }
+    waitingList.add(userId);
+    groupStudyRepository.save(groupStudy);
 
-    @Transactional
-    public GetGroupStudyDetailRes getGroupStudyDetail(String groupStudyId) {
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
-        validate(groupStudy == null, "group study not found");
-
-        return GetGroupStudyDetailRes.builder()
-            .groupId(groupStudy.getId())
-            .languageId(groupStudy.getLanguageId())
-            .groupName(groupStudy.getGroupName())
-            .groupPersonnel(groupStudy.getGroupPersonnel())
-            .tags(groupStudy.getTags())
-            .introduction(groupStudy.getIntroduction())
-            .groupDuration(groupStudy.getGroupDuration())
-            .ownerId(groupStudy.getOwnerId())
-            .isFinished(groupStudy.getIsFinished())
-            .build();
-    }
-
-    private GroupStudy getGroupStudy(String groupStudyId) {
-        return groupStudyRepository.findById(groupStudyId).orElse(null);
-    }
-
-    @Transactional
-    public DeleteGroupStudyRes delete(String jwt, String groupStudyId) {
-        String userId = getUserId(jwt);
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
-
-        validate(groupStudy == null, "group study not found");
-        validate(!userId.equals(groupStudy.getOwnerId()), "user do not have delete permission");
-        groupStudyRepository.delete(groupStudy);
-
-        return DeleteGroupStudyRes.builder()
-            .groupStudyId(groupStudy.getId())
-            .ownerId(userId)
-            .build();
-    }
-
-    @Transactional
-    public WaitingListRes apply(String jwt, String groupStudyId) {
-        String userId = getUserId(jwt);
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
-        String ownerId = groupStudy.getOwnerId();
-        List<String> waitingList = groupStudy.getWaitingList();
-
-        validate(userId.equals(ownerId), "owner can not apply for study.");
-        validate(waitingList.contains(userId), "Already applied.");
-
-        waitingList.add(userId);
-        groupStudyRepository.save(groupStudy);
-
-        applyStatusRepository.save(
-            ApplyStatus.builder()
-                .userId(userId)
-                .groupId(groupStudyId)
-                .build()
-        );
-
-        return WaitingListRes.builder()
+    applyStatusRepository.save(
+        ApplyStatus.builder()
+            .userId(userId)
             .groupId(groupStudyId)
-            .waitingList(waitingList)
-            .build();
-    }
+            .build()
+    );
 
-    @Transactional
-    public WaitingListRes readWaitingList(String jwt, String groupStudyId) {
-        String userId = getUserId(jwt);
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
+    return WaitingListRes.builder()
+        .groupId(groupStudyId)
+        .waitingList(waitingList)
+        .build();
+  }
 
-        validate(!userId.equals(groupStudy.getOwnerId()),
-            "General user can not read waiting list.");
+  @Transactional
+  public WaitingListRes readWaitingList(String jwt, String groupStudyId) {
+    String userId = getUserId(jwt);
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
 
-        return WaitingListRes.builder()
-            .groupId(groupStudyId)
-            .waitingList(groupStudy.getWaitingList())
-            .build();
-    }
+    validate(!userId.equals(groupStudy.getOwnerId()),
+        "General user can not read waiting list.");
 
-    @Transactional
-    public PostGroupStudyAcceptRes approve(String jwt, String groupStudyId, String userId) {
-        String ownerId = getUserId(jwt);
+    return WaitingListRes.builder()
+        .groupId(groupStudyId)
+        .waitingList(groupStudy.getWaitingList())
+        .build();
+  }
 
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
-        List<String> waitingList = groupStudy.getWaitingList();
-        List<String> studyMate = groupStudy.getStudyMate();
+  @Transactional
+  public PostGroupStudyAcceptRes approve(String jwt, String groupStudyId, String userId) {
+    String ownerId = getUserId(jwt);
 
-        validate(!ownerId.equals(groupStudy.getOwnerId()), "Only study owners can approve.");
-        validate(!waitingList.contains(userId), "user did not apply.");
-        validate(studyMate.contains(userId), "Already approved.");
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
+    List<String> waitingList = groupStudy.getWaitingList();
+    List<String> studyMate = groupStudy.getStudyMate();
 
-        waitingList.remove(userId);
-        studyMate.add(userId);
+    validate(!ownerId.equals(groupStudy.getOwnerId()), "Only study owners can approve.");
+    validate(!waitingList.contains(userId), "user did not apply.");
+    validate(studyMate.contains(userId), "Already approved.");
 
-        groupStudyRepository.save(groupStudy);
+    waitingList.remove(userId);
+    studyMate.add(userId);
 
-        ApplyStatus applyStatus = applyStatusRepository.findByUserId(userId).get();
-        applyStatus.toggleStatus();
+    groupStudyRepository.save(groupStudy);
 
-        applyStatusRepository.save(applyStatus);
+    ApplyStatus applyStatus = applyStatusRepository.findByUserId(userId).get();
+    applyStatus.toggleStatus();
 
-        return PostGroupStudyAcceptRes.builder()
-            .groupId(groupStudyId)
-            .studyMate(studyMate)
-            .build();
-    }
+    applyStatusRepository.save(applyStatus);
+
+    return PostGroupStudyAcceptRes.builder()
+        .groupId(groupStudyId)
+        .studyMate(studyMate)
+        .build();
+  }
 }
