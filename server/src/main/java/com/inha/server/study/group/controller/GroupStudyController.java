@@ -8,7 +8,6 @@ import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyEndRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyQuitRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
-import com.inha.server.study.group.dto.response.SearchGroupStudyRes;
 import com.inha.server.study.group.dto.response.WaitingListRes;
 import com.inha.server.study.group.service.GroupStudyService;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +42,7 @@ public class GroupStudyController {
   }
 
   @GetMapping("/search")
-  public SearchGroupStudyRes search(@RequestHeader(value = "x-access-token") String jwt,
+  public GetGroupStudyListRes search(@RequestHeader(value = "x-access-token") String jwt,
       @RequestParam String keyword,
       @PageableDefault(size = 5, sort = "createdAt", direction = Direction.ASC) Pageable pageable) {
     return groupStudyService.search(keyword, pageable);

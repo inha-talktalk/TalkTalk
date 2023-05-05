@@ -9,7 +9,6 @@ import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyEndRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyQuitRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
-import com.inha.server.study.group.dto.response.SearchGroupStudyRes;
 import com.inha.server.study.group.dto.response.WaitingListRes;
 import com.inha.server.study.group.model.ApplyStatus;
 import com.inha.server.study.group.model.GroupStudy;
@@ -74,18 +73,22 @@ public class GroupStudyService {
 
   @Transactional
   public GetGroupStudyListRes getGroupStudyList(Pageable pageable) {
+    Integer totalPage = groupStudyRepository.findAll().size();
+
     List<GroupStudy> groupStudyList = groupStudyRepository.findAll(
         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())).getContent();
+
     List<GroupStudyRes> groupStudyResList = getGroupStudyResList(groupStudyList);
 
     return GetGroupStudyListRes.builder()
-        .size(groupStudyResList.size())
         .groupStudyList(groupStudyResList)
+        .totalPage(totalPage)
+        .currentPage(pageable.getPageNumber())
         .build();
   }
 
   @Transactional
-  public SearchGroupStudyRes search(String keyword, Pageable pageable) {
+  public GetGroupStudyListRes search(String keyword, Pageable pageable) {
     Integer totalPage = groupStudyRepository.findByIntroductionContainingIgnoreCase(
         keyword).size();
     Integer currentPage = pageable.getPageNumber();
@@ -95,10 +98,11 @@ public class GroupStudyService {
 
     List<GroupStudyRes> groupStudyResList = getGroupStudyResList(groupStudyList);
 
-    return SearchGroupStudyRes.builder()
+    return GetGroupStudyListRes.builder()
         .groupStudyList(groupStudyResList)
         .totalPage(totalPage)
-        .currentPage(currentPage).build();
+        .currentPage(currentPage)
+        .build();
   }
 
   private List<GroupStudyRes> getGroupStudyResList(List<GroupStudy> groupStudyList) {
