@@ -18,6 +18,7 @@ import com.inha.server.user.util.TokenProvider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -192,6 +193,8 @@ public class GroupStudyService {
     List<String> studyMate = groupStudy.getStudyMate();
 
     validate(!ownerId.equals(groupStudy.getOwnerId()), "Only study owners can approve.");
+    validate(Objects.equals(groupStudy.getGroupPersonnel(), (long) studyMate.size()),
+        "The study is full.");
     validate(!waitingList.contains(userId), "user did not apply.");
     validate(studyMate.contains(userId), "Already approved.");
 
