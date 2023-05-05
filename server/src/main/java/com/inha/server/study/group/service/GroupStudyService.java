@@ -1,12 +1,12 @@
 package com.inha.server.study.group.service;
 
 import com.inha.server.study.group.dto.request.PostGroupStudyReq;
-import com.inha.server.study.group.dto.response.DeleteGroupStudyRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.GroupStudyRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
+import com.inha.server.study.group.dto.response.PostGroupStudyEndRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyQuitRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
 import com.inha.server.study.group.dto.response.WaitingListRes;
@@ -129,16 +129,17 @@ public class GroupStudyService {
   }
 
   @Transactional
-  public DeleteGroupStudyRes delete(String jwt, String groupStudyId) {
+  public PostGroupStudyEndRes end(String jwt, String groupStudyId) {
     String userId = getUserId(jwt);
     GroupStudy groupStudy = getGroupStudy(groupStudyId);
 
-    validate(!userId.equals(groupStudy.getOwnerId()), "user do not have delete permission");
-    groupStudyRepository.delete(groupStudy);
+    validate(!userId.equals(groupStudy.getOwnerId()), "user do not have end permission");
+    groupStudy.changeStudyStatus();
+    groupStudyRepository.save(groupStudy);
 
-    return DeleteGroupStudyRes.builder()
+    return PostGroupStudyEndRes.builder()
         .groupStudyId(groupStudy.getId())
-        .ownerId(userId)
+        .isFinished(groupStudy.getIsFinished())
         .build();
   }
 
