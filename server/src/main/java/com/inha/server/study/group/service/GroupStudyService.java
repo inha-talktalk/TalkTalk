@@ -9,6 +9,7 @@ import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyEndRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyQuitRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
+import com.inha.server.study.group.dto.response.SearchGroupStudyRes;
 import com.inha.server.study.group.dto.response.WaitingListRes;
 import com.inha.server.study.group.model.ApplyStatus;
 import com.inha.server.study.group.model.GroupStudy;
@@ -81,6 +82,23 @@ public class GroupStudyService {
         .size(groupStudyResList.size())
         .groupStudyList(groupStudyResList)
         .build();
+  }
+
+  @Transactional
+  public SearchGroupStudyRes search(String keyword, Pageable pageable) {
+    Integer totalPage = groupStudyRepository.findByIntroductionContainingIgnoreCase(
+        keyword).size();
+    Integer currentPage = pageable.getPageNumber();
+
+    List<GroupStudy> groupStudyList = groupStudyRepository.findByIntroductionContainingIgnoreCase(
+        keyword, pageable);
+
+    List<GroupStudyRes> groupStudyResList = getGroupStudyResList(groupStudyList);
+
+    return SearchGroupStudyRes.builder()
+        .groupStudyList(groupStudyResList)
+        .totalPage(totalPage)
+        .currentPage(currentPage).build();
   }
 
   private List<GroupStudyRes> getGroupStudyResList(List<GroupStudy> groupStudyList) {
