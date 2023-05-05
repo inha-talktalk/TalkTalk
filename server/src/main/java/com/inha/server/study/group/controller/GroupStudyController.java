@@ -6,6 +6,7 @@ import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
+import com.inha.server.study.group.dto.response.PostGroupStudyQuitRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
 import com.inha.server.study.group.dto.response.WaitingListRes;
 import com.inha.server.study.group.service.GroupStudyService;
@@ -77,5 +78,11 @@ public class GroupStudyController {
       @RequestParam(value = "groupStudyId") String groupStudyId,
       @RequestParam(value = "to") String changedOwnerId) {
     return groupStudyService.delegate(jwt, groupStudyId, changedOwnerId);
+  }
+
+  @PostMapping("/quit")
+  public PostGroupStudyQuitRes quit(@RequestHeader(value = "x-access-token") String jwt,
+      @RequestParam(value = "groupStudyId") String groupStudyId) {
+    return groupStudyService.quit(jwt, groupStudyId);
   }
 }
