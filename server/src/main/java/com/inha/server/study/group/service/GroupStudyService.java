@@ -7,6 +7,7 @@ import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.GroupStudyRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
+import com.inha.server.study.group.dto.response.PostGroupStudyQuitRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
 import com.inha.server.study.group.dto.response.WaitingListRes;
 import com.inha.server.study.group.model.ApplyStatus;
@@ -33,7 +34,7 @@ public class GroupStudyService {
   private static String getUserId(String jwt) {
     String userId = TokenProvider.getSubject(jwt);
 
-    validate(userId == null, "존재하지 않는 사용자입니다.");
+    validate(userId == null, "user not found.");
     return userId;
   }
 
@@ -121,7 +122,10 @@ public class GroupStudyService {
   }
 
   private GroupStudy getGroupStudy(String groupStudyId) {
-    return groupStudyRepository.findById(groupStudyId).orElse(null);
+    GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
+    validate(groupStudy == null, "group study not found");
+
+    return groupStudy;
   }
 
   @Transactional
@@ -129,7 +133,6 @@ public class GroupStudyService {
     String userId = getUserId(jwt);
     GroupStudy groupStudy = getGroupStudy(groupStudyId);
 
-    validate(groupStudy == null, "group study not found");
     validate(!userId.equals(groupStudy.getOwnerId()), "user do not have delete permission");
     groupStudyRepository.delete(groupStudy);
 
@@ -196,7 +199,7 @@ public class GroupStudyService {
 
     groupStudyRepository.save(groupStudy);
 
-    ApplyStatus applyStatus = applyStatusRepository.findByUserId(userId).get();
+    ApplyStatus applyStatus = applyStatusRepository.findByUserId(userId).orElse(null);
     applyStatus.toggleStatus();
 
     applyStatusRepository.save(applyStatus);
@@ -209,7 +212,7 @@ public class GroupStudyService {
 
   @Transactional
   public PostDelegateRes delegate(String jwt, String groupStudyId, String changedOwnerId) {
-    GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
     String originOwnerId = groupStudy.getOwnerId();
     String userId = getUserId(jwt);
     List<String> studyMate = groupStudy.getStudyMate();
@@ -223,6 +226,23 @@ public class GroupStudyService {
     return PostDelegateRes.builder()
         .originOwnerId(originOwnerId)
         .changedOwnerId(changedOwnerId)
+        .build();
+  }
+
+  @Transactional
+  public PostGroupStudyQuitRes quit(String jwt, String groupStudyId) {
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
+    String userId = getUserId(jwt);
+    List<String> studyMate = groupStudy.getStudyMate();
+
+    validate(userId.equals(groupStudy.getOwnerId()), "Delegate study first.");
+    validate(!studyMate.contains(userId), "The user is not a study member.");
+
+    studyMate.remove(userId);
+    groupStudyRepository.save(groupStudy);
+
+    return PostGroupStudyQuitRes.builder()
+        .quitUserId(userId)
         .build();
   }
 }
