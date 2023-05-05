@@ -1,13 +1,14 @@
 package com.inha.server.study.group.controller;
 
 import com.inha.server.study.group.dto.request.PostGroupStudyReq;
-import com.inha.server.study.group.dto.response.PostGroupStudyEndRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
+import com.inha.server.study.group.dto.response.PostGroupStudyEndRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyQuitRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
+import com.inha.server.study.group.dto.response.SearchGroupStudyRes;
 import com.inha.server.study.group.dto.response.WaitingListRes;
 import com.inha.server.study.group.service.GroupStudyService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,13 @@ public class GroupStudyController {
   public GetGroupStudyListRes read(@RequestHeader(value = "x-access-token") String jwt,
       @PageableDefault(size = 5, sort = "createdAt", direction = Direction.ASC) Pageable pageable) {
     return groupStudyService.getGroupStudyList(pageable);
+  }
+
+  @GetMapping("/search")
+  public SearchGroupStudyRes search(@RequestHeader(value = "x-access-token") String jwt,
+      @RequestParam String keyword,
+      @PageableDefault(size = 5, sort = "createdAt", direction = Direction.ASC) Pageable pageable) {
+    return groupStudyService.search(keyword, pageable);
   }
 
   @GetMapping("")
