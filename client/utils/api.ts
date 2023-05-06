@@ -109,3 +109,15 @@ export async function getLanguages() {
 export async function postGroupStudy(body: CreateGroupStudyBody) {
   await post(`/group-study`, body, 'postGroupStudy');
 }
+
+export async function getDoneStudy() {
+  return get<MyStudyResponse>(`/user/study/done`, 'getDoneStudy');
+}
+
+export async function getProgressStudy() {
+  return get<MyStudyResponse>(`/user/study/progress`, 'getDoneStudy');
+}
+
+export async function getApplyStudy() {
+  return get<MyStudyResponse>(`/user/study/apply`, 'getDoneStudy');
+}
