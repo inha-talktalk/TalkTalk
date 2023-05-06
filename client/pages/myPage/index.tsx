@@ -1,7 +1,6 @@
 import Button from '@/components/Button';
 import InputBar from '@/components/InputBar';
 import LazyImage from '@/components/LazyImage';
-import Modal from '@/components/Modal';
 import MyAchievementList from '@/components/MyAchievementList';
 import StudyCardList from '@/components/StudyCardList';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
