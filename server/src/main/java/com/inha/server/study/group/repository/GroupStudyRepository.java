@@ -13,7 +13,7 @@ public interface GroupStudyRepository extends MongoRepository<GroupStudy, String
   @Override
   Page<GroupStudy> findAll(Pageable pageable);
 
-  List<GroupStudy> findByIntroductionContainingIgnoreCase(String keyword);
+  List<GroupStudy> findByGroupNameContainingIgnoreCase(String keyword);
 
-  List<GroupStudy> findByIntroductionContainingIgnoreCase(String keyword, Pageable pageable);
+  List<GroupStudy> findByGroupNameContainingIgnoreCase(String keyword, Pageable pageable);
 }
