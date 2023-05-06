@@ -89,14 +89,15 @@ public class GroupStudyService {
 
   @Transactional
   public GetGroupStudyListRes search(String keyword, Pageable pageable) {
-    Integer totalPage = groupStudyRepository.findByIntroductionContainingIgnoreCase(
-        keyword).size();
-    Integer currentPage = pageable.getPageNumber();
-
-    List<GroupStudy> groupStudyList = groupStudyRepository.findByIntroductionContainingIgnoreCase(
+    List<GroupStudy> groupStudyList = groupStudyRepository.findByGroupNameContainingIgnoreCase(
+        keyword);
+    List<GroupStudy> groupStudyListWithPageable = groupStudyRepository.findByGroupNameContainingIgnoreCase(
         keyword, pageable);
 
-    List<GroupStudyRes> groupStudyResList = getGroupStudyResList(groupStudyList);
+    Integer totalPage = groupStudyList.size();
+    Integer currentPage = pageable.getPageNumber();
+
+    List<GroupStudyRes> groupStudyResList = getGroupStudyResList(groupStudyListWithPageable);
 
     return GetGroupStudyListRes.builder()
         .groupStudyList(groupStudyResList)
