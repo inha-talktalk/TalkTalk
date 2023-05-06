@@ -10,6 +10,7 @@ export const style = {
     left: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 100;
+    backdrop-filter: blur(2px);
   `,
   container: css`
     position: relative;
