@@ -5,7 +5,10 @@ import MyAchievementList from '@/components/MyAchievementList';
 import StudyCardList from '@/components/StudyCardList';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import {
+  getApplyStudy,
+  getDoneStudy,
   getMyProfile,
+  getProgressStudy,
   getUserAchievement,
   patchMyProfile,
   postUserProfileImage,
@@ -13,20 +16,6 @@ import {
 import { DEAFULT_PLACEHOLDER_GRAY } from '@/utils/image';
 import { css } from '@emotion/react';
 import { ChangeEvent, useEffect, useState } from 'react';
-
-const testGroupData: GroupStudy = {
-  state: 'ongoing',
-  groupId: 'test',
-  languageId: 'qwer',
-  groupName: 'groupName',
-  groupPersonnel: 3,
-  tags: ['# 태그1', '# 태그2'],
-  introduction:
-    '안녕하세요. 개인적으로 네명정도 토익 스피킹 스터디 진행하실 분 모십니다. 매주 2일 스터디를 진행할 예정이며 현재 2명 모집되었습니다. 앞으로 두...',
-  groupDuration: new Date(),
-  ownerId: 'asdfsadf',
-  isFinished: false,
-};
 
 export default function MyPage() {
   const { theme } = useGlobalTheme();
@@ -36,6 +25,9 @@ export default function MyPage() {
   const [email, setEmail] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>(DEAFULT_PLACEHOLDER_GRAY);
   const [achievement, setAchievement] = useState<UserAcheivement | null>(null);
+  const [progressStudyList, setProgressStudyList] = useState<MyStudy[]>([]);
+  const [doneStudyList, setDoneStudyList] = useState<MyStudy[]>([]);
+  const [applyStudyList, setApplyStudyList] = useState<MyStudy[]>([]);
 
   const newProfileImage: File[] = [];
 
@@ -101,6 +93,21 @@ export default function MyPage() {
       setNickName(myProfile.nickName);
       setEmail(myProfile.email);
       setImageUrl(myProfile.profileIconUrl);
+    })();
+  }, []);
+
+  // to get study list
+  useEffect(() => {
+    (async () => {
+      setProgressStudyList(await getProgressStudy());
+    })();
+
+    (async () => {
+      setDoneStudyList(await getDoneStudy());
+    })();
+
+    (async () => {
+      setApplyStudyList(await getApplyStudy());
     })();
   }, []);
 
@@ -189,18 +196,11 @@ export default function MyPage() {
         <br />
         <br />
         <h2>진행중인 스터디</h2>
-        <StudyCardList
-          studyList={[testGroupData, testGroupData, testGroupData, testGroupData, testGroupData]}
-        />
+        <StudyCardList studyList={progressStudyList} />
         <h2>완료된 스터디</h2>
-        <StudyCardList
-          studyList={[testGroupData, testGroupData, testGroupData, testGroupData, testGroupData]}
-        />
+        <StudyCardList studyList={doneStudyList} />
         <h2>신청한 스터디</h2>
-        <StudyCardList
-          studyList={[testGroupData, testGroupData, testGroupData, testGroupData, testGroupData]}
-          isRegistered={false}
-        />
+        <StudyCardList studyList={applyStudyList} isRegistered={false} />
       </div>
     </div>
   );
