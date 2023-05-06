@@ -76,3 +76,11 @@ interface CreateGroupStudyBody {
   groupPersonnel: number;
   groupDuration: string | null;
 }
+
+interface MyStudy {
+  groupId: string;
+  groupName: string;
+  tags: string[];
+}
+
+type MyStudyResponse = MyStudy[];
