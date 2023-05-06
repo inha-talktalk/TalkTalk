@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetGroupStudyListRes {
+
   private List<GroupStudyRes> groupStudyList;
   private Integer totalPage;
   private Integer currentPage;
