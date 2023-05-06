@@ -12,7 +12,6 @@ export const style = {
     z-index: 100;
   `,
   container: css`
-    background-color: white;
     position: relative;
     top: 50%;
     left: 50%;
