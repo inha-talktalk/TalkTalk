@@ -23,12 +23,11 @@ public class GroupStudy {
   private List<String> tags;
   private Long groupPersonnel;
   private String introduction;
+  private List<String> studyMate;
 
   @Builder.Default
   private List<String> waitingList = Collections.emptyList();
 
-  @Builder.Default
-  private List<String> studyMate = Collections.emptyList();
 
   @Builder.Default
   private Boolean isFinished = false;
@@ -38,4 +37,12 @@ public class GroupStudy {
 
   @Builder.Default
   private String groupDuration = LocalDate.of(9999, 12, 31).format(DateTimeFormatter.ISO_DATE);
+
+  public void changeStudyStatus() {
+    this.isFinished = true;
+  }
+
+  public void changeStudyOwner(String userId) {
+    this.ownerId = userId;
+  }
 }

@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteGroupStudyRes {
+public class PostGroupStudyEndRes {
 
   private String groupStudyId;
-  private String ownerId;
+  private Boolean isFinished;
 }
