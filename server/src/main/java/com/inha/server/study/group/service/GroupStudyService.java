@@ -1,8 +1,9 @@
 package com.inha.server.study.group.service;
 
 import com.inha.server.study.group.dto.request.PostGroupStudyReq;
-import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
+import com.inha.server.study.group.dto.response.GetGroupStudyInfoRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
+import com.inha.server.study.group.dto.response.GetGroupStudyPostDetailRes;
 import com.inha.server.study.group.dto.response.GroupStudyRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
@@ -15,6 +16,7 @@ import com.inha.server.study.group.model.GroupStudy;
 import com.inha.server.study.group.repository.ApplyStatusRepository;
 import com.inha.server.study.group.repository.GroupStudyRepository;
 import com.inha.server.user.util.TokenProvider;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,6 +67,7 @@ public class GroupStudyService {
         .groupPersonnel(request.getGroupPersonnel())
         .introduction(request.getIntroduction())
         .studyMate(Collections.singletonList(userId))
+        .groupDuration(request.getGroupDuration().format(DateTimeFormatter.ISO_DATE))
         .build();
 
     groupStudyRepository.save(groupStudy);
@@ -111,6 +114,7 @@ public class GroupStudyService {
 
     for (GroupStudy groupStudy : groupStudyList) {
       GroupStudyRes groupStudyRes = GroupStudyRes.builder()
+          .state(groupStudy.getState())
           .groupId(groupStudy.getId())
           .languageId(groupStudy.getLanguageId())
           .groupName(groupStudy.getGroupName())
@@ -128,11 +132,11 @@ public class GroupStudyService {
   }
 
   @Transactional
-  public GetGroupStudyDetailRes getGroupStudyDetail(String groupStudyId) {
+  public GetGroupStudyPostDetailRes getGroupStudyDetail(String groupStudyId) {
     GroupStudy groupStudy = getGroupStudy(groupStudyId);
     validate(groupStudy == null, "group study not found");
 
-    return GetGroupStudyDetailRes.builder()
+    return GetGroupStudyPostDetailRes.builder()
         .groupId(groupStudy.getId())
         .languageId(groupStudy.getLanguageId())
         .groupName(groupStudy.getGroupName())
@@ -158,7 +162,8 @@ public class GroupStudyService {
     GroupStudy groupStudy = getGroupStudy(groupStudyId);
 
     validate(!userId.equals(groupStudy.getOwnerId()), "user do not have end permission");
-    groupStudy.changeStudyStatus();
+    groupStudy.changeStudyIsFinished();
+    groupStudy.changeStudyState();
     groupStudyRepository.save(groupStudy);
 
     return PostGroupStudyEndRes.builder()
@@ -270,6 +275,22 @@ public class GroupStudyService {
 
     return PostGroupStudyQuitRes.builder()
         .quitUserId(userId)
+        .build();
+  }
+
+  @Transactional
+  public GetGroupStudyInfoRes readInfo(String groupStudyId) {
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
+
+    return GetGroupStudyInfoRes.builder()
+        .languageId(groupStudy.getLanguageId())
+        .groupName(groupStudy.getGroupName())
+        .groupPersonnel(groupStudy.getGroupPersonnel())
+        .studyMate(groupStudy.getStudyMate())
+        .tags(groupStudy.getTags())
+        .introduction(groupStudy.getIntroduction())
+        .groupDuration(groupStudy.getGroupDuration())
+        .ownerId(groupStudy.getOwnerId())
         .build();
   }
 }
