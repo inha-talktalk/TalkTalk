@@ -1,8 +1,9 @@
 package com.inha.server.study.group.service;
 
 import com.inha.server.study.group.dto.request.PostGroupStudyReq;
-import com.inha.server.study.group.dto.response.GetGroupStudyPostDetailRes;
+import com.inha.server.study.group.dto.response.GetGroupStudyInfoRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
+import com.inha.server.study.group.dto.response.GetGroupStudyPostDetailRes;
 import com.inha.server.study.group.dto.response.GroupStudyRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
@@ -270,6 +271,22 @@ public class GroupStudyService {
 
     return PostGroupStudyQuitRes.builder()
         .quitUserId(userId)
+        .build();
+  }
+
+  @Transactional
+  public GetGroupStudyInfoRes readInfo(String groupStudyId) {
+    GroupStudy groupStudy = getGroupStudy(groupStudyId);
+
+    return GetGroupStudyInfoRes.builder()
+        .languageId(groupStudy.getLanguageId())
+        .groupName(groupStudy.getGroupName())
+        .groupPersonnel(groupStudy.getGroupPersonnel())
+        .studyMate(groupStudy.getStudyMate())
+        .tags(groupStudy.getTags())
+        .introduction(groupStudy.getIntroduction())
+        .groupDuration(groupStudy.getGroupDuration())
+        .ownerId(groupStudy.getOwnerId())
         .build();
   }
 }
