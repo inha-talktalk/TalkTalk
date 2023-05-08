@@ -16,7 +16,7 @@ export default function Modal({ children, isShow, setShow }: ModalProps) {
     <div css={style.background(isShow)} onClick={handleBackgroundClick}>
       <div
         css={style.container}
-        onClickCapture={(e) => {
+        onClick={(e) => {
           e.stopPropagation();
         }}
       >
