@@ -3,7 +3,7 @@ import SelfStudyController from '@/components/SelfStudyController';
 import SelfStudyPanel from '@/components/SelfStudyPanel';
 import { css } from '@emotion/react';
 
-export default function SelfStudyWritePage() {
+export default function ViewSelfStudyWrite() {
   const style = {
     container: css`
       display: flex;
@@ -16,12 +16,13 @@ export default function SelfStudyWritePage() {
       <SelfStudyPanel />
       <div>
         <SelfStudyController
-          type={'read'}
+          type={'write'}
           title={'title'}
           tags={['#tag1', '#tag2']}
+          status="done"
           time={new Date()}
         />
-        <InfoBanner status={'write'} />
+        <InfoBanner status={'writeDone'} />
       </div>
     </div>
   );

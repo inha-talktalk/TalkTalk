@@ -21,7 +21,7 @@ export default function SelfStudyReadPage() {
           tags={['#tag1', '#tag2']}
           time={new Date()}
         />
-        <InfoBanner />
+        <InfoBanner status={'read'} />
       </div>
     </div>
   );
