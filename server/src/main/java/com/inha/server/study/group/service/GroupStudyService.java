@@ -1,7 +1,7 @@
 package com.inha.server.study.group.service;
 
 import com.inha.server.study.group.dto.request.PostGroupStudyReq;
-import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
+import com.inha.server.study.group.dto.response.GetGroupStudyPostDetailRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.GroupStudyRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
@@ -128,11 +128,11 @@ public class GroupStudyService {
   }
 
   @Transactional
-  public GetGroupStudyDetailRes getGroupStudyDetail(String groupStudyId) {
+  public GetGroupStudyPostDetailRes getGroupStudyDetail(String groupStudyId) {
     GroupStudy groupStudy = getGroupStudy(groupStudyId);
     validate(groupStudy == null, "group study not found");
 
-    return GetGroupStudyDetailRes.builder()
+    return GetGroupStudyPostDetailRes.builder()
         .groupId(groupStudy.getId())
         .languageId(groupStudy.getLanguageId())
         .groupName(groupStudy.getGroupName())

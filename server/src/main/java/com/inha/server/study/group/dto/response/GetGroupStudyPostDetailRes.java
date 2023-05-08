@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetGroupStudyDetailRes {
+public class GetGroupStudyPostDetailRes {
 
   private String groupId;
   private String languageId;

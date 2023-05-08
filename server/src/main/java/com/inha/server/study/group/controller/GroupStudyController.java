@@ -1,7 +1,7 @@
 package com.inha.server.study.group.controller;
 
 import com.inha.server.study.group.dto.request.PostGroupStudyReq;
-import com.inha.server.study.group.dto.response.GetGroupStudyDetailRes;
+import com.inha.server.study.group.dto.response.GetGroupStudyPostDetailRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
@@ -49,7 +49,7 @@ public class GroupStudyController {
   }
 
   @GetMapping("")
-  public GetGroupStudyDetailRes read(@RequestHeader(value = "x-access-token") String jwt,
+  public GetGroupStudyPostDetailRes read(@RequestHeader(value = "x-access-token") String jwt,
       @RequestParam(value = "groupStudyId") String groupStudyId) {
     return groupStudyService.getGroupStudyDetail(groupStudyId);
   }
