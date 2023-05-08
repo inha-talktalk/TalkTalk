@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GroupStudyRes {
 
+  private String state;
   private String groupId;
   private String languageId;
   private String groupName;

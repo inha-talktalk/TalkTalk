@@ -114,6 +114,7 @@ public class GroupStudyService {
 
     for (GroupStudy groupStudy : groupStudyList) {
       GroupStudyRes groupStudyRes = GroupStudyRes.builder()
+          .state(groupStudy.getState())
           .groupId(groupStudy.getId())
           .languageId(groupStudy.getLanguageId())
           .groupName(groupStudy.getGroupName())
@@ -161,7 +162,8 @@ public class GroupStudyService {
     GroupStudy groupStudy = getGroupStudy(groupStudyId);
 
     validate(!userId.equals(groupStudy.getOwnerId()), "user do not have end permission");
-    groupStudy.changeStudyStatus();
+    groupStudy.changeStudyIsFinished();
+    groupStudy.changeStudyState();
     groupStudyRepository.save(groupStudy);
 
     return PostGroupStudyEndRes.builder()

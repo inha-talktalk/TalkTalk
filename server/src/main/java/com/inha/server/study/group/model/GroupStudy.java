@@ -26,6 +26,9 @@ public class GroupStudy {
   private List<String> studyMate;
 
   @Builder.Default
+  private String state = "ongoing";
+
+  @Builder.Default
   private List<String> waitingList = Collections.emptyList();
 
 
@@ -38,7 +41,11 @@ public class GroupStudy {
   @Builder.Default
   private String groupDuration = LocalDate.of(9999, 12, 31).format(DateTimeFormatter.ISO_DATE);
 
-  public void changeStudyStatus() {
+  public void changeStudyState() {
+    this.state = "done";
+  }
+
+  public void changeStudyIsFinished() {
     this.isFinished = true;
   }
 
