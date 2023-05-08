@@ -15,7 +15,12 @@ export default function SelfStudyWritePage() {
     <div css={style.container}>
       <SelfStudyPanel />
       <div>
-        <SelfStudyController type={'write'} title={'title'} tags={['#tag1', '#tag2']} />
+        <SelfStudyController
+          type={'read'}
+          title={'title'}
+          tags={['#tag1', '#tag2']}
+          time={new Date()}
+        />
         <InfoBanner />
       </div>
     </div>

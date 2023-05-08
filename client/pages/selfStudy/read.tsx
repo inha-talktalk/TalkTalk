@@ -15,7 +15,12 @@ export default function SelfStudyReadPage() {
     <div css={style.container}>
       <SelfStudyPanel />
       <div>
-        <SelfStudyController type={'read'} title={'title'} tags={['#tag1', '#tag2']} />
+        <SelfStudyController
+          type={'read'}
+          title={'title'}
+          tags={['#tag1', '#tag2']}
+          time={new Date()}
+        />
         <InfoBanner />
       </div>
     </div>
