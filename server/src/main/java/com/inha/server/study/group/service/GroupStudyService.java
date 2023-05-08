@@ -16,6 +16,7 @@ import com.inha.server.study.group.model.GroupStudy;
 import com.inha.server.study.group.repository.ApplyStatusRepository;
 import com.inha.server.study.group.repository.GroupStudyRepository;
 import com.inha.server.user.util.TokenProvider;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,6 +67,7 @@ public class GroupStudyService {
         .groupPersonnel(request.getGroupPersonnel())
         .introduction(request.getIntroduction())
         .studyMate(Collections.singletonList(userId))
+        .groupDuration(request.getGroupDuration().format(DateTimeFormatter.ISO_DATE))
         .build();
 
     groupStudyRepository.save(groupStudy);
