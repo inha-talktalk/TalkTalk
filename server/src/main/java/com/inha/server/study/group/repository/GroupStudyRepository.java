@@ -16,4 +16,6 @@ public interface GroupStudyRepository extends MongoRepository<GroupStudy, String
   List<GroupStudy> findByGroupNameContainingIgnoreCase(String keyword);
 
   List<GroupStudy> findByGroupNameContainingIgnoreCase(String keyword, Pageable pageable);
+
+  List<GroupStudy> findByOwnerId(String userId);
 }
