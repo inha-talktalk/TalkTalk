@@ -14,42 +14,42 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "group-study")
 public class GroupStudy {
 
-  @Id
-  private String id;
+    @Id
+    private String id;
 
-  private String ownerId;
-  private String languageId;
-  private String groupName;
-  private List<String> tags;
-  private Long groupPersonnel;
-  private String introduction;
-  private List<String> studyMate;
+    private String ownerId;
+    private String languageId;
+    private String groupName;
+    private List<String> tags;
+    private Long groupPersonnel;
+    private String introduction;
+    private List<String> studyMate;
 
-  @Builder.Default
-  private String state = "ongoing";
+    @Builder.Default
+    private String state = "ongoing";
 
-  @Builder.Default
-  private List<String> waitingList = Collections.emptyList();
+    @Builder.Default
+    private List<String> waitingList = Collections.emptyList();
 
 
-  @Builder.Default
-  private Boolean isFinished = false;
+    @Builder.Default
+    private Boolean isFinished = false;
 
-  @Builder.Default
-  private String createdAt = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
+    @Builder.Default
+    private String createdAt = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
 
-  @Builder.Default
-  private String groupDuration = LocalDate.of(9999, 12, 31).format(DateTimeFormatter.ISO_DATE);
+    @Builder.Default
+    private String groupDuration = LocalDate.of(9999, 12, 31).format(DateTimeFormatter.ISO_DATE);
 
-  public void changeStudyState() {
-    this.state = "done";
-  }
+    public void changeStudyState() {
+        this.state = "done";
+    }
 
-  public void changeStudyIsFinished() {
-    this.isFinished = true;
-  }
+    public void changeStudyIsFinished() {
+        this.isFinished = true;
+    }
 
-  public void changeStudyOwner(String userId) {
-    this.ownerId = userId;
-  }
+    public void changeStudyOwner(String userId) {
+        this.ownerId = userId;
+    }
 }
