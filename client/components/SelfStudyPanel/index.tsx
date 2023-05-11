@@ -87,7 +87,12 @@ export default function SelfStudyPanel({ type }: SelfStudyPanelProps) {
         </div>
       </div>
       <div css={style.chatInputContainer}>
-        <ChatInputBar value={chatValue} onSend={() => {}} onChange={setChatValue} disabled={true}>
+        <ChatInputBar
+          value={chatValue}
+          onSend={() => {}}
+          onChange={setChatValue}
+          disabled={type === 'read' || type === 'write' ? false : true}
+        >
           {type === 'read' && <RiRecordCircleFill size={36} color={theme.secondary} />}
           {type === 'write' && <HiSpeakerWave size={36} color={theme.secondary} />}
           {(type === 'readDone' || type === 'writeDone') && (
