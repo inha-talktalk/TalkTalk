@@ -13,7 +13,7 @@ export default function SelfStudyWritePage() {
   };
   return (
     <div css={style.container}>
-      <SelfStudyPanel />
+      <SelfStudyPanel type={'write'} />
       <div>
         <SelfStudyController
           type={'read'}

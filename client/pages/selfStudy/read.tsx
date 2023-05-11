@@ -13,7 +13,7 @@ export default function SelfStudyReadPage() {
   };
   return (
     <div css={style.container}>
-      <SelfStudyPanel />
+      <SelfStudyPanel type={'read'} />
       <div>
         <SelfStudyController
           type={'read'}

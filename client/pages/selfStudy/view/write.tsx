@@ -13,7 +13,7 @@ export default function ViewSelfStudyWrite() {
   };
   return (
     <div css={style.container}>
-      <SelfStudyPanel />
+      <SelfStudyPanel type={'writeDone'} />
       <div>
         <SelfStudyController
           type={'write'}
