@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 
 export const style = {
   container: (backgroundColor: string) => css`
-    width: 340px;
+    width: 300px;
     height: 100%;
     background-color: ${backgroundColor};
     padding: 10px;
