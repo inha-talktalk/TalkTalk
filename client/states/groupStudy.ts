@@ -14,5 +14,18 @@ export const selectedChannelState = atom<Channels>({
 
 export const voiceChannelUserListState = atom<UserProfile[]>({
   key: 'voiceChannelUserList',
-  default: [],
+  default: [
+    {
+      userName: '이민규',
+      profileIconUrl:
+        'http://k.kakaocdn.net/dn/bag7SF/btrdFno9CHy/Z7U6DUv8OLZEniTp1Tveg1/img_640x640.jpg',
+      nickName: '',
+      email: '',
+    },
+  ],
+});
+
+export const muteState = atom<boolean>({
+  key: 'isMute',
+  default: false,
 });
