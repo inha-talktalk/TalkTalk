@@ -84,3 +84,8 @@ interface MyStudy {
 }
 
 type MyStudyResponse = MyStudy[];
+
+interface GroupStudyUserInfo extends UserProfile {
+  isOnline: boolean;
+  isOwner: boolean;
+}
