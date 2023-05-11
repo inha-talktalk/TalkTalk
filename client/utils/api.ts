@@ -97,3 +97,27 @@ export async function patchMyProfile(userName: string, nickName: string) {
 export async function postUserProfileImage(formData: FormData) {
   await post(`/user/profile/img`, formData, 'postUserProfileImage');
 }
+
+export async function postApplyGroupStudy(groupId: string) {
+  await post(`/group-study/apply?groupStudyId=${groupId}`, {}, 'postApplyGroupStudy');
+}
+
+export async function getLanguages() {
+  return get<LanguageResponse>(`/language`, 'getLanguages');
+}
+
+export async function postGroupStudy(body: CreateGroupStudyBody) {
+  await post(`/group-study`, body, 'postGroupStudy');
+}
+
+export async function getDoneStudy() {
+  return get<MyStudyResponse>(`/user/study/done`, 'getDoneStudy');
+}
+
+export async function getProgressStudy() {
+  return get<MyStudyResponse>(`/user/study/progress`, 'getDoneStudy');
+}
+
+export async function getApplyStudy() {
+  return get<MyStudyResponse>(`/user/study/apply`, 'getDoneStudy');
+}

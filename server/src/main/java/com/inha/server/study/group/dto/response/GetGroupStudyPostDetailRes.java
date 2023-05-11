@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupStudyRes {
+public class GetGroupStudyPostDetailRes {
 
-  private String state;
   private String groupId;
   private String languageId;
   private String groupName;

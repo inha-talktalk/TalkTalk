@@ -1,6 +1,5 @@
 package com.inha.server.study.group.dto.response;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetGroupStudyListRes {
+public class PostDelegateRes {
 
-  private List<GroupStudyRes> groupStudyList;
-  private Integer totalPage;
-  private Integer currentPage;
+  private String originOwnerId;
+  private String changedOwnerId;
 }

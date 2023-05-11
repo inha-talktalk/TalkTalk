@@ -3,8 +3,10 @@ import TagInputBar, { useTagController } from '@/components/TagInputBar';
 import TextArea from '@/components/TextArea';
 import TitleInputBar from '@/components/TitleInputBar';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
+import { getLanguages, postGroupStudy } from '@/utils/api';
 import { css } from '@emotion/react';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import Select from 'react-select';
 
@@ -36,12 +38,6 @@ export default function CreateGroupStudyPage() {
     `,
   };
 
-  const languages = [
-    // TODO: 추후에 API 반환값으로 변경 예정
-    { value: 'en', label: '영어' },
-    { value: 'ko', label: '한국어' },
-  ];
-
   const personnels = [
     { value: 2, label: 2 },
     { value: 3, label: 3 },
@@ -55,13 +51,38 @@ export default function CreateGroupStudyPage() {
   ];
 
   const tagController = useTagController([{ value: '# 영어', isRemovable: false }]);
+  const router = useRouter();
 
+  const [languages, setLanguages] = useState([{ label: '한국어', value: 'ko' }]);
   const [language, setLanguage] = useState(languages[0]);
   const [personnel, setPersonnel] = useState<number>(2);
   const [isAlways, setIsAlways] = useState<boolean>(true);
   const [finishDate, setFinishDate] = useState<Date>(new Date());
   const [content, setContent] = useState<string>('');
   const [title, setTitle] = useState<string>('');
+
+  const handleSubmitButtonClick = async () => {
+    if (title === '' || content === '') {
+      alert('제목과 내용을 작성해 주세요.');
+      return;
+    }
+
+    const createGroupStudyBody: CreateGroupStudyBody = {
+      introduction: content,
+      languageId: language.value,
+      groupName: title,
+      tags: tagController.tags.map((tag) => tag.value),
+      groupDuration: isAlways ? null : finishDate.toISOString(),
+      groupPersonnel: personnel,
+    };
+
+    await postGroupStudy(createGroupStudyBody);
+    router.push('/findStudyGroup');
+  };
+
+  const handleCancelButtonClick = useCallback(() => {
+    router.push('/');
+  }, [router]);
 
   // to change default tag
   useEffect(() => {
@@ -73,6 +94,18 @@ export default function CreateGroupStudyPage() {
     ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language, tagController.setTags]);
+
+  // to get languages
+  useEffect(() => {
+    (async () => {
+      setLanguages(
+        (await getLanguages()).map((language) => ({
+          label: language.label,
+          value: language.id,
+        })),
+      );
+    })();
+  }, []);
 
   return (
     <div css={style.container}>
@@ -141,8 +174,15 @@ export default function CreateGroupStudyPage() {
           fontSize={'20px'}
           backgroundColor={theme.offWhite}
           color={theme.black}
+          onClick={handleCancelButtonClick}
         />
-        <Button value={'등록'} width={'93px'} height={'51px'} fontSize={'20px'} />
+        <Button
+          value={'등록'}
+          width={'93px'}
+          height={'51px'}
+          fontSize={'20px'}
+          onClick={handleSubmitButtonClick}
+        />
       </div>
     </div>
   );

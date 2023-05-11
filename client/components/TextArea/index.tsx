@@ -1,5 +1,6 @@
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { css } from '@emotion/react';
+import React from 'react';
 import { Dispatch, SetStateAction } from 'react';
 
 interface TextAreaProps {
@@ -10,7 +11,7 @@ interface TextAreaProps {
   setText: Dispatch<SetStateAction<string>>;
 }
 
-export default function TextArea({ height, width, placeholder, text, setText }: TextAreaProps) {
+function TextArea({ height, width, placeholder, text, setText }: TextAreaProps) {
   const { theme } = useGlobalTheme();
   const style = {
     textarea: css`
@@ -34,3 +35,5 @@ export default function TextArea({ height, width, placeholder, text, setText }: 
     />
   );
 }
+
+export default React.memo(TextArea);

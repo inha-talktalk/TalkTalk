@@ -1,6 +1,7 @@
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction, useState } from 'react';
 import { style } from './style';
+import React from 'react';
 
 interface TagData {
   value: string;
@@ -25,7 +26,7 @@ export function useTagController(init?: TagData[]): TagController {
   return { tags: tags, setTags: setTags };
 }
 
-export default function TagInputBar({ width, height, maxCount, tagController }: TagInputBarProps) {
+function TagInputBar({ width, height, maxCount, tagController }: TagInputBarProps) {
   const { theme } = useGlobalTheme();
   const [text, setText] = useState<string>('');
 
@@ -78,3 +79,15 @@ export default function TagInputBar({ width, height, maxCount, tagController }: 
     </div>
   );
 }
+
+const tagControllerIsEqual = (prev: TagInputBarProps, next: TagInputBarProps) => {
+  return (
+    prev.height === next.height &&
+    prev.maxCount === next.maxCount &&
+    prev.width === next.width &&
+    prev.tagController.setTags === next.tagController.setTags &&
+    prev.tagController.tags === next.tagController.tags
+  );
+};
+
+export default React.memo(TagInputBar, tagControllerIsEqual);

@@ -11,13 +11,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -52,7 +49,7 @@ public class MyPageController {
         responses = {
             @ApiResponse(responseCode = "401", ref = "unAuthorizedAPI"),
             @ApiResponse(responseCode = "404", ref = "notFoundAPI"),
-            @ApiResponse (
+            @ApiResponse(
                 responseCode = "200",
                 content = @Content(
                     mediaType = "application/json",
@@ -110,38 +107,26 @@ public class MyPageController {
         return myPageService.updateProfileImg(jwt, updateImageURI);
     }
 
+    /*
+     * 수락이 된 스터디 중에서 완료 or 진행 상태인 스터디 목록을 불러옴
+     * @param jwt 사용자 정보 인증
+     * @PathVariable status : done (종료된 스터디) & progress (진행 중인 스터디)
+     * */
     @GetMapping("/study/{status}")
-    public ResponseEntity<List<MyStudiesRes>> getStudies(@PathVariable String status) {
-        List<MyStudiesRes> myStudiesResList = new ArrayList<>();
-
-        for (int i = 100; i < 103; i++) {
-            myStudiesResList.add(
-                MyStudiesRes.builder()
-                    .groupId("ei39dfajkdf" + i)
-                    .groupName(status + i)
-                    .tags(List.of("영어", "토익"))
-                    .build()
-            );
-        }
-
-        return new ResponseEntity<>(myStudiesResList, HttpStatus.OK);
+    public ResponseEntity<List<MyStudiesRes>> getStudies(
+        @RequestHeader(value = "x-access-token") String jwt,
+        @PathVariable String status) {
+        return myPageService.getStudies(jwt, status);
     }
 
+    /*
+     * 신청 후 수락 대기인 상태의 스터디 리스트를 불러옴
+     * @param jwt 사용자 정보 인증
+     * */
     @GetMapping("/study/apply")
-    public ResponseEntity<List<MyStudiesRes>> getApplyStudies() {
-        List<MyStudiesRes> myApplyStudiesResList = new ArrayList<>();
-
-        for (int i = 100; i < 102; i++) {
-            myApplyStudiesResList.add(
-                MyStudiesRes.builder()
-                    .groupId("ei39dfajkdf" + i)
-                    .groupName("신청한 스터디" + i)
-                    .tags(List.of("영어", "스피킹"))
-                    .build()
-            );
-        }
-
-        return new ResponseEntity<>(myApplyStudiesResList, HttpStatus.OK);
+    public ResponseEntity<List<MyStudiesRes>> getApplyStudies(
+        @RequestHeader(value = "x-access-token") String jwt) {
+        return myPageService.getApplyStudies(jwt);
     }
 
     @GetMapping("/achieve")

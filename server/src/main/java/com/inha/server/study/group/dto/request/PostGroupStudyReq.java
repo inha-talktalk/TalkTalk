@@ -1,6 +1,7 @@
 package com.inha.server.study.group.dto.request;
 
-import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,5 +17,6 @@ public class PostGroupStudyReq {
   private List<String> tags;
   private Long groupPersonnel;
   private String introduction;
-  private LocalDate groupDuration;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
+  private Date groupDuration;
 }

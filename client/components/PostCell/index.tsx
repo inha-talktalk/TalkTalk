@@ -1,6 +1,9 @@
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import Button from '../Button';
 import { style } from './style';
+import { useRouter } from 'next/router';
+import { MouseEventHandler, useCallback } from 'react';
+import React from 'react';
 
 interface PostCellProps {
   group: GroupStudy;
@@ -8,11 +11,16 @@ interface PostCellProps {
   isLast: boolean;
 }
 
-export default function PostCell({ group, owner, isLast }: PostCellProps) {
+function PostCell({ group, owner, isLast }: PostCellProps) {
   const { theme } = useGlobalTheme();
+  const router = useRouter();
+
+  const handleContainerClick: MouseEventHandler<HTMLDivElement> = useCallback(() => {
+    router.push(`/postView/${group.groupId}`);
+  }, [group.groupId, router]);
 
   return (
-    <div css={style.container(isLast, theme.gray)}>
+    <div css={style.container(isLast, theme.gray)} onClick={handleContainerClick}>
       <div css={style.top}>
         <Button
           backgroundColor={group.isFinished ? theme.darkerGray : theme.secondary}
@@ -36,3 +44,5 @@ export default function PostCell({ group, owner, isLast }: PostCellProps) {
     </div>
   );
 }
+
+export default React.memo(PostCell);

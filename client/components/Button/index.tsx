@@ -1,5 +1,6 @@
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { css, SerializedStyles } from '@emotion/react';
+import React from 'react';
 
 interface ButtonProps {
   value: string;
@@ -12,7 +13,7 @@ interface ButtonProps {
   onClick?: () => void;
 }
 
-export default function Button({
+function Button({
   value,
   backgroundColor,
   color,
@@ -47,3 +48,5 @@ export default function Button({
     </div>
   );
 }
+
+export default React.memo(Button);
