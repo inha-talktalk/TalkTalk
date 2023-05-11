@@ -20,7 +20,6 @@ export default function UserSlot({ user }: UserSlotProps) {
       padding: 5px;
       box-sizing: border-box;
       user-select: none;
-      pointer-events: none;
 
       &:hover {
         box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
@@ -33,6 +32,7 @@ export default function UserSlot({ user }: UserSlotProps) {
     `,
     image: css`
       border-radius: 50%;
+      pointer-events: none;
     `,
     onlineSpan: (isOwner: boolean) => css`
       position: absolute;
