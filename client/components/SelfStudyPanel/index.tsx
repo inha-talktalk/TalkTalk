@@ -4,8 +4,14 @@ import { RiRecordCircleFill } from 'react-icons/ri';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import ChatBubble from '../ChatBubble';
 import { css } from '@emotion/react';
+import { HiSpeakerWave } from 'react-icons/hi2';
+import { AiFillPlayCircle } from 'react-icons/ai';
 
-export default function SelfStudyPanel() {
+interface SelfStudyPanelProps {
+  type: 'read' | 'write' | 'readDone' | 'writeDone';
+}
+
+export default function SelfStudyPanel({ type }: SelfStudyPanelProps) {
   const { theme } = useGlobalTheme();
   const [chatValue, setChatValue] = useState<string>('');
 
@@ -81,8 +87,17 @@ export default function SelfStudyPanel() {
         </div>
       </div>
       <div css={style.chatInputContainer}>
-        <ChatInputBar value={chatValue} onSend={() => {}} onChange={setChatValue}>
-          <RiRecordCircleFill size={36} color={theme.secondary} />
+        <ChatInputBar
+          value={chatValue}
+          onSend={() => {}}
+          onChange={setChatValue}
+          disabled={type === 'read' || type === 'write' ? false : true}
+        >
+          {type === 'read' && <RiRecordCircleFill size={36} color={theme.secondary} />}
+          {type === 'write' && <HiSpeakerWave size={36} color={theme.secondary} />}
+          {(type === 'readDone' || type === 'writeDone') && (
+            <AiFillPlayCircle size={36} color={theme.secondary} />
+          )}
         </ChatInputBar>
       </div>
     </div>

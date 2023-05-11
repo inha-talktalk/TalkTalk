@@ -1,17 +1,19 @@
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { style } from './style';
+import React from 'react';
 
 interface StudyCellProps {
   selfStudy: SelfStudy;
   owner: UserProfile;
   isLast: boolean;
+  onClick?: VoidFunction;
 }
 
-export default function StudyCell({ selfStudy, owner, isLast }: StudyCellProps) {
+function StudyCell({ selfStudy, owner, isLast, onClick }: StudyCellProps) {
   const { theme } = useGlobalTheme();
 
   return (
-    <div css={style.container(isLast, theme.gray)}>
+    <div css={style.container(isLast, theme.gray)} onClick={onClick}>
       <div css={style.top}>
         <span css={style.title}>{selfStudy.selfStudyName}</span>
       </div>
@@ -33,3 +35,5 @@ export default function StudyCell({ selfStudy, owner, isLast }: StudyCellProps) 
     </div>
   );
 }
+
+export default React.memo(StudyCell);

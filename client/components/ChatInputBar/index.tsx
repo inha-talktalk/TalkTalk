@@ -10,6 +10,7 @@ interface ChatInputBarProps {
   onSend: VoidFunction;
   children: ReactNode;
   onLeftButtonClick?: VoidFunction;
+  disabled?: boolean;
 }
 
 export default function ChatInputBar({
@@ -19,6 +20,7 @@ export default function ChatInputBar({
   onSend,
   children,
   onLeftButtonClick,
+  disabled,
 }: ChatInputBarProps) {
   const { theme } = useGlobalTheme();
 
@@ -50,6 +52,10 @@ export default function ChatInputBar({
       line-height: 40px;
       height: 40px;
       padding: 0 10px;
+
+      &:disabled {
+        background-color: inherit;
+      }
     `,
     button: css`
       width: 40px;
@@ -82,10 +88,11 @@ export default function ChatInputBar({
       <input
         type="text"
         value={value}
-        placeholder={placeholder}
+        placeholder={disabled ? '비활성화되어있습니다.' : placeholder}
         onChange={(e: ChangeEvent<HTMLInputElement>) => onChange?.(e.target.value)}
         css={style.input}
         onKeyDown={handleKeyDown}
+        disabled={disabled}
       />
       <div css={style.button}>
         <IoSendSharp size={24} fill={theme.primary} css={style.sendImage} />

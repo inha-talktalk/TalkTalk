@@ -19,4 +19,7 @@ export default function handler(
   if (req.method === 'GET') {
     res.status(200).json(data);
   }
+  if (req.method === 'POST') {
+    res.redirect('http://localhost:8080/group-study');
+  }
 }

@@ -31,8 +31,8 @@ export default function SelfStudySharePanel() {
             <p css={style.noneStudyP}>스터디가 없습니다.</p>
           </>
         ) : (
-          studyList.map((_, idx) => (
-            <StudyCard id={''} title={'안녕하세요'} tags={['1', '2']} key={idx} />
+          studyList.map((study, idx) => (
+            <StudyCard id={study.groupId} title={study.groupName} tags={study.tags} key={idx} />
           ))
         )}
       </div>

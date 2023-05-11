@@ -4,6 +4,7 @@ import { getGroupStudyList, getUserProfile } from '@/utils/api';
 import { css } from '@emotion/react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+
 export default function Home() {
   const style = {
     mainImage: css`

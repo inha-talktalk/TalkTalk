@@ -6,7 +6,7 @@ import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { getLanguages, postGroupStudy } from '@/utils/api';
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import Select from 'react-select';
 
@@ -80,9 +80,9 @@ export default function CreateGroupStudyPage() {
     router.push('/findStudyGroup');
   };
 
-  const handleCancelButtonClick = () => {
+  const handleCancelButtonClick = useCallback(() => {
     router.push('/');
-  };
+  }, [router]);
 
   // to change default tag
   useEffect(() => {
