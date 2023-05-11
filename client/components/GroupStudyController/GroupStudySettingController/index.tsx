@@ -30,6 +30,7 @@ export default function GroupStudySettingController({ user }: GroupStudySettingC
               height={50}
               css={css`
                 border-radius: 50%;
+                pointer-events: none;
               `}
             />
             <span></span>
