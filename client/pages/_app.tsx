@@ -26,6 +26,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <div
           css={css`
             padding-top: 75px;
+            height: 100%;
+            box-sizing: border-box;
           `}
         >
           <Component {...pageProps} />
