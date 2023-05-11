@@ -4,6 +4,7 @@ import StudyCell from '@/components/StudyCell';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { getSelfStudyList, getSelfStudy, getUserAchievement, getMyProfile } from '@/utils/api';
 import { css } from '@emotion/react';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 const style = {
@@ -28,6 +29,7 @@ export default function SelfStudy() {
   const [selfStudyIdList, setSelfStudyIdList] = useState<SelfStudyList | null>(null);
   const [selfStudyList, setSelfStudyList] = useState<SelfStudy[]>([]);
   const { theme } = useGlobalTheme();
+  const router = useRouter();
 
   // to get user achievement
   useEffect(() => {
@@ -77,7 +79,15 @@ export default function SelfStudy() {
       <h2>최근 스터디</h2>
       {user &&
         selfStudyList.slice(0, 5).map((selfStudy, idx, arr) => (
-          <StudyCell selfStudy={selfStudy} owner={user} isLast={idx === arr.length - 1} key={idx} /> // TODO: change idx to selfStudyId
+          <StudyCell
+            selfStudy={selfStudy}
+            owner={user}
+            isLast={idx === arr.length - 1}
+            key={idx}
+            onClick={() => {
+              router.push(`/selfStudy/view/write`);
+            }}
+          /> // TODO: change idx to selfStudyId
         ))}
     </div>
   );
