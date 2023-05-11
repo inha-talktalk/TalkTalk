@@ -12,3 +12,7 @@ export const selectedChannelState = atom<Channels>({
   default: 'general',
 });
 
+export const voiceChannelUserListState = atom<UserProfile[]>({
+  key: 'voiceChannelUserList',
+  default: [],
+});
