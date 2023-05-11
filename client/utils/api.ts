@@ -77,10 +77,18 @@ export async function getGroupStudySearch(keyword: string, page?: number) {
 }
 
 export async function getGroupStudyPost(groupStudyId: string) {
-  return await get<GroupStudyPostResponse>(
+  const groupPostResponse = await get<GroupStudyPostResponse>(
     `/group-study/${groupStudyId}/post`,
     'getGroupStudyPost',
   );
+
+  const groupPost: GroupStudy = {
+    ...groupPostResponse,
+    groupDuration: new Date(groupPostResponse.groupDuration),
+    createdAt: new Date(groupPostResponse.createdAt),
+  };
+
+  return groupPost;
 }
 
 export async function patchMyProfile(userName: string, nickName: string) {
