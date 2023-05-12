@@ -50,7 +50,16 @@ export async function getUserProfile(userId: string) {
 }
 
 export async function getGroupStudyList() {
-  return await get<GroupStudyListResponse>('/group-study/list', 'getGroupStudyList');
+  const groupStudyListResponse = await get<GroupStudyListResponse>(
+    '/group-study/list',
+    'getGroupStudyList',
+  );
+
+  return groupStudyListResponse.map((groupStudyResponse) => ({
+    ...groupStudyResponse,
+    groupDuration: new Date(groupStudyResponse.groupDuration),
+    createdAt: new Date(groupStudyResponse.createdAt),
+  }));
 }
 
 export async function getUserAchievement() {
