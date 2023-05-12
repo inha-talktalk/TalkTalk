@@ -10,10 +10,15 @@ interface GroupStudy {
   groupDuration: Date | null;
   ownerId: string;
   isFinished: boolean;
+  createdAt: Date;
 }
 
-type GroupStudyPostResponse = GroupStudy;
-type GroupStudyListResponse = GroupStudy[];
+interface GroupStudyPostResponse extends GroupStudy {
+  groupDuration: string;
+  createdAt: string;
+}
+
+type GroupStudyListResponse = GroupStudyPostResponse[];
 
 interface UserProfile {
   userName: string;
@@ -84,3 +89,8 @@ interface MyStudy {
 }
 
 type MyStudyResponse = MyStudy[];
+
+interface GroupStudyUserInfo extends UserProfile {
+  isOnline: boolean;
+  isOwner: boolean;
+}

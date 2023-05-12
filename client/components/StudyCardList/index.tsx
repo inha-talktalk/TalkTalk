@@ -2,13 +2,14 @@ import { ScrollMenu } from 'react-horizontal-scrolling-menu';
 import StudyCard from '../StudyCard';
 import { css } from '@emotion/react';
 import Arrow from './Arrow';
+import React from 'react';
 
 interface StudyCardListProps {
   studyList: MyStudy[];
   isRegistered?: boolean;
 }
 
-export default function StudyCardList({ studyList, isRegistered }: StudyCardListProps) {
+function StudyCardList({ studyList, isRegistered }: StudyCardListProps) {
   return (
     <div
       css={css`
@@ -50,3 +51,5 @@ export default function StudyCardList({ studyList, isRegistered }: StudyCardList
     </div>
   );
 }
+
+export default React.memo(StudyCardList);

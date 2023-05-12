@@ -50,7 +50,16 @@ export async function getUserProfile(userId: string) {
 }
 
 export async function getGroupStudyList() {
-  return await get<GroupStudyListResponse>('/group-study/list', 'getGroupStudyList');
+  const groupStudyListResponse = await get<GroupStudyListResponse>(
+    '/group-study/list',
+    'getGroupStudyList',
+  );
+
+  return groupStudyListResponse.map((groupStudyResponse) => ({
+    ...groupStudyResponse,
+    groupDuration: new Date(groupStudyResponse.groupDuration),
+    createdAt: new Date(groupStudyResponse.createdAt),
+  }));
 }
 
 export async function getUserAchievement() {
@@ -77,10 +86,18 @@ export async function getGroupStudySearch(keyword: string, page?: number) {
 }
 
 export async function getGroupStudyPost(groupStudyId: string) {
-  return await get<GroupStudyPostResponse>(
+  const groupPostResponse = await get<GroupStudyPostResponse>(
     `/group-study/${groupStudyId}/post`,
     'getGroupStudyPost',
   );
+
+  const groupPost: GroupStudy = {
+    ...groupPostResponse,
+    groupDuration: new Date(groupPostResponse.groupDuration),
+    createdAt: new Date(groupPostResponse.createdAt),
+  };
+
+  return groupPost;
 }
 
 export async function patchMyProfile(userName: string, nickName: string) {
