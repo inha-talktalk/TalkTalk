@@ -1,6 +1,7 @@
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import Button from '../Button';
 import { style } from './style';
+import { useRouter } from 'next/router';
 
 interface StudyCardProps {
   id: string;
@@ -11,6 +12,13 @@ interface StudyCardProps {
 
 export default function StudyCard({ id, title, tags, isRegistered }: StudyCardProps) {
   const { theme } = useGlobalTheme();
+  const router = useRouter();
+
+  const handleButtonClick = () => {
+    if (isRegistered !== undefined && isRegistered === false) return;
+
+    router.push(`/studyGroup/${id}`);
+  };
 
   return (
     <div css={style.container}>
@@ -31,6 +39,7 @@ export default function StudyCard({ id, title, tags, isRegistered }: StudyCardPr
         backgroundColor={
           isRegistered !== undefined && isRegistered === false ? theme.secondary : undefined
         }
+        onClick={handleButtonClick}
       />
     </div>
   );
