@@ -2,6 +2,7 @@ import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import Button from '../Button';
 import { style } from './style';
 import { useRouter } from 'next/router';
+import React from 'react';
 
 interface StudyCardProps {
   id: string;
@@ -10,7 +11,7 @@ interface StudyCardProps {
   isRegistered?: boolean;
 }
 
-export default function StudyCard({ id, title, tags, isRegistered }: StudyCardProps) {
+function StudyCard({ id, title, tags, isRegistered }: StudyCardProps) {
   const { theme } = useGlobalTheme();
   const router = useRouter();
 
@@ -44,3 +45,5 @@ export default function StudyCard({ id, title, tags, isRegistered }: StudyCardPr
     </div>
   );
 }
+
+export default React.memo(StudyCard);
