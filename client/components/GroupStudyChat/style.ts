@@ -10,6 +10,9 @@ export const style = {
   chatContainer: css`
     height: 100%;
     width: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column-reverse;
   `,
   inputBarContainer: css`
     padding: 15px;
