@@ -1,6 +1,7 @@
 import { getDateDiff } from '@/utils/date';
 import MyAchievement from '../MyAchievement';
 import { css } from '@emotion/react';
+import React from 'react';
 
 interface MyAcheivementListProps {
   achievement: UserAcheivement | null;
@@ -11,8 +12,7 @@ const style = css`
   width: 1000px;
   justify-content: space-between;
 `;
-
-export default function MyAchievementList({ achievement }: MyAcheivementListProps) {
+function MyAchievementList({ achievement }: MyAcheivementListProps) {
   return (
     <div css={style}>
       <MyAchievement title={'참여중인 스터디'} count={achievement?.teamMateCount ?? 0} />
@@ -31,3 +31,5 @@ export default function MyAchievementList({ achievement }: MyAcheivementListProp
     </div>
   );
 }
+
+export default React.memo(MyAchievementList);
