@@ -19,7 +19,7 @@ export default function GroupStudyChat() {
   const fetchMore = () => {
     setTimeout(() => {
       if (scrollRef && scrollRef.current) {
-        scrollRef.current.scrollTop = -1000000;
+        scrollRef.current.scrollTo({ top: -scrollRef.current.scrollHeight, behavior: 'smooth' });
       }
     }, 0);
     setTimeout(() => {
@@ -36,7 +36,7 @@ export default function GroupStudyChat() {
       <div css={style.chatContainer} id="scrollDiv" ref={scrollRef}>
         <InfiniteScroll
           next={fetchMore}
-          hasMore={false}
+          hasMore={chatList.length < 20}
           loader={<Loader />}
           dataLength={chatList.length}
           scrollableTarget="scrollDiv"
