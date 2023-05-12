@@ -18,7 +18,7 @@ interface GroupStudyPostResponse extends GroupStudy {
   createdAt: string;
 }
 
-type GroupStudyListResponse = GroupStudy[];
+type GroupStudyListResponse = GroupStudyPostResponse[];
 
 interface UserProfile {
   userName: string;
