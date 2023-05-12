@@ -6,10 +6,14 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { css } from '@emotion/react';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import Divider from './Divider';
+import { useRecoilValue } from 'recoil';
+import { selectedChannelState } from '@/states/groupStudy';
 
 export default function GroupStudyChat() {
   const [text, setText] = useState<string>('');
   const [chatList, setChatList] = useState<string[]>([]);
+  const selectedChannel = useRecoilValue(selectedChannelState);
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const fetchMore = () => {
@@ -44,7 +48,7 @@ export default function GroupStudyChat() {
           endMessage={<EndMessage />}
         >
           {chatList.map((_, idx) => (
-            <ChatSlot tmp={'chat'} key={idx} />
+            <ChatSlot tmp={selectedChannel} key={idx} />
           ))}
         </InfiniteScroll>
       </div>

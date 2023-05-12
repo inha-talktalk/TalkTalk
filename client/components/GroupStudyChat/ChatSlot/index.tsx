@@ -4,10 +4,11 @@ import { DEAFULT_PLACEHOLDER_GRAY } from '@/utils/image';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { css } from '@emotion/react';
 import React from 'react';
+import { Channels } from '@/states/groupStudy';
 
 interface ChatSlotProps {
   // TODO: API 결정이후 변경 예정
-  tmp: 'chat' | 'share';
+  tmp: Channels;
 }
 
 function ChatSlot({ tmp }: ChatSlotProps) {
@@ -23,7 +24,7 @@ function ChatSlot({ tmp }: ChatSlotProps) {
       <div css={style.right}>
         <span>김아랑</span>
         <span>2023.03.22 오후 03:23</span>
-        {tmp === 'chat' ? <p>안녕하세요! 반갑습니다.</p> : <ShareCard />}
+        {tmp === 'general' ? <p>안녕하세요! 반갑습니다.</p> : <ShareCard />}
       </div>
     </div>
   );

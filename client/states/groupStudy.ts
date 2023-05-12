@@ -5,7 +5,7 @@ export const userListState = atom<GroupStudyUserInfo[]>({
   default: [],
 });
 
-type Channels = 'general' | 'share';
+export type Channels = 'general' | 'share';
 
 export const selectedChannelState = atom<Channels>({
   key: 'selectedChannel',
