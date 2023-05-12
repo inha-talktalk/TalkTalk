@@ -8,7 +8,7 @@ interface ChatInputBarProps {
   value: string;
   onChange?: Dispatch<SetStateAction<string>>;
   onSend: VoidFunction;
-  children: ReactNode;
+  children?: ReactNode;
   onLeftButtonClick?: VoidFunction;
   disabled?: boolean;
 }
@@ -28,7 +28,7 @@ export default function ChatInputBar({
     container: css`
       display: flex;
       padding: 10px;
-      width: 1000px;
+      width: 100%;
       height: 60px;
       box-sizing: border-box;
       border: 1px solid ${theme.gray};
