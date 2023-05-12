@@ -1,3 +1,4 @@
+import GroupStudyChat from '@/components/GroupStudyChat';
 import GroupStudyController from '@/components/GroupStudyController';
 import UserList from '@/components/UserList';
 import { userListState } from '@/states/groupStudy';
@@ -41,6 +42,7 @@ export default function GroupStudyPage() {
         width: 100%;
         height: 100%;
         user-select: none;
+        display: flex;
       `}
     >
       <div
@@ -51,7 +53,14 @@ export default function GroupStudyPage() {
       >
         <GroupStudyController groupId={'test'} />
       </div>
-      <div></div>
+      <div
+        css={css`
+          width: 100%;
+          height: 100%;
+        `}
+      >
+        <GroupStudyChat />
+      </div>
       <div
         css={css`
           height: 100%;
