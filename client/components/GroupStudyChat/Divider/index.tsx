@@ -1,12 +1,13 @@
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { getDateString } from '@/utils/date';
 import { css } from '@emotion/react';
+import React from 'react';
 
 interface DividerProps {
   date: Date;
 }
 
-export default function Divider({ date }: DividerProps) {
+function Divider({ date }: DividerProps) {
   const { theme } = useGlobalTheme();
 
   return (
@@ -49,3 +50,5 @@ export default function Divider({ date }: DividerProps) {
     </div>
   );
 }
+
+export default React.memo(Divider);
