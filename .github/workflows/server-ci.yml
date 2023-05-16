@@ -30,6 +30,7 @@ jobs:
           BE_APPLICATION_YML: ${{ secrets.BE_APPLICATION_YML }}
           BE_APPLICATION_PROD_YML: ${{ secrets.BE_APPLICATION_PROD_YML }}
         run:
+          mkdir -p src/main/resources &&
           echo $BE_APPLICATION_YML | base64 --decode > src/main/resources/application.yml &&
           echo $BE_APPLICATION_PROD_YML | base64 --decode > src/main/resources/application-prod.yml
 
