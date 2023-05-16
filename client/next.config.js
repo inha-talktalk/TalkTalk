@@ -38,6 +38,18 @@ const nextConfig = (phase) => {
       compiler: {
         emotion: true,
       },
+      images: {
+        remotePatterns: [
+          {
+            protocol: 'http',
+            hostname: 'k.kakaocdn.net',
+          },
+          {
+            protocol: 'https',
+            hostname: 'inha-talktalk.s3.ap-northeast-2.amazonaws.com',
+          },
+        ],
+      },
     };
   }
 };
