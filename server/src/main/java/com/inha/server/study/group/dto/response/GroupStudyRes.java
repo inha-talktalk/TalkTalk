@@ -22,4 +22,5 @@ public class GroupStudyRes {
   private String groupDuration;
   private String ownerId;
   private Boolean isFinished;
+  private String createdAt;
 }
