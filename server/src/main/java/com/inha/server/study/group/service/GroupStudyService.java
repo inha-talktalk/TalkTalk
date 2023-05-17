@@ -146,6 +146,7 @@ public class GroupStudyService {
                 .groupDuration(groupStudy.getGroupDuration())
                 .ownerId(groupStudy.getOwnerId())
                 .isFinished(groupStudy.getIsFinished())
+                .createdAt(groupStudy.getCreatedAt())
                 .build();
 
             groupStudyResList.add(groupStudyRes);

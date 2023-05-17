@@ -23,9 +23,7 @@ public class GroupStudy {
     private String introduction;
     private List<String> studyMate;
     private String createdAt;
-
-    @Builder.Default
-    private String groupDuration = "";
+    private String groupDuration;
 
     @Builder.Default
     private String state = "ongoing";
