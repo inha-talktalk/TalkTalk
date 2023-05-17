@@ -14,7 +14,7 @@ import java.util.Map;
 public class SelfStudyController {
 
     @GetMapping()
-    public ScriptDto GetScript(@RequestParam(name = "lan") String language, @RequestParam(name = "type") String type) {
+    public ScriptDto GetScript(@RequestParam(name = "languageId") Integer languageId, @RequestParam(name = "type") String type) {
         Map<String, String> scripts = new LinkedHashMap<>();
 
         scripts.put("Hello student.", "https://inha-talktalk.s3.ap-northeast-2.amazonaws.com/clova1684048155309");
