@@ -4,9 +4,10 @@ import Image from 'next/image';
 
 interface UserSlotProps {
   user: GroupStudyUserInfo;
+  disableHover?: boolean;
 }
 
-export default function UserSlot({ user }: UserSlotProps) {
+export default function UserSlot({ user, disableHover = false }: UserSlotProps) {
   const { theme } = useGlobalTheme();
   const style = {
     container: css`
@@ -20,7 +21,8 @@ export default function UserSlot({ user }: UserSlotProps) {
       padding: 5px;
       box-sizing: border-box;
       user-select: none;
-
+    `,
+    hover: css`
       &:hover {
         box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
       }
@@ -54,7 +56,7 @@ export default function UserSlot({ user }: UserSlotProps) {
   };
 
   return (
-    <div css={style.container}>
+    <div css={[style.container, !disableHover && style.hover]}>
       <div css={style.leftContainer}>
         <Image
           src={user.profileIconUrl}

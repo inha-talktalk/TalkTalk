@@ -8,6 +8,9 @@ import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { useRecoilState } from 'recoil';
 import { muteState } from '@/states/groupStudy';
 import { BsFillTelephoneXFill } from 'react-icons/bs';
+import { useState } from 'react';
+import Modal from '@/components/Modal';
+import GroupStudySetting from '../GroupStudySetting';
 
 interface GroupStudySettingControllerProps {
   user: GroupStudyUserInfo;
@@ -16,9 +19,13 @@ interface GroupStudySettingControllerProps {
 export default function GroupStudySettingController({ user }: GroupStudySettingControllerProps) {
   const { theme } = useGlobalTheme();
   const [isMute, setMute] = useRecoilState(muteState);
+  const [isShow, setShow] = useState<boolean>(false);
 
   return (
     <div>
+      <Modal isShow={isShow} setShow={setShow}>
+        <GroupStudySetting />
+      </Modal>
       <VoiceChannelController />
       <div css={style.container(theme.darkerGray)}>
         <div css={style.left}>
@@ -41,7 +48,7 @@ export default function GroupStudySettingController({ user }: GroupStudySettingC
           </div>
         </div>
         <div css={style.right}>
-          <IoSettingsSharp size={28} />
+          <IoSettingsSharp size={28} onClick={() => setShow(true)} />
           {isMute ? (
             <BsFillMicMuteFill size={28} onClick={() => setMute(false)} />
           ) : (
