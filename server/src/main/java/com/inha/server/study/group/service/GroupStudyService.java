@@ -63,22 +63,10 @@ public class GroupStudyService {
     @Transactional
     public GroupStudy insertGroupStudy(String userId, PostGroupStudyReq request,
         Date groupDuration) {
-        if (groupDuration == null) {
-            GroupStudy groupStudy = GroupStudy.builder()
-                .languageId(request.getLanguageId())
-                .ownerId(userId)
-                .groupName(request.getGroupName())
-                .tags(request.getTags())
-                .groupPersonnel(request.getGroupPersonnel())
-                .introduction(request.getIntroduction())
-                .studyMate(Collections.singletonList(userId))
-                .build();
-            groupStudyRepository.save(groupStudy);
-            return groupStudy;
-        } else {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
+        if (groupDuration != null) {
             GroupStudy groupStudy = GroupStudy.builder()
                 .languageId(request.getLanguageId())
                 .ownerId(userId)
@@ -88,8 +76,21 @@ public class GroupStudyService {
                 .introduction(request.getIntroduction())
                 .studyMate(Collections.singletonList(userId))
                 .groupDuration(formatter.format(groupDuration))
+                .createdAt(formatter.format(new Date()))
                 .build();
-
+            groupStudyRepository.save(groupStudy);
+            return groupStudy;
+        } else {
+            GroupStudy groupStudy = GroupStudy.builder()
+                .languageId(request.getLanguageId())
+                .ownerId(userId)
+                .groupName(request.getGroupName())
+                .tags(request.getTags())
+                .groupPersonnel(request.getGroupPersonnel())
+                .introduction(request.getIntroduction())
+                .studyMate(Collections.singletonList(userId))
+                .createdAt(formatter.format(new Date()))
+                .build();
             groupStudyRepository.save(groupStudy);
             return groupStudy;
         }
