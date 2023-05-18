@@ -33,7 +33,11 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       try {
-        const list = await getGroupStudyList();
+        const list = (await getGroupStudyList()).groupStudyList.map((groupStudy) => ({
+          ...groupStudy,
+          groupDuration: new Date(groupStudy.groupDuration),
+          createdAt: new Date(groupStudy.createdAt),
+        }));
         setGroupStudyList(list);
       } catch (e) {
         if (e instanceof Error) {
