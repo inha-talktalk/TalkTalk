@@ -66,7 +66,7 @@ public class S3Service {
     }
 
     // 3. 로컬에 생성된 파일삭제
-    private void removeNewFile(File targetFile) {
+    public void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
             return;
         }

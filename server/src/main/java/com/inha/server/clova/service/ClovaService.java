@@ -63,6 +63,7 @@ public class ClovaService {
                 }
                 is.close();
                 s3Service.putS3(f, "clova" + tempname);
+                s3Service.removeNewFile(f);
             } else {  // 오류 발생
                 br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
                 String inputLine;
