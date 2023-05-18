@@ -19,13 +19,13 @@ export const style = {
   right: css`
     padding-top: 7px;
 
-    & > span:first-child {
+    & > span:first-of-type {
       font-weight: bold;
       font-size: 16px;
       padding: 0 5px;
     }
 
-    & > span:nth-child(2) {
+    & > span:nth-of-type(2) {
       font-size: 14px;
       color: #848484;
     }
