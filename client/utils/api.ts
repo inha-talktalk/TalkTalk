@@ -55,7 +55,7 @@ export async function getGroupStudyList() {
     'getGroupStudyList',
   );
 
-  return groupStudyListResponse.map((groupStudyResponse) => ({
+  return groupStudyListResponse.groupStudyList.map((groupStudyResponse) => ({
     ...groupStudyResponse,
     groupDuration: new Date(groupStudyResponse.groupDuration),
     createdAt: new Date(groupStudyResponse.createdAt),
