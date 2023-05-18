@@ -3,7 +3,8 @@ import GroupStudyController from '@/components/GroupStudyController';
 import UserList from '@/components/UserList';
 import { userListState } from '@/states/groupStudy';
 import { css } from '@emotion/react';
-import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 const mockUserList: GroupStudyUserInfo[] = [
@@ -30,7 +31,15 @@ const mockUserList: GroupStudyUserInfo[] = [
 ];
 
 export default function GroupStudyPage() {
+  const router = useRouter();
   const [_, setUserList] = useRecoilState(userListState);
+  const [groupId, setGroupId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    setGroupId(typeof router.query.groupId === 'string' ? router.query.groupId : null);
+  }, [router]);
 
   useEffect(() => {
     setUserList(mockUserList);
@@ -51,7 +60,7 @@ export default function GroupStudyPage() {
           float: left;
         `}
       >
-        <GroupStudyController groupId={'test'} />
+        <GroupStudyController groupId={groupId} />
       </div>
       <div
         css={css`

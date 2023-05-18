@@ -8,7 +8,7 @@ import GroupStudyVoiceChannel from './GroupStudyVoiceChannel';
 import GroupStudySettingController from './GroupStudySettingController';
 
 interface GroupStudyControllerProps {
-  groupId: string;
+  groupId: string | null;
 }
 
 export default function GroupStudyController({ groupId }: GroupStudyControllerProps) {
@@ -26,6 +26,8 @@ export default function GroupStudyController({ groupId }: GroupStudyControllerPr
   };
 
   useEffect(() => {
+    if (!groupId) return;
+
     (async () => {
       setGroup(await getGroupStudyPost(groupId));
     })();
@@ -33,13 +35,17 @@ export default function GroupStudyController({ groupId }: GroupStudyControllerPr
 
   return (
     <div css={style.container(theme.offWhite)}>
-      <div>
-        {group && <StudyInfo group={group} />}
-        <GroupStudyChannel />
-        <GroupStudyVoiceChannel />
-      </div>
+      {!!groupId && (
+        <>
+          <div>
+            {group && <StudyInfo group={group} />}
+            <GroupStudyChannel />
+            <GroupStudyVoiceChannel />
+          </div>
 
-      <GroupStudySettingController user={user} />
+          <GroupStudySettingController user={user} />
+        </>
+      )}
     </div>
   );
 }
