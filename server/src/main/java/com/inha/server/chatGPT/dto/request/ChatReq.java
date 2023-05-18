@@ -10,11 +10,13 @@ public class ChatReq {
 
     private String model;
     private List<Message> messages;
+    private Integer n;
 
-    public ChatReq(String model, String prompt) {
+    public ChatReq(String model, String prompt, Integer n) {
         this.model = model;
 
         this.messages = new ArrayList<>();
         this.messages.add(new Message("user", prompt));
+        this.n = n;
     }
 }
