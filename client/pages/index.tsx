@@ -35,7 +35,7 @@ export default function Home() {
       try {
         const list = (await getGroupStudyList()).groupStudyList.map((groupStudy) => ({
           ...groupStudy,
-          groupDuration: new Date(groupStudy.groupDuration),
+          groupDuration: groupStudy.groupDuration ? new Date(groupStudy.groupDuration) : null,
           createdAt: new Date(groupStudy.createdAt),
         }));
         setGroupStudyList(list);

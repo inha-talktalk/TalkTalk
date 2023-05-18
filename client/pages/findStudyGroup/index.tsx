@@ -2,12 +2,7 @@ import Button from '@/components/Button';
 import InputBar from '@/components/InputBar';
 import PostCell from '@/components/PostCell';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
-import {
-  getGroupStudyList,
-  getGroupStudyPost,
-  getGroupStudySearch,
-  getUserProfile,
-} from '@/utils/api';
+import { getGroupStudyList, getGroupStudySearch, getUserProfile } from '@/utils/api';
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -88,7 +83,7 @@ export default function FindStudyGroupPage() {
         searchResult.groupStudyList.map((groupStudy) => {
           return {
             ...groupStudy,
-            groupDuration: new Date(groupStudy.groupDuration),
+            groupDuration: groupStudy.groupDuration ? new Date(groupStudy.groupDuration) : null,
             createdAt: new Date(groupStudy.createdAt),
           };
         }),
