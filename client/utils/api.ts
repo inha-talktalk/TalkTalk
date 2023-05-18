@@ -71,7 +71,7 @@ export async function login(code: string) {
 
 export async function getGroupStudySearch(keyword: string, page?: number) {
   return await get<GroupStudySearchResponse>(
-    `/group-study?keyword=${keyword}${page ? `&page=${page}` : ''}`,
+    `/group-study/search?keyword=${keyword}${!!page ? `&page=${page - 1}` : ''}`,
     'getGroupStudySearch',
   );
 }

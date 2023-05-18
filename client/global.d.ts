@@ -26,6 +26,8 @@ interface GroupStudyListResponse {
   currentPage: number;
 }
 
+type GroupStudySearchResponse = GroupStudyListResponse;
+
 interface UserProfile {
   userName: string;
   nickName: string;
@@ -64,12 +66,6 @@ type SelfStudyListResponse = SelfStudyList;
 
 interface LoginResponse {
   token: string;
-}
-
-interface GroupStudySearchResponse {
-  groupIds: string[];
-  totalPage: number;
-  currentPage: number;
 }
 
 interface Language {

@@ -2,7 +2,12 @@ import Button from '@/components/Button';
 import InputBar from '@/components/InputBar';
 import PostCell from '@/components/PostCell';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
-import { getGroupStudyPost, getGroupStudySearch, getUserProfile } from '@/utils/api';
+import {
+  getGroupStudyList,
+  getGroupStudyPost,
+  getGroupStudySearch,
+  getUserProfile,
+} from '@/utils/api';
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -44,9 +49,9 @@ export default function FindStudyGroupPage() {
     `,
   };
 
+  const [isLoading, setLoading] = useState<boolean>(true);
   const [text, setText] = useState<string>('');
   const [searchText, setSearchText] = useState<string>('');
-  const [groupStudyIds, setGroupStudyIds] = useState<string[]>([]);
   const [groupStudyList, setGroupStudyList] = useState<GroupStudy[]>([]);
   const [ownerList, setOwnerList] = useState<UserProfile[]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
@@ -63,33 +68,40 @@ export default function FindStudyGroupPage() {
     const keyword = router.query.keyword;
     const pageNum = router.query.pageNum;
 
-    if (keyword && !(keyword instanceof Array)) setSearchText(keyword);
+    if (typeof keyword === 'string') setSearchText(keyword);
     if (pageNum && !(pageNum instanceof Array) && !isNaN(+pageNum)) setPageNum(+pageNum);
+
+    setLoading(true);
   }, [router]);
 
   // to initial search
   useEffect(() => {
+    if (!isLoading) return;
+
     (async () => {
-      const searchResult = await getGroupStudySearch(searchText, pageNum);
-      setGroupStudyIds(searchResult.groupIds);
+      const searchResult = await (searchText === ''
+        ? getGroupStudyList()
+        : getGroupStudySearch(searchText, pageNum));
       setTotalPageNum(searchResult.totalPage);
       setText(searchText);
+      setGroupStudyList(
+        searchResult.groupStudyList.map((groupStudy) => {
+          return {
+            ...groupStudy,
+            groupDuration: new Date(groupStudy.groupDuration),
+            createdAt: new Date(groupStudy.createdAt),
+          };
+        }),
+      );
+      setLoading(false);
     })();
-  }, [searchText, pageNum]);
+  }, [searchText, pageNum, isLoading]);
 
   // to set pageNum
   useEffect(() => {
     setStartPageNum(Math.max(1, pageNum - 5));
     setEndPageNum(Math.min(totalPageNum, pageNum + 5));
   }, [pageNum, totalPageNum]);
-
-  // to get groupStudy data from ids
-  useEffect(() => {
-    (async () => {
-      const groupStudyPromises = groupStudyIds.map((id) => getGroupStudyPost(id));
-      setGroupStudyList(await Promise.all(groupStudyPromises));
-    })();
-  }, [groupStudyIds]);
 
   // to get groupStudy owner
   useEffect(() => {
@@ -103,6 +115,12 @@ export default function FindStudyGroupPage() {
 
   const handleSearchButton = () => {
     if (!router.isReady) return;
+
+    if (typeof router.query.keyword === 'string' && router.query.keyword === text) {
+      setLoading(true);
+      return;
+    }
+
     router.push({
       pathname: '/findStudyGroup',
       query: {
