@@ -6,9 +6,12 @@ export const style = {
     min-height: 60px;
     padding: 10px 10px;
     display: flex;
-    /* align-items: center; */
     gap: 5px;
     box-sizing: border-box;
+
+    &:hover {
+      box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.05);
+    }
   `,
   image: css`
     border-radius: 50%;
@@ -16,13 +19,13 @@ export const style = {
   right: css`
     padding-top: 7px;
 
-    & > span:first-child {
+    & > span:first-of-type {
       font-weight: bold;
       font-size: 16px;
       padding: 0 5px;
     }
 
-    & > span:nth-child(2) {
+    & > span:nth-of-type(2) {
       font-size: 14px;
       color: #848484;
     }

@@ -14,11 +14,19 @@ interface GroupStudy {
 }
 
 interface GroupStudyPostResponse extends GroupStudy {
-  groupDuration: string;
+  groupDuration: string | null;
   createdAt: string;
 }
 
-type GroupStudyListResponse = GroupStudyPostResponse[];
+type groupStudyResponse = GroupStudyPostResponse;
+
+interface GroupStudyListResponse {
+  groupStudyList: groupStudyResponse[];
+  totalPage: number;
+  currentPage: number;
+}
+
+type GroupStudySearchResponse = GroupStudyListResponse;
 
 interface UserProfile {
   userName: string;
@@ -58,12 +66,6 @@ type SelfStudyListResponse = SelfStudyList;
 
 interface LoginResponse {
   token: string;
-}
-
-interface GroupStudySearchResponse {
-  groupIds: string[];
-  totalPage: number;
-  currentPage: number;
 }
 
 interface Language {

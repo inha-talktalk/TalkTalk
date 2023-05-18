@@ -34,11 +34,11 @@ export const style = {
       margin: 0;
     }
 
-    & > p:first-child {
+    & > p:first-of-type {
       font-size: 16px;
     }
 
-    & > p:nth-child(2) {
+    & > p:nth-of-type(2) {
       font-size: 14px;
       color: ${color};
     }
