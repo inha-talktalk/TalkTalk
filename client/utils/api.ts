@@ -78,7 +78,7 @@ export async function getGroupStudySearch(keyword: string, page?: number) {
 
 export async function getGroupStudyPost(groupStudyId: string) {
   const groupPostResponse = await get<GroupStudyPostResponse>(
-    `/group-study/${groupStudyId}/post`,
+    `/group-study/info?groupStudyId=${groupStudyId}`,
     'getGroupStudyPost',
   );
 
