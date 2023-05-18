@@ -31,6 +31,16 @@ public class LanguageService {
         return languageDtoList;
     }
 
+    public String getLanguageName(String id) {
+        Language language = languageRepository.findById(id).get();
+        return language.getName();
+    }
+
+    public String getTTS(String id) {
+        Language language = languageRepository.findById(id).get();
+        return language.getTts();
+    }
+
     public void updateLanguages() {
         language[] languages = language.values();
 
