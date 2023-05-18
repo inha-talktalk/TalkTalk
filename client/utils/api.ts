@@ -84,7 +84,9 @@ export async function getGroupStudyPost(groupStudyId: string) {
 
   const groupPost: GroupStudy = {
     ...groupPostResponse,
-    groupDuration: new Date(groupPostResponse.groupDuration),
+    groupDuration: groupPostResponse.groupDuration
+      ? new Date(groupPostResponse.groupDuration)
+      : null,
     createdAt: new Date(groupPostResponse.createdAt),
   };
 

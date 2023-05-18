@@ -14,7 +14,7 @@ interface GroupStudy {
 }
 
 interface GroupStudyPostResponse extends GroupStudy {
-  groupDuration: string;
+  groupDuration: string | null;
   createdAt: string;
 }
 
