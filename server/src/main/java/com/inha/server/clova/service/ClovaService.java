@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class ClovaService {
+
+    private final S3Service s3Service;
     @Value("${clova.api.client-id}")
     String clientId;
     @Value("${clova.api.client-secret}")
@@ -27,9 +29,7 @@ public class ClovaService {
     @Value("${clova.api.url}")
     String apiURL;
 
-    private final S3Service s3Service;
-
-    public void executeTTS(String prompt) {
+    public String executeTTS(String prompt, String type, String language) {
         try {
             String text = URLEncoder.encode(prompt, StandardCharsets.UTF_8);
             URL url = new URL(apiURL);
@@ -40,7 +40,8 @@ public class ClovaService {
             con.setRequestProperty("X-NCP-APIGW-API-KEY", clientSecret);
 
             // post request
-            String postParams = "speaker=clara&volume=0&speed=0&pitch=0&format=mp3&text=" + text;
+            String postParams =
+                "speaker=" + language + "&volume=0&speed=0&pitch=0&format=mp3&text=" + text;
             con.setDoOutput(true);
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
             wr.writeBytes(postParams);
@@ -49,7 +50,7 @@ public class ClovaService {
             int responseCode = con.getResponseCode();
             BufferedReader br;
 
-            if(responseCode==200) { // 정상 호출
+            if (responseCode == 200) { // 정상 호출
                 InputStream is = con.getInputStream();
                 int read = 0;
                 byte[] bytes = new byte[1024];
@@ -58,12 +59,13 @@ public class ClovaService {
                 File f = new File(tempname + ".mp3");
                 f.createNewFile();
                 OutputStream outputStream = new FileOutputStream(f);
-                while ((read =is.read(bytes)) != -1) {
+                while ((read = is.read(bytes)) != -1) {
                     outputStream.write(bytes, 0, read);
                 }
                 is.close();
-                s3Service.putS3(f, "clova" + tempname);
+                String uri = s3Service.putS3(f, "clova/" + type + "/" + tempname);
                 s3Service.removeNewFile(f);
+                return uri;
             } else {  // 오류 발생
                 br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
                 String inputLine;
@@ -72,10 +74,10 @@ public class ClovaService {
                     response.append(inputLine);
                 }
                 br.close();
-                System.out.println(response.toString());
             }
         } catch (Exception e) {
-            System.out.println(e);
+            return e.getMessage();
         }
+        return prompt;
     }
 }
