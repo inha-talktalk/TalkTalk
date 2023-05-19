@@ -3,9 +3,9 @@ import ChatInputBar from '../ChatInputBar';
 import { RiRecordCircleFill } from 'react-icons/ri';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import ChatBubble from '../ChatBubble';
-import { css } from '@emotion/react';
-import { HiSpeakerWave } from 'react-icons/hi2';
 import { AiFillPlayCircle } from 'react-icons/ai';
+import { style } from './style';
+import AudioButton from './AudioButton';
 
 interface SelfStudyPanelProps {
   type: 'read' | 'write' | 'readDone' | 'writeDone';
@@ -14,43 +14,6 @@ interface SelfStudyPanelProps {
 export default function SelfStudyPanel({ type }: SelfStudyPanelProps) {
   const { theme } = useGlobalTheme();
   const [chatValue, setChatValue] = useState<string>('');
-
-  const style = {
-    container: css`
-      width: 70%;
-      height: 820px;
-      border-radius: 10px;
-      margin: 15px;
-      padding: 15px;
-      position: relative;
-      box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-    `,
-    bubbleContainer: css`
-      height: 90%;
-      overflow: auto;
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-
-      & > div {
-        margin: 0;
-        padding: 10px;
-      }
-
-      & > div.right {
-        text-align: right;
-        & > div {
-          text-align: left;
-        }
-      }
-    `,
-    chatInputContainer: css`
-      & > div {
-        position: relative;
-        left: 50%;
-        transform: translate(-50%);
-      }
-    `,
-  };
 
   return (
     <div css={style.container}>
@@ -94,7 +57,9 @@ export default function SelfStudyPanel({ type }: SelfStudyPanelProps) {
           disabled={type === 'read' || type === 'write' ? false : true}
         >
           {type === 'read' && <RiRecordCircleFill size={36} color={theme.secondary} />}
-          {type === 'write' && <HiSpeakerWave size={36} color={theme.secondary} />}
+          {type === 'write' && (
+            <AudioButton url="https://inha-talktalk.s3.ap-northeast-2.amazonaws.com/clova/dialog/1684473628578" />
+          )}
           {(type === 'readDone' || type === 'writeDone') && (
             <AiFillPlayCircle size={36} color={theme.secondary} />
           )}
