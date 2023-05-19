@@ -2,6 +2,7 @@ import { jwtState } from '@/states/login';
 import { apiAxiosInstance, login } from '@/utils/api';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { useRecoilState } from 'recoil';
 
 export default function KakaoOauthPage() {
@@ -23,7 +24,7 @@ export default function KakaoOauthPage() {
         globalThis.window.localStorage.setItem('jwt', result.token);
         apiAxiosInstance.defaults.headers.common['x-access-token'] = result.token;
       } catch (e) {
-        alert('로그인 실패');
+        toast.error('로그인 실패');
       }
 
       router.replace('/');

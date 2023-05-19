@@ -6,6 +6,7 @@ import Select from 'react-select';
 import { style } from './style';
 import { useRouter } from 'next/router';
 import { getLanguages } from '@/utils/api';
+import { toast } from 'react-toastify';
 
 interface CreateSelfStudyProps {
   type: 'read' | 'write';
@@ -32,11 +33,11 @@ export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
 
   const handleStartButtonClick = () => {
     if (title === '' || tagController.tags.length === 0) {
-      alert('제목과 태그를 설정하세요');
+      toast.error('제목과 태그를 설정하세요');
       return;
     }
     if (scriptType === '') {
-      alert('언어와 스크립트 형태를 선택하세요');
+      toast.error('언어와 스크립트 형태를 선택하세요');
       return;
     }
 

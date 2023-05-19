@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import Select from 'react-select';
+import { toast } from 'react-toastify';
 
 interface SelectValue {
   label: string;
@@ -68,12 +69,12 @@ export default function CreateGroupStudyPage() {
 
   const handleSubmitButtonClick = async () => {
     if (title === '' || content === '') {
-      alert('제목과 내용을 작성해 주세요.');
+      toast.error('제목과 내용을 작성해 주세요.');
       return;
     }
 
     if (!language) {
-      alert('언어를 선택해 주세요.');
+      toast.error('언어를 선택해 주세요.');
       return;
     }
 

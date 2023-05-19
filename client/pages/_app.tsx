@@ -7,6 +7,8 @@ import { css } from '@emotion/react';
 import 'react-horizontal-scrolling-menu/dist/styles.css';
 import 'react-calendar/dist/Calendar.css';
 import '@/styles/calendar.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -30,6 +32,15 @@ export default function App({ Component, pageProps }: AppProps) {
             box-sizing: border-box;
           `}
         >
+          <ToastContainer
+            limit={5}
+            closeOnClick
+            autoClose={2000}
+            position="top-right"
+            pauseOnFocusLoss={false}
+            pauseOnHover
+            draggable
+          />
           <Component {...pageProps} />
         </div>
       </RecoilRoot>
