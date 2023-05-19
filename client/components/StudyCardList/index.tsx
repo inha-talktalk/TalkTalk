@@ -42,8 +42,7 @@ function StudyCardList({ studyList, isRegistered }: StudyCardListProps) {
               title={study.groupName}
               tags={study.tags}
               isRegistered={isRegistered}
-              // TODO: 추후에 idx를 studyId로 바꿔야 함.
-              key={idx}
+              key={study.groupId}
             />
           ))
         )}

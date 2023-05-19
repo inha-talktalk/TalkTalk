@@ -96,3 +96,10 @@ interface GroupStudyUserInfo extends UserProfile {
   isOnline: boolean;
   isOwner: boolean;
 }
+
+interface ScriptType {
+  label: string;
+  value: string;
+}
+
+type ScriptTypeResponse = ScriptType[];

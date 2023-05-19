@@ -5,6 +5,7 @@ import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { getGroupStudyList, getGroupStudySearch, getUserProfile } from '@/utils/api';
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
+import React from 'react';
 import { useEffect, useState } from 'react';
 
 export default function FindStudyGroupPage() {
@@ -167,7 +168,7 @@ export default function FindStudyGroupPage() {
           <PostCell
             owner={ownerList[idx]}
             group={groupStudy}
-            key={idx}
+            key={groupStudy.groupId}
             isLast={idx === groupStudyList.length - 1}
           />
         ))}
@@ -177,9 +178,8 @@ export default function FindStudyGroupPage() {
           .fill(0)
           .map((_, idx) => idx + startPageNum)
           .map((val) => (
-            <>
+            <React.Fragment key={val}>
               <span
-                key={`page-${val}`}
                 className={val === pageNum ? 'current-page' : ''}
                 onClick={() => {
                   handlePageChange(val);
@@ -188,7 +188,7 @@ export default function FindStudyGroupPage() {
                 {val}
               </span>
               ·
-            </>
+            </React.Fragment>
           ))}
       </div>
     </div>
