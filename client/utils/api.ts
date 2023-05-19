@@ -131,3 +131,7 @@ export async function getProgressStudy() {
 export async function getApplyStudy() {
   return get<MyStudyResponse>(`/user/study/apply`, 'getDoneStudy');
 }
+
+export async function getScriptTypes() {
+  return get<ScriptTypeResponse>(`/scriptType`, 'getScriptTypes');
+}
