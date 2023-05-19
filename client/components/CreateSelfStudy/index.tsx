@@ -1,13 +1,19 @@
 import Button from '@/components/Button';
 import TagInputBar, { useTagController } from '@/components/TagInputBar';
 import TitleInputBar from '@/components/TitleInputBar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { style } from './style';
 import { useRouter } from 'next/router';
+import { getLanguages } from '@/utils/api';
 
 interface CreateSelfStudyProps {
   type: 'read' | 'write';
+}
+
+interface SelectValue {
+  label: string;
+  value: string;
 }
 
 export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
@@ -15,14 +21,9 @@ export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
   const router = useRouter();
 
   const [title, setTitle] = useState<string>('');
-  const [language, setLanguage] = useState<string>('');
   const [scriptType, setScriptType] = useState<string>('');
-
-  const languages = [
-    // TODO: 추후에 API 반환값으로 변경 예정
-    { value: 'en', label: '영어' },
-    { value: 'ko', label: '한국어' },
-  ];
+  const [languages, setLanguages] = useState<SelectValue[]>([]);
+  const [language, setLanguage] = useState<SelectValue | null>(null);
 
   const scriptTypes = [
     // TODO: 추후에 API 반환값으로 변경 예정
@@ -34,13 +35,58 @@ export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
       alert('제목과 태그를 설정하세요');
       return;
     }
-    if (language === '' || scriptType === '') {
+    if (scriptType === '') {
       alert('언어와 스크립트 형태를 선택하세요');
       return;
     }
 
     router.push(`/selfStudy/${type}`);
   };
+
+  // to get languages
+  useEffect(() => {
+    (async () => {
+      setLanguages(
+        (await getLanguages()).map((language) => ({
+          label: language.label,
+          value: language.id,
+        })),
+      );
+    })();
+  }, []);
+
+  // to set default language
+  useEffect(() => {
+    if (languages.length === 0) return;
+    setLanguage(languages[0]);
+  }, [languages]);
+
+  // to change default tag
+  useEffect(() => {
+    if (!language) return;
+    if (tagController.tags.length === 0) {
+      tagController.setTags([
+        {
+          value: `# ${language.label}`,
+          isRemovable: false,
+        },
+      ]);
+      return;
+    }
+    tagController.setTags((tags) =>
+      tags.map((tag) => {
+        if (!tag.isRemovable) {
+          return {
+            value: `# ${language.label}`,
+            isRemovable: false,
+          };
+        } else {
+          return tag;
+        }
+      }),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, tagController.setTags]);
 
   return (
     <div css={style.container}>
@@ -59,7 +105,11 @@ export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
       <div css={style.flex}>
         <span>언어</span>
         <div css={style.selectBox}>
-          <Select options={languages} onChange={(e) => setLanguage(e?.value ?? '')} />
+          <Select
+            options={languages}
+            value={language}
+            onChange={(e) => setLanguage(e ?? languages[0])}
+          />
         </div>
       </div>
       <div css={style.flex}>

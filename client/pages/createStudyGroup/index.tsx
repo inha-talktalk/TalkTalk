@@ -10,6 +10,11 @@ import { useCallback, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import Select from 'react-select';
 
+interface SelectValue {
+  label: string;
+  value: string;
+}
+
 export default function CreateGroupStudyPage() {
   const { theme } = useGlobalTheme();
   const style = {
@@ -53,8 +58,8 @@ export default function CreateGroupStudyPage() {
   const tagController = useTagController([{ value: '# 영어', isRemovable: false }]);
   const router = useRouter();
 
-  const [languages, setLanguages] = useState([{ label: '한국어', value: 'ko' }]);
-  const [language, setLanguage] = useState(languages[0]);
+  const [languages, setLanguages] = useState<SelectValue[]>([]);
+  const [language, setLanguage] = useState<SelectValue | null>(null);
   const [personnel, setPersonnel] = useState<number>(2);
   const [isAlways, setIsAlways] = useState<boolean>(true);
   const [finishDate, setFinishDate] = useState<Date>(new Date());
@@ -67,7 +72,12 @@ export default function CreateGroupStudyPage() {
       return;
     }
 
-    const createGroupStudyBody: CreateGroupStudyBody = {
+    if (!language) {
+      alert('언어를 선택해 주세요.');
+      return;
+    }
+
+    const createdGroupStudyBody: CreateGroupStudyBody = {
       introduction: content,
       languageId: language.value,
       groupName: title,
@@ -76,24 +86,13 @@ export default function CreateGroupStudyPage() {
       groupPersonnel: personnel,
     };
 
-    await postGroupStudy(createGroupStudyBody);
+    await postGroupStudy(createdGroupStudyBody);
     router.push('/findStudyGroup');
   };
 
   const handleCancelButtonClick = useCallback(() => {
     router.push('/');
   }, [router]);
-
-  // to change default tag
-  useEffect(() => {
-    tagController.setTags([
-      {
-        value: `# ${language.label}`,
-        isRemovable: false,
-      },
-    ]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language, tagController.setTags]);
 
   // to get languages
   useEffect(() => {
@@ -106,6 +105,39 @@ export default function CreateGroupStudyPage() {
       );
     })();
   }, []);
+
+  // to set default language
+  useEffect(() => {
+    if (languages.length === 0) return;
+    setLanguage(languages[0]);
+  }, [languages]);
+
+  // to change default tag
+  useEffect(() => {
+    if (!language) return;
+    if (tagController.tags.length === 0) {
+      tagController.setTags([
+        {
+          value: `# ${language.label}`,
+          isRemovable: false,
+        },
+      ]);
+      return;
+    }
+    tagController.setTags((tags) =>
+      tags.map((tag) => {
+        if (!tag.isRemovable) {
+          return {
+            value: `# ${language.label}`,
+            isRemovable: false,
+          };
+        } else {
+          return tag;
+        }
+      }),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, tagController.setTags]);
 
   return (
     <div css={style.container}>
@@ -123,7 +155,7 @@ export default function CreateGroupStudyPage() {
           <Select
             options={languages}
             onChange={(e) => setLanguage(e ?? languages[0])}
-            defaultValue={languages[0]}
+            value={language}
           />
         </div>
       </div>
