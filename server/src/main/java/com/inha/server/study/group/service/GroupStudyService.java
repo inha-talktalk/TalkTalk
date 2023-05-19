@@ -320,7 +320,7 @@ public class GroupStudyService {
 
         List<String> studyMate = groupStudy.getStudyMate();
         if (userId.equals(groupStudy.getOwnerId())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         if (!studyMate.contains(userId)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
