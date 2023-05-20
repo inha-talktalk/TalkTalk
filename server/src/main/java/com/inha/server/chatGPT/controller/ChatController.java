@@ -35,7 +35,8 @@ public class ChatController {
     private String apiUrl;
 
     @PostMapping("/{type}/{num}")
-    public HttpStatus chat(@PathVariable String type, @PathVariable Integer num, @RequestParam String languageId) {
+    public HttpStatus chat(@PathVariable String type, @PathVariable Integer num,
+        @RequestParam String languageId) {
         String prompt = scriptService.makePrompt(languageService.getLanguageName(languageId), type);
 
         ChatReq request = new ChatReq(model, prompt, num);
