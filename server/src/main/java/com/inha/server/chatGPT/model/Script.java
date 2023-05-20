@@ -17,6 +17,8 @@ public class Script {
 
     String type;
 
+    String language;
+
     List<ScriptMap> scripts;
 
     @Getter
