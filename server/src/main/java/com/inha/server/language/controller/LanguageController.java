@@ -30,7 +30,7 @@ public class LanguageController {
         return HttpStatus.OK;
     }
 
-    @GetMapping("/scriptType")
+    @GetMapping("/script-type")
     public List<ScriptTypeDto>  getScript() {
         List<ScriptTypeDto> scriptType = new ArrayList<>();
 

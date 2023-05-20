@@ -1,9 +1,11 @@
 package com.inha.server.chatGPT.controller;
 
 import com.inha.server.chatGPT.dto.request.ChatReq;
+import com.inha.server.chatGPT.dto.request.ScriptReq;
 import com.inha.server.chatGPT.dto.response.ChatRes;
 import com.inha.server.chatGPT.service.ScriptService;
 import com.inha.server.language.service.LanguageService;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,12 +37,14 @@ public class ChatController {
     @Value("${openai.api.url}")
     private String apiUrl;
 
-    @PostMapping("/{type}/{num}")
-    public HttpStatus chat(@PathVariable String type, @PathVariable Integer num,
-        @RequestParam String languageId) {
+    @PostMapping()
+    public HttpStatus chat(@RequestBody ScriptReq scriptReq) {
+        String languageId = scriptReq.getLanguageId();
+        String type = scriptReq.getType();
+
         String prompt = scriptService.makePrompt(languageService.getLanguageName(languageId), type);
 
-        ChatReq request = new ChatReq(model, prompt, num);
+        ChatReq request = new ChatReq(model, prompt, scriptReq.getNum());
 
         // api 호출
         ChatRes response = restTemplate.postForObject(apiUrl, request, ChatRes.class);
