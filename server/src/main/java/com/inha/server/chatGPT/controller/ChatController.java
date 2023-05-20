@@ -37,8 +37,6 @@ public class ChatController {
     @PostMapping("/{type}/{num}")
     public HttpStatus chat(@PathVariable String type, @PathVariable Integer num, @RequestParam String languageId) {
         String prompt = scriptService.makePrompt(languageService.getLanguageName(languageId), type);
-        System.out.println(prompt);
-        String language = languageService.getTTS(languageId);
 
         ChatReq request = new ChatReq(model, prompt, num);
 
@@ -49,7 +47,7 @@ public class ChatController {
             return HttpStatus.BAD_REQUEST;
         }
 
-        scriptService.makeScript(response.getChoices(), type, language);
+        scriptService.makeScript(response.getChoices(), type, languageId);
 
         return HttpStatus.OK;
     }

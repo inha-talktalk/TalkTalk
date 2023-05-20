@@ -16,7 +16,7 @@ import java.util.Map;
 public class SelfStudyController {
 
     @GetMapping()
-    public ScriptDto GetScript(@RequestParam(name = "languageId") Integer languageId, @RequestParam(name = "type") String type) {
+    public ScriptDto GetScript(@RequestParam(name = "languageId") String languageId, @RequestParam(name = "type") String type) {
         List<ScriptDto.Script> scripts = new ArrayList<>();
         scripts.add(new ScriptDto.Script("Hello student.", "https://inha-talktalk.s3.ap-northeast-2.amazonaws.com/clova1684048155309"));
         scripts.add(new ScriptDto.Script("I wanna go home.", "https://inha-talktalk.s3.ap-northeast-2.amazonaws.com/clova1684048259773"));
