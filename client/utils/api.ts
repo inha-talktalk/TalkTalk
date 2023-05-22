@@ -133,5 +133,5 @@ export async function getApplyStudy() {
 }
 
 export async function getScriptTypes() {
-  return get<ScriptTypeResponse>(`/scriptType`, 'getScriptTypes');
+  return get<ScriptTypeResponse>(`/script-type`, 'getScriptTypes');
 }
