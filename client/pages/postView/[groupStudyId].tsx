@@ -6,6 +6,7 @@ import { AxiosError } from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function PostViewPage() {
   const { theme } = useGlobalTheme();
@@ -107,10 +108,10 @@ export default function PostViewPage() {
   const handleApplyButtonClick = async () => {
     try {
       await postApplyGroupStudy(groupId);
-      alert('가입 신청이 완료됐습니다.');
+      toast.info('가입 신청이 완료됐습니다.');
     } catch (e) {
       if (e instanceof AxiosError) {
-        alert(`가입에 실패했습니다.\n\n${e.response?.data.message}`);
+        toast.error(`가입에 실패했습니다.\n\n${e.response?.data.message}`);
       }
     }
   };

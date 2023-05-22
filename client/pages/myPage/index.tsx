@@ -16,6 +16,7 @@ import {
 import { DEAFULT_PLACEHOLDER_GRAY } from '@/utils/image';
 import { css } from '@emotion/react';
 import { ChangeEvent, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function MyPage() {
   const { theme } = useGlobalTheme();
@@ -123,7 +124,7 @@ export default function MyPage() {
 
         newProfileImage.pop();
       }
-      alert('변경되었습니다.');
+      toast.info('변경되었습니다.');
     } catch (e) {}
   };
 

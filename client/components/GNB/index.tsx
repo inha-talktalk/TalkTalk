@@ -54,7 +54,9 @@ export default function GNB() {
         <div>
           {navLinks.map((link, idx) => (
             <span
-              css={style.span(currentPath === link.pathname ? theme.primary : theme.black)}
+              css={style.span(
+                new RegExp(`^${link.pathname}`).test(currentPath) ? theme.primary : theme.black,
+              )}
               key={idx}
               onClick={() => router.push(link.pathname)}
             >

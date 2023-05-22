@@ -30,12 +30,21 @@ public class SwaggerConfig {
             .build();
     }
     @Bean
-    public GroupedOpenApi studyApi(){
+    public GroupedOpenApi groupStudyApi(){
         String [] paths = {"/group-study/**"};
         return GroupedOpenApi.builder()
             .group("GroupStudy")
             .pathsToMatch(paths)
             .build();
+    }
+
+    @Bean
+    public GroupedOpenApi selfStudyApi(){
+        String [] paths = {"/self-study/**"};
+        return GroupedOpenApi.builder()
+                .group("SelfStudy")
+                .pathsToMatch(paths)
+                .build();
     }
 
     @Bean
@@ -45,6 +54,33 @@ public class SwaggerConfig {
             .group("OAuth")
             .pathsToMatch(paths)
             .build();
+    }
+
+    @Bean
+    public GroupedOpenApi languageApi(){
+        String [] paths = {"/language/**"};
+        return GroupedOpenApi.builder()
+                .group("Language")
+                .pathsToMatch(paths)
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi scriptApi(){
+        String [] paths = {"/scriptType/**"};
+        return GroupedOpenApi.builder()
+                .group("Script")
+                .pathsToMatch(paths)
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi chatApi(){
+        String [] paths = {"/chat/**"};
+        return GroupedOpenApi.builder()
+                .group("Chat GPT")
+                .pathsToMatch(paths)
+                .build();
     }
 
     @Bean

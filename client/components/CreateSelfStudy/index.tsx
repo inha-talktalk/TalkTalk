@@ -1,13 +1,20 @@
 import Button from '@/components/Button';
 import TagInputBar, { useTagController } from '@/components/TagInputBar';
 import TitleInputBar from '@/components/TitleInputBar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { style } from './style';
 import { useRouter } from 'next/router';
+import { getLanguages, getScriptTypes } from '@/utils/api';
+import { toast } from 'react-toastify';
 
 interface CreateSelfStudyProps {
   type: 'read' | 'write';
+}
+
+interface SelectValue {
+  label: string;
+  value: string;
 }
 
 export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
@@ -15,32 +22,82 @@ export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
   const router = useRouter();
 
   const [title, setTitle] = useState<string>('');
-  const [language, setLanguage] = useState<string>('');
-  const [scriptType, setScriptType] = useState<string>('');
-
-  const languages = [
-    // TODO: 추후에 API 반환값으로 변경 예정
-    { value: 'en', label: '영어' },
-    { value: 'ko', label: '한국어' },
-  ];
-
-  const scriptTypes = [
-    // TODO: 추후에 API 반환값으로 변경 예정
-    { value: 'type1', label: '대화문' },
-  ];
+  const [languages, setLanguages] = useState<SelectValue[]>([]);
+  const [language, setLanguage] = useState<SelectValue | null>(null);
+  const [scriptTypes, setScriptTypes] = useState<SelectValue[]>([]);
+  const [scriptType, setScriptType] = useState<SelectValue | null>(null);
 
   const handleStartButtonClick = () => {
-    if (title === '' || tagController.tags.length === 0) {
-      alert('제목과 태그를 설정하세요');
+    if (title === '') {
+      toast.error('제목을 입력하세요');
       return;
     }
-    if (language === '' || scriptType === '') {
-      alert('언어와 스크립트 형태를 선택하세요');
+
+    if (!scriptType) {
+      toast.error('언어와 스크립트 형태를 선택하세요');
       return;
     }
 
     router.push(`/selfStudy/${type}`);
   };
+
+  // to get languages
+  useEffect(() => {
+    (async () => {
+      setLanguages(
+        (await getLanguages()).map((language) => ({
+          label: language.label,
+          value: language.id,
+        })),
+      );
+    })();
+  }, []);
+
+  // to get script types
+  useEffect(() => {
+    (async () => {
+      setScriptTypes(await getScriptTypes());
+    })();
+  }, []);
+
+  // to set default script type
+  useEffect(() => {
+    if (scriptTypes.length === 0) return;
+    setScriptType(scriptTypes[0]);
+  }, [scriptTypes]);
+
+  // to set default language
+  useEffect(() => {
+    if (languages.length === 0) return;
+    setLanguage(languages[0]);
+  }, [languages]);
+
+  // to change default tag
+  useEffect(() => {
+    if (!language) return;
+    if (tagController.tags.length === 0) {
+      tagController.setTags([
+        {
+          value: `# ${language.label}`,
+          isRemovable: false,
+        },
+      ]);
+      return;
+    }
+    tagController.setTags((tags) =>
+      tags.map((tag) => {
+        if (!tag.isRemovable) {
+          return {
+            value: `# ${language.label}`,
+            isRemovable: false,
+          };
+        } else {
+          return tag;
+        }
+      }),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, tagController.setTags]);
 
   return (
     <div css={style.container}>
@@ -59,13 +116,21 @@ export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
       <div css={style.flex}>
         <span>언어</span>
         <div css={style.selectBox}>
-          <Select options={languages} onChange={(e) => setLanguage(e?.value ?? '')} />
+          <Select
+            options={languages}
+            value={language}
+            onChange={(e) => setLanguage(e ?? languages[0])}
+          />
         </div>
       </div>
       <div css={style.flex}>
         <span>스크립트 형태</span>
         <div css={style.selectBox}>
-          <Select options={scriptTypes} onChange={(e) => setScriptType(e?.value ?? '')} />
+          <Select
+            options={scriptTypes}
+            onChange={(e) => setScriptType(e ?? scriptTypes[0])}
+            value={scriptType}
+          />
         </div>
       </div>
       <Button

@@ -50,16 +50,7 @@ export async function getUserProfile(userId: string) {
 }
 
 export async function getGroupStudyList() {
-  const groupStudyListResponse = await get<GroupStudyListResponse>(
-    '/group-study/list',
-    'getGroupStudyList',
-  );
-
-  return groupStudyListResponse.map((groupStudyResponse) => ({
-    ...groupStudyResponse,
-    groupDuration: new Date(groupStudyResponse.groupDuration),
-    createdAt: new Date(groupStudyResponse.createdAt),
-  }));
+  return await get<GroupStudyListResponse>('/group-study/list', 'getGroupStudyList');
 }
 
 export async function getUserAchievement() {
@@ -80,20 +71,22 @@ export async function login(code: string) {
 
 export async function getGroupStudySearch(keyword: string, page?: number) {
   return await get<GroupStudySearchResponse>(
-    `/group-study?keyword=${keyword}${page ? `&page=${page}` : ''}`,
+    `/group-study/search?keyword=${keyword}${!!page ? `&page=${page - 1}` : ''}`,
     'getGroupStudySearch',
   );
 }
 
 export async function getGroupStudyPost(groupStudyId: string) {
   const groupPostResponse = await get<GroupStudyPostResponse>(
-    `/group-study/${groupStudyId}/post`,
+    `/group-study/info?groupStudyId=${groupStudyId}`,
     'getGroupStudyPost',
   );
 
   const groupPost: GroupStudy = {
     ...groupPostResponse,
-    groupDuration: new Date(groupPostResponse.groupDuration),
+    groupDuration: groupPostResponse.groupDuration
+      ? new Date(groupPostResponse.groupDuration)
+      : null,
     createdAt: new Date(groupPostResponse.createdAt),
   };
 
@@ -137,4 +130,8 @@ export async function getProgressStudy() {
 
 export async function getApplyStudy() {
   return get<MyStudyResponse>(`/user/study/apply`, 'getDoneStudy');
+}
+
+export async function getScriptTypes() {
+  return get<ScriptTypeResponse>(`/scriptType`, 'getScriptTypes');
 }

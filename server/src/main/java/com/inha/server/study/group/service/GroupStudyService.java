@@ -26,6 +26,8 @@ import java.util.TimeZone;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,50 +38,29 @@ public class GroupStudyService {
     private final GroupStudyRepository groupStudyRepository;
     private final ApplyStatusRepository applyStatusRepository;
 
-    private static String getUserId(String jwt) {
-        String userId = TokenProvider.getSubject(jwt);
-
-        validate(userId == null, "user not found.");
-        return userId;
-    }
-
-    private static void validate(boolean groupStudy, String group_study_not_found) {
-        if (groupStudy) {
-            throw new IllegalStateException(group_study_not_found);
-        }
-    }
-
-    public PostGroupStudyRes create(String jwt, PostGroupStudyReq request) {
+    public ResponseEntity<PostGroupStudyRes> create(String jwt, PostGroupStudyReq request) {
         String userId = getUserId(jwt);
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Date groupDuration = request.getGroupDuration();
         GroupStudy groupStudy = insertGroupStudy(userId, request, groupDuration);
 
-        return PostGroupStudyRes.builder()
+        return new ResponseEntity<>(PostGroupStudyRes.builder()
             .ownerId(userId)
             .groupId(groupStudy.getId())
-            .build();
+            .build(), HttpStatus.CREATED);
     }
 
     @Transactional
     public GroupStudy insertGroupStudy(String userId, PostGroupStudyReq request,
         Date groupDuration) {
-        if (groupDuration == null) {
-            GroupStudy groupStudy = GroupStudy.builder()
-                .languageId(request.getLanguageId())
-                .ownerId(userId)
-                .groupName(request.getGroupName())
-                .tags(request.getTags())
-                .groupPersonnel(request.getGroupPersonnel())
-                .introduction(request.getIntroduction())
-                .studyMate(Collections.singletonList(userId))
-                .build();
-            groupStudyRepository.save(groupStudy);
-            return groupStudy;
-        } else {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-            GroupStudy groupStudy = GroupStudy.builder()
+        GroupStudy groupStudy;
+        if (groupDuration != null) {
+            groupStudy = GroupStudy.builder()
                 .languageId(request.getLanguageId())
                 .ownerId(userId)
                 .groupName(request.getGroupName())
@@ -88,15 +69,26 @@ public class GroupStudyService {
                 .introduction(request.getIntroduction())
                 .studyMate(Collections.singletonList(userId))
                 .groupDuration(formatter.format(groupDuration))
+                .createdAt(formatter.format(new Date()))
                 .build();
-
-            groupStudyRepository.save(groupStudy);
-            return groupStudy;
+        } else {
+            groupStudy = GroupStudy.builder()
+                .languageId(request.getLanguageId())
+                .ownerId(userId)
+                .groupName(request.getGroupName())
+                .tags(request.getTags())
+                .groupPersonnel(request.getGroupPersonnel())
+                .introduction(request.getIntroduction())
+                .studyMate(Collections.singletonList(userId))
+                .createdAt(formatter.format(new Date()))
+                .build();
         }
+        groupStudyRepository.save(groupStudy);
+        return groupStudy;
     }
 
     @Transactional
-    public GetGroupStudyListRes getGroupStudyList(Pageable pageable) {
+    public ResponseEntity<GetGroupStudyListRes> getGroupStudyList(Pageable pageable) {
         Integer totalPage = groupStudyRepository.findAll().size();
 
         List<GroupStudy> groupStudyList = groupStudyRepository.findAll(
@@ -104,15 +96,15 @@ public class GroupStudyService {
 
         List<GroupStudyRes> groupStudyResList = getGroupStudyResList(groupStudyList);
 
-        return GetGroupStudyListRes.builder()
+        return new ResponseEntity<>(GetGroupStudyListRes.builder()
             .groupStudyList(groupStudyResList)
             .totalPage(totalPage)
             .currentPage(pageable.getPageNumber())
-            .build();
+            .build(), HttpStatus.OK);
     }
 
     @Transactional
-    public GetGroupStudyListRes search(String keyword, Pageable pageable) {
+    public ResponseEntity<GetGroupStudyListRes> search(String keyword, Pageable pageable) {
         List<GroupStudy> groupStudyList = groupStudyRepository.findByGroupNameContainingIgnoreCase(
             keyword);
         List<GroupStudy> groupStudyListWithPageable = groupStudyRepository.findByGroupNameContainingIgnoreCase(
@@ -123,11 +115,11 @@ public class GroupStudyService {
 
         List<GroupStudyRes> groupStudyResList = getGroupStudyResList(groupStudyListWithPageable);
 
-        return GetGroupStudyListRes.builder()
+        return new ResponseEntity<>(GetGroupStudyListRes.builder()
             .groupStudyList(groupStudyResList)
             .totalPage(totalPage)
             .currentPage(currentPage)
-            .build();
+            .build(), HttpStatus.OK);
     }
 
     private List<GroupStudyRes> getGroupStudyResList(List<GroupStudy> groupStudyList) {
@@ -145,6 +137,7 @@ public class GroupStudyService {
                 .groupDuration(groupStudy.getGroupDuration())
                 .ownerId(groupStudy.getOwnerId())
                 .isFinished(groupStudy.getIsFinished())
+                .createdAt(groupStudy.getCreatedAt())
                 .build();
 
             groupStudyResList.add(groupStudyRes);
@@ -153,11 +146,14 @@ public class GroupStudyService {
     }
 
     @Transactional
-    public GetGroupStudyPostDetailRes getGroupStudyDetail(String groupStudyId) {
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
-        validate(groupStudy == null, "group study not found");
+    public ResponseEntity<GetGroupStudyPostDetailRes> getGroupStudyDetail(String groupStudyId) {
+        GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
 
-        return GetGroupStudyPostDetailRes.builder()
+        if (groupStudy == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(GetGroupStudyPostDetailRes.builder()
             .groupId(groupStudy.getId())
             .languageId(groupStudy.getLanguageId())
             .groupName(groupStudy.getGroupName())
@@ -167,41 +163,51 @@ public class GroupStudyService {
             .groupDuration(groupStudy.getGroupDuration())
             .ownerId(groupStudy.getOwnerId())
             .isFinished(groupStudy.getIsFinished())
-            .build();
-    }
-
-    private GroupStudy getGroupStudy(String groupStudyId) {
-        GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
-        validate(groupStudy == null, "group study not found");
-
-        return groupStudy;
+            .build(), HttpStatus.OK);
     }
 
     @Transactional
-    public PostGroupStudyEndRes end(String jwt, String groupStudyId) {
+    public ResponseEntity<PostGroupStudyEndRes> end(String jwt, String groupStudyId) {
         String userId = getUserId(jwt);
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
+        GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
 
-        validate(!userId.equals(groupStudy.getOwnerId()), "user do not have end permission");
+        if (userId == null || groupStudy == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (!userId.equals(groupStudy.getOwnerId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         groupStudy.changeStudyIsFinished();
         groupStudy.changeStudyState();
         groupStudyRepository.save(groupStudy);
 
-        return PostGroupStudyEndRes.builder()
+        return new ResponseEntity<>(PostGroupStudyEndRes.builder()
             .groupStudyId(groupStudy.getId())
             .isFinished(groupStudy.getIsFinished())
-            .build();
+            .build(), HttpStatus.OK);
+    }
+
+    private static String getUserId(String jwt) {
+        return TokenProvider.getSubject(jwt);
     }
 
     @Transactional
-    public WaitingListRes apply(String jwt, String groupStudyId) {
+    public ResponseEntity<WaitingListRes> apply(String jwt, String groupStudyId) {
         String userId = getUserId(jwt);
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
+        GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
+        if (userId == null || groupStudy == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         String ownerId = groupStudy.getOwnerId();
         List<String> waitingList = groupStudy.getWaitingList();
 
-        validate(userId.equals(ownerId), "owner can not apply for study.");
-        validate(waitingList.contains(userId), "Already applied.");
+        if (waitingList.contains(userId)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (userId.equals(ownerId)) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
 
         waitingList.add(userId);
         groupStudyRepository.save(groupStudy);
@@ -213,39 +219,52 @@ public class GroupStudyService {
                 .build()
         );
 
-        return WaitingListRes.builder()
+        return new ResponseEntity<>(WaitingListRes.builder()
             .groupId(groupStudyId)
             .waitingList(waitingList)
-            .build();
+            .build(), HttpStatus.CREATED);
     }
 
     @Transactional
-    public WaitingListRes readWaitingList(String jwt, String groupStudyId) {
+    public ResponseEntity<WaitingListRes> readWaitingList(String jwt, String groupStudyId) {
         String userId = getUserId(jwt);
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
+        GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
+        if (groupStudy == null || userId == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        validate(!userId.equals(groupStudy.getOwnerId()),
-            "General user can not read waiting list.");
+        if (!userId.equals(groupStudy.getOwnerId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
-        return WaitingListRes.builder()
+        return new ResponseEntity<>(WaitingListRes.builder()
             .groupId(groupStudyId)
             .waitingList(groupStudy.getWaitingList())
-            .build();
+            .build(), HttpStatus.OK);
     }
 
     @Transactional
-    public PostGroupStudyAcceptRes approve(String jwt, String groupStudyId, String userId) {
+    public ResponseEntity<PostGroupStudyAcceptRes> approve(String jwt, String groupStudyId,
+        String userId) {
         String ownerId = getUserId(jwt);
+        GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
+        if (groupStudy == null || ownerId == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
         List<String> waitingList = groupStudy.getWaitingList();
         List<String> studyMate = groupStudy.getStudyMate();
 
-        validate(!ownerId.equals(groupStudy.getOwnerId()), "Only study owners can approve.");
-        validate(Objects.equals(groupStudy.getGroupPersonnel(), (long) studyMate.size()),
-            "The study is full.");
-        validate(!waitingList.contains(userId), "user did not apply.");
-        validate(studyMate.contains(userId), "Already approved.");
+        if (!ownerId.equals(groupStudy.getOwnerId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        if (Objects.equals(groupStudy.getGroupPersonnel(), (long) studyMate.size())
+            || studyMate.contains(userId)) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        if (!waitingList.contains(userId)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         waitingList.remove(userId);
         studyMate.add(userId);
@@ -257,53 +276,72 @@ public class GroupStudyService {
 
         applyStatusRepository.save(applyStatus);
 
-        return PostGroupStudyAcceptRes.builder()
+        return new ResponseEntity<>(PostGroupStudyAcceptRes.builder()
             .groupId(groupStudyId)
             .studyMate(studyMate)
-            .build();
+            .build(), HttpStatus.CREATED);
     }
 
     @Transactional
-    public PostDelegateRes delegate(String jwt, String groupStudyId, String changedOwnerId) {
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
-        String originOwnerId = groupStudy.getOwnerId();
+    public ResponseEntity<PostDelegateRes> delegate(String jwt, String groupStudyId,
+        String changedOwnerId) {
+        GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
         String userId = getUserId(jwt);
+
+        if (groupStudy == null || userId == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        String originOwnerId = groupStudy.getOwnerId();
         List<String> studyMate = groupStudy.getStudyMate();
 
-        validate(!userId.equals(originOwnerId), "Only study owners can delegate.");
-        validate(!studyMate.contains(changedOwnerId), "The user is not a study member.");
+        if (!userId.equals(originOwnerId)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        if (!studyMate.contains(changedOwnerId)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         groupStudy.changeStudyOwner(changedOwnerId);
         groupStudyRepository.save(groupStudy);
 
-        return PostDelegateRes.builder()
+        return new ResponseEntity<>(PostDelegateRes.builder()
             .originOwnerId(originOwnerId)
             .changedOwnerId(changedOwnerId)
-            .build();
+            .build(), HttpStatus.OK);
     }
 
     @Transactional
-    public PostGroupStudyQuitRes quit(String jwt, String groupStudyId) {
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
+    public ResponseEntity<PostGroupStudyQuitRes> quit(String jwt, String groupStudyId) {
+        GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
         String userId = getUserId(jwt);
-        List<String> studyMate = groupStudy.getStudyMate();
+        if (groupStudy == null || userId == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        validate(userId.equals(groupStudy.getOwnerId()), "Delegate study first.");
-        validate(!studyMate.contains(userId), "The user is not a study member.");
+        List<String> studyMate = groupStudy.getStudyMate();
+        if (userId.equals(groupStudy.getOwnerId())) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        if (!studyMate.contains(userId)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         studyMate.remove(userId);
         groupStudyRepository.save(groupStudy);
 
-        return PostGroupStudyQuitRes.builder()
+        return new ResponseEntity<>(PostGroupStudyQuitRes.builder()
             .quitUserId(userId)
-            .build();
+            .build(), HttpStatus.OK);
     }
 
     @Transactional
-    public GetGroupStudyInfoRes readInfo(String groupStudyId) {
-        GroupStudy groupStudy = getGroupStudy(groupStudyId);
+    public ResponseEntity<GetGroupStudyInfoRes> readInfo(String groupStudyId) {
+        GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
 
-        return GetGroupStudyInfoRes.builder()
+        if (groupStudy == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(GetGroupStudyInfoRes.builder()
             .languageId(groupStudy.getLanguageId())
             .groupName(groupStudy.getGroupName())
             .groupPersonnel(groupStudy.getGroupPersonnel())
@@ -312,6 +350,6 @@ public class GroupStudyService {
             .introduction(groupStudy.getIntroduction())
             .groupDuration(groupStudy.getGroupDuration())
             .ownerId(groupStudy.getOwnerId())
-            .build();
+            .build(), HttpStatus.OK);
     }
 }
