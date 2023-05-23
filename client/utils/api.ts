@@ -135,3 +135,10 @@ export async function getApplyStudy() {
 export async function getScriptTypes() {
   return get<ScriptTypeResponse>(`/script-type`, 'getScriptTypes');
 }
+
+export async function getSelfStudyScripts(languageId: string, type: string) {
+  return get<SelfStudyScriptResponse>(
+    `/self-study?languageId=${languageId}&type=${type}`,
+    'getSelfStudyScripts',
+  );
+}

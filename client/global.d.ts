@@ -103,3 +103,13 @@ interface ScriptType {
 }
 
 type ScriptTypeResponse = ScriptType[];
+
+interface SelfStudyScript {
+  text: string;
+  mp3Uri: string;
+}
+
+interface SelfStudyScriptResponse {
+  scriptId: string;
+  scripts: SelfStudyScript[];
+}
