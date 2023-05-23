@@ -5,6 +5,7 @@ import com.inha.server.chatGPT.model.Script;
 import com.inha.server.chatGPT.model.Script.ScriptMap;
 import com.inha.server.chatGPT.repository.ScriptRepository;
 import com.inha.server.clova.service.ClovaService;
+import com.inha.server.language.service.LanguageService;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,11 @@ public class ScriptService {
 
     private final ScriptRepository scriptRepository;
     private final ClovaService clovaService;
+    private final LanguageService languageService;
 
-    public void makeScript(List<Choice> choices, String type, String language) {
+    public void makeScript(List<Choice> choices, String type, String languageId) {
+        String language = languageService.getTTS(languageId);
+
         int tap = 6;
         if (type.equals("prose")) {
             tap = 3;
@@ -39,6 +43,7 @@ public class ScriptService {
             scriptRepository.save(
                 Script.builder()
                     .type(type)
+                    .language(languageId)
                     .scripts(scriptMapList)
                     .build());
         }

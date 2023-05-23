@@ -175,7 +175,7 @@ public class GroupStudyService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         if (!userId.equals(groupStudy.getOwnerId())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         groupStudy.changeStudyIsFinished();
@@ -206,7 +206,7 @@ public class GroupStudyService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         if (userId.equals(ownerId)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
         waitingList.add(userId);
@@ -234,7 +234,7 @@ public class GroupStudyService {
         }
 
         if (!userId.equals(groupStudy.getOwnerId())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         return new ResponseEntity<>(WaitingListRes.builder()
@@ -248,18 +248,21 @@ public class GroupStudyService {
         String userId) {
         String ownerId = getUserId(jwt);
         GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
-        if (groupStudy == null || userId == null) {
+        if (groupStudy == null || ownerId == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         List<String> waitingList = groupStudy.getWaitingList();
         List<String> studyMate = groupStudy.getStudyMate();
 
-        if (!ownerId.equals(groupStudy.getOwnerId()) || !waitingList.contains(userId)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        if (!ownerId.equals(groupStudy.getOwnerId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (Objects.equals(groupStudy.getGroupPersonnel(), (long) studyMate.size())
             || studyMate.contains(userId)) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        if (!waitingList.contains(userId)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -292,7 +295,7 @@ public class GroupStudyService {
         List<String> studyMate = groupStudy.getStudyMate();
 
         if (!userId.equals(originOwnerId)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (!studyMate.contains(changedOwnerId)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -316,7 +319,10 @@ public class GroupStudyService {
         }
 
         List<String> studyMate = groupStudy.getStudyMate();
-        if (userId.equals(groupStudy.getOwnerId()) || !studyMate.contains(userId)) {
+        if (userId.equals(groupStudy.getOwnerId())) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        if (!studyMate.contains(userId)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
