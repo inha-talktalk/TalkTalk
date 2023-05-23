@@ -8,9 +8,9 @@ import lombok.Getter;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @AllArgsConstructor
 public enum language {
-    English("영어", "", "clara"),
-    Chinese("중국어", "", ""),
-    Japanese("일본어", "", "");
+    English("영어", "en-US", "clara"),
+    Chinese("중국어", "zh-CN", "meimei"),
+    Japanese("일본어", "jp-JP", "ntomoko");
 
     private final String label;
     private final String stt;
