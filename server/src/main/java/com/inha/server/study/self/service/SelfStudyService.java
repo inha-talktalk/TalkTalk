@@ -120,11 +120,19 @@ public class SelfStudyService {
                 HttpStatus.OK);
     }
 
-    public HttpStatus endRead(EndSelfStudyReadReq endSelfStudyReadReq) {
+    public HttpStatus endRead(EndSelfStudyReadReq endSelfStudyReadReq, String jwt) {
+        if (getUserId(jwt) == null) {
+            return HttpStatus.UNAUTHORIZED;
+        }
+
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        SelfStudy study = selfStudyRepository.findById(endSelfStudyReadReq.getSelfStudyId()).get();
+        SelfStudy study = selfStudyRepository.findById(endSelfStudyReadReq.getSelfStudyId()).orElse(null);
+
+        if (study == null) {
+            return HttpStatus.NOT_FOUND;
+        }
 
         study.finishSelfStudyRead(endSelfStudyReadReq.getScriptMapList(),formatter.format(new Date()));
 
@@ -133,11 +141,19 @@ public class SelfStudyService {
         return HttpStatus.OK;
     }
 
-    public HttpStatus endWrite(EndSelfStudyWriteReq endSelfStudyWriteReq) {
+    public HttpStatus endWrite(EndSelfStudyWriteReq endSelfStudyWriteReq, String jwt) {
+        if (getUserId(jwt) == null) {
+            return HttpStatus.UNAUTHORIZED;
+        }
+
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        SelfStudy study = selfStudyRepository.findById(endSelfStudyWriteReq.getSelfStudyId()).get();
+        SelfStudy study = selfStudyRepository.findById(endSelfStudyWriteReq.getSelfStudyId()).orElse(null);
+
+        if (study == null) {
+            return HttpStatus.NOT_FOUND;
+        }
 
         study.finishSelfStudyWrite(endSelfStudyWriteReq.getScriptTextList(),formatter.format(new Date()));
 

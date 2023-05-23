@@ -37,12 +37,12 @@ public class SelfStudyController {
     }
 
     @PostMapping("/read")
-    public HttpStatus endRead(@RequestBody EndSelfStudyReadReq endSelfStudyReadReq) {
-        return selfStudyService.endRead(endSelfStudyReadReq);
+    public HttpStatus endRead(@RequestHeader(value = "x-access-token") String jwt, @RequestBody EndSelfStudyReadReq endSelfStudyReadReq) {
+        return selfStudyService.endRead(endSelfStudyReadReq, jwt);
     }
 
     @PostMapping("/write")
-    public HttpStatus endWrite(@RequestBody EndSelfStudyWriteReq endSelfStudyWriteReq) {
-        return selfStudyService.endWrite(endSelfStudyWriteReq);
+    public HttpStatus endWrite(@RequestHeader(value = "x-access-token") String jwt, @RequestBody EndSelfStudyWriteReq endSelfStudyWriteReq) {
+        return selfStudyService.endWrite(endSelfStudyWriteReq, jwt);
     }
 }
