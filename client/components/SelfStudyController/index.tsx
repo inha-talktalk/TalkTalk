@@ -5,6 +5,9 @@ import { getDateString } from '@/utils/date';
 import Modal from '../Modal';
 import SelfStudySharePanel from '../SelfStudySharePanel';
 import { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { selfStudyStarted, submitSelfStudy } from '@/states/selfStudy';
+import { useRouter } from 'next/router';
 
 interface SelfStudyControllerProps {
   type: 'read' | 'write';
@@ -23,9 +26,26 @@ export default function SelfStudyController({
 }: SelfStudyControllerProps) {
   const { theme } = useGlobalTheme();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [_, setSubmit] = useRecoilState(submitSelfStudy);
+  const [isSelfStudyStarted, setSelfStudyStarted] = useRecoilState(selfStudyStarted);
+  const router = useRouter();
 
   const handleShareButtonClick = () => {
     setShowModal(true);
+  };
+
+  const handleSubmitButtonClick = () => {
+    if (isSelfStudyStarted) {
+      setSubmit(true);
+    } else {
+      // TODO: self study start api call
+      setSelfStudyStarted(true);
+    }
+  };
+
+  const handleCancelButtonClick = () => {
+    setSelfStudyStarted(false);
+    router.push('/selfStudy');
   };
 
   return (
@@ -57,7 +77,13 @@ export default function SelfStudyController({
         <div css={style.buttonContainer}>
           {status === 'progress' ? (
             <>
-              <Button value={'완료'} width={'122px'} height={'48px'} fontSize={'20px'} />
+              <Button
+                value={isSelfStudyStarted ? '완료' : '시작'}
+                width={'122px'}
+                height={'48px'}
+                fontSize={'20px'}
+                onClick={handleSubmitButtonClick}
+              />
               <Button
                 value={'취소'}
                 width={'122px'}
@@ -65,6 +91,7 @@ export default function SelfStudyController({
                 fontSize={'20px'}
                 backgroundColor={theme.offWhite}
                 color={theme.darker}
+                onClick={handleCancelButtonClick}
               />
             </>
           ) : (
