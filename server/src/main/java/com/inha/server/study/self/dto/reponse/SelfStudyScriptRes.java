@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ScriptRes {
+public class SelfStudyScriptRes {
 
     private String scriptId;
     private List<ScriptMap> scripts;

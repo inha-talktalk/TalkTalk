@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ScriptReq {
+public class SelfStudyScriptReq {
     private String languageId;
     private String type;
 }
