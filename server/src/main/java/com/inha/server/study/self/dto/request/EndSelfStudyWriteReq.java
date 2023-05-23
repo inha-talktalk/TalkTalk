@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EndSelfStudyWriteReq {
     private String selfStudyId;
-    private List<ScriptText> scriptTextList;
+    private List<ScriptText> answers;
 
     @Getter
     @NoArgsConstructor
