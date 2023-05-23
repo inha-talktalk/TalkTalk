@@ -105,6 +105,9 @@ public class GroupStudyService {
 
     @Transactional
     public ResponseEntity<GetGroupStudyListRes> search(String keyword, Pageable pageable) {
+        if (Objects.equals(keyword, "")) {
+            return getGroupStudyList(pageable);
+        }
         List<GroupStudy> groupStudyList = groupStudyRepository.findByGroupNameContainingIgnoreCase(
             keyword);
         List<GroupStudy> groupStudyListWithPageable = groupStudyRepository.findByGroupNameContainingIgnoreCase(
@@ -350,6 +353,7 @@ public class GroupStudyService {
             .introduction(groupStudy.getIntroduction())
             .groupDuration(groupStudy.getGroupDuration())
             .ownerId(groupStudy.getOwnerId())
+            .createdAt(groupStudy.getCreatedAt())
             .build(), HttpStatus.OK);
     }
 }
