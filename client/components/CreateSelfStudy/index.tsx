@@ -7,6 +7,8 @@ import { style } from './style';
 import { useRouter } from 'next/router';
 import { getLanguages, getScriptTypes } from '@/utils/api';
 import { toast } from 'react-toastify';
+import { useRecoilState } from 'recoil';
+import { selfStudy } from '@/states/selfStudy';
 
 interface CreateSelfStudyProps {
   type: 'read' | 'write';
@@ -26,6 +28,7 @@ export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
   const [language, setLanguage] = useState<SelectValue | null>(null);
   const [scriptTypes, setScriptTypes] = useState<SelectValue[]>([]);
   const [scriptType, setScriptType] = useState<SelectValue | null>(null);
+  const [_, setSelfStudy] = useRecoilState(selfStudy);
 
   const handleStartButtonClick = () => {
     if (title === '') {
@@ -37,6 +40,13 @@ export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
       toast.error('언어와 스크립트 형태를 선택하세요');
       return;
     }
+
+    setSelfStudy({
+      title: title,
+      tags: tagController.tags.map((tag) => tag.value),
+      languageId: language?.value || '',
+      scriptType: scriptType?.value || '',
+    });
 
     router.push(`/selfStudy/${type}`);
   };
