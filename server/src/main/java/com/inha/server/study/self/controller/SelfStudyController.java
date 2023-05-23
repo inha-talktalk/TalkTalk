@@ -1,7 +1,7 @@
 package com.inha.server.study.self.controller;
 
-import com.inha.server.chatGPT.dto.request.ScriptReq;
 import com.inha.server.study.self.dto.reponse.SelfStudyScriptRes;
+import com.inha.server.study.self.dto.request.EndSelfStudyReadReq;
 import com.inha.server.study.self.dto.request.SelfStudyReq;
 import com.inha.server.study.self.dto.request.SelfStudyScriptReq;
 import com.inha.server.study.self.service.SelfStudyService;
@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -33,5 +32,10 @@ public class SelfStudyController {
     @PostMapping("/start")
     public HttpStatus startSelfStudy(@RequestBody SelfStudyReq selfStudyReq) {
         return selfStudyService.startSelfStudy(selfStudyReq);
+    }
+
+    @PostMapping("/read")
+    public HttpStatus endRead(@RequestBody EndSelfStudyReadReq endSelfStudyReadReq) {
+        return selfStudyService.endRead(endSelfStudyReadReq);
     }
 }

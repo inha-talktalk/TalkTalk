@@ -3,6 +3,7 @@ package com.inha.server.study.self.service;
 import com.inha.server.chatGPT.model.Script;
 import com.inha.server.chatGPT.repository.ScriptRepository;
 import com.inha.server.study.self.dto.reponse.SelfStudyScriptRes;
+import com.inha.server.study.self.dto.request.EndSelfStudyReadReq;
 import com.inha.server.study.self.dto.request.SelfStudyReq;
 import com.inha.server.study.self.model.SelfStudy;
 import com.inha.server.study.self.repository.SelfStudyRepository;
@@ -91,6 +92,19 @@ public class SelfStudyService {
                 .createdAt(formatter.format(new Date()))
                 .build()
         );
+
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus endRead(EndSelfStudyReadReq endSelfStudyReadReq) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        SelfStudy study = selfStudyRepository.findById(endSelfStudyReadReq.getSelfStudyId()).get();
+
+        study.finishSelfStudyRead(endSelfStudyReadReq.getScriptMapList(),formatter.format(new Date()));
+
+        selfStudyRepository.save(study);
 
         return HttpStatus.OK;
     }
