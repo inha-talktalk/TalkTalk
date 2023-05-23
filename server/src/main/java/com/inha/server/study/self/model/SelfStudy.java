@@ -1,10 +1,11 @@
 package com.inha.server.study.self.model;
 
 import com.inha.server.chatGPT.model.Script.ScriptMap;
+import com.inha.server.study.self.dto.request.EndSelfStudyWriteReq.ScriptText;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+import com.inha.server.study.self.dto.request.EndSelfStudyWriteReq;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -31,6 +32,12 @@ public class SelfStudy {
 
     public void finishSelfStudyRead (List<ScriptMap> answers, String finishedAt) {
         this.selfStudyType = "read";
+        this.answers = answers;
+        this.finishedAt = finishedAt;
+    }
+
+    public void finishSelfStudyWrite(List<ScriptText> answers, String finishedAt) {
+        this.selfStudyType = "write";
         this.answers = answers;
         this.finishedAt = finishedAt;
     }
