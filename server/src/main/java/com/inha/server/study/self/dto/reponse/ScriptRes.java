@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ScriptDto {
+public class ScriptRes {
 
     private String scriptId;
     private List<ScriptMap> scripts;
