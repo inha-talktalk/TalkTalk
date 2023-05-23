@@ -2,6 +2,7 @@ package com.inha.server.study.self.service;
 
 import com.inha.server.chatGPT.model.Script;
 import com.inha.server.chatGPT.repository.ScriptRepository;
+import com.inha.server.study.self.dto.reponse.SelfStudyCreateRes;
 import com.inha.server.study.self.dto.reponse.SelfStudyScriptRes;
 import com.inha.server.study.self.dto.request.EndSelfStudyReadReq;
 import com.inha.server.study.self.dto.request.EndSelfStudyWriteReq;
@@ -30,7 +31,13 @@ public class SelfStudyService {
     private final SelfStudyRepository selfStudyRepository;
 
     private static String getUserId(String jwt) {
-        return TokenProvider.getSubject(jwt);
+        String userId;
+        try {
+            userId = TokenProvider.getSubject(jwt);
+        } catch (Exception e) {
+            return null;
+        }
+        return userId;
     }
 
     public ResponseEntity<SelfStudyScriptRes> getScript(String languageId, String type, String jwt) {
@@ -82,23 +89,35 @@ public class SelfStudyService {
         );
     }
 
-    public HttpStatus startSelfStudy(SelfStudyReq selfStudyReq) {
-        String userId = "644a75e5e94501032bcd97bc";
+    public ResponseEntity<SelfStudyCreateRes> startSelfStudy(SelfStudyReq selfStudyReq, String jwt) {
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        selfStudyRepository.save(
-            SelfStudy.builder()
-                .userId(userId)
-                .selfStudyName(selfStudyReq.getSelfStudyName())
-                .scriptId(selfStudyReq.getScriptId())
-                .tags(selfStudyReq.getTags())
-                .createdAt(formatter.format(new Date()))
-                .build()
+        SelfStudy selfStudy = selfStudyRepository.save(
+                SelfStudy.builder()
+                        .userId(userId)
+                        .selfStudyName(selfStudyReq.getSelfStudyName())
+                        .scriptId(selfStudyReq.getScriptId())
+                        .tags(selfStudyReq.getTags())
+                        .createdAt(formatter.format(new Date()))
+                        .build()
         );
 
-        return HttpStatus.OK;
+        SelfStudyCreateRes.builder()
+                .selfStudyId(selfStudy.getId())
+                .build();
+
+        return new ResponseEntity<>(
+                SelfStudyCreateRes.builder()
+                .selfStudyId(selfStudy.getId())
+                .build(),
+                HttpStatus.OK);
     }
 
     public HttpStatus endRead(EndSelfStudyReadReq endSelfStudyReadReq) {

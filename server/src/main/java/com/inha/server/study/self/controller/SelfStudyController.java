@@ -1,5 +1,6 @@
 package com.inha.server.study.self.controller;
 
+import com.inha.server.study.self.dto.reponse.SelfStudyCreateRes;
 import com.inha.server.study.self.dto.reponse.SelfStudyScriptRes;
 import com.inha.server.study.self.dto.request.EndSelfStudyReadReq;
 import com.inha.server.study.self.dto.request.EndSelfStudyWriteReq;
@@ -31,8 +32,8 @@ public class SelfStudyController {
     }
 
     @PostMapping("/start")
-    public HttpStatus startSelfStudy(@RequestBody SelfStudyReq selfStudyReq) {
-        return selfStudyService.startSelfStudy(selfStudyReq);
+    public ResponseEntity<SelfStudyCreateRes> startSelfStudy(@RequestHeader(value = "x-access-token") String jwt, @RequestBody SelfStudyReq selfStudyReq) {
+        return selfStudyService.startSelfStudy(selfStudyReq, jwt);
     }
 
     @PostMapping("/read")
