@@ -47,6 +47,10 @@ public class SelfStudyService {
 
         String userId = getUserId(jwt);
 
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
         UserScriptList userScriptList = userScriptRepository.findByUserIdAndLanguageId(userId,
             languageId).orElse(null);
 
