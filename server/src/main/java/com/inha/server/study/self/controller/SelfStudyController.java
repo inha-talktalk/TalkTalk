@@ -10,12 +10,7 @@ import com.inha.server.study.self.service.SelfStudyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +21,7 @@ public class SelfStudyController {
 
     @GetMapping()
     public ResponseEntity<SelfStudyScriptRes> GetScript(@RequestHeader(value = "x-access-token") String jwt,
-        @RequestBody SelfStudyScriptReq selfStudyScriptReq) {
+                                                        @RequestBody SelfStudyScriptReq selfStudyScriptReq) {
 
         return selfStudyService.getScript(selfStudyScriptReq.getLanguageId(), selfStudyScriptReq.getType(), jwt);
     }
