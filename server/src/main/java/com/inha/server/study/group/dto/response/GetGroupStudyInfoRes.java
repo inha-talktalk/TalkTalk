@@ -20,4 +20,5 @@ public class GetGroupStudyInfoRes {
   private String introduction;
   private String groupDuration;
   private String ownerId;
+  private String createdAt;
 }
