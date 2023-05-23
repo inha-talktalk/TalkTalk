@@ -8,7 +8,6 @@ import com.inha.server.study.self.dto.request.SelfStudyReq;
 import com.inha.server.study.self.dto.request.SelfStudyScriptReq;
 import com.inha.server.study.self.service.SelfStudyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +31,17 @@ public class SelfStudyController {
     }
 
     @PostMapping("/read")
-    public HttpStatus endRead(@RequestHeader(value = "x-access-token") String jwt, @RequestBody EndSelfStudyReadReq endSelfStudyReadReq) {
+    public ResponseEntity<?> endRead(@RequestHeader(value = "x-access-token") String jwt, @RequestBody EndSelfStudyReadReq endSelfStudyReadReq) {
         return selfStudyService.endRead(endSelfStudyReadReq, jwt);
     }
 
     @PostMapping("/write")
-    public HttpStatus endWrite(@RequestHeader(value = "x-access-token") String jwt, @RequestBody EndSelfStudyWriteReq endSelfStudyWriteReq) {
+    public ResponseEntity<?> endWrite(@RequestHeader(value = "x-access-token") String jwt, @RequestBody EndSelfStudyWriteReq endSelfStudyWriteReq) {
         return selfStudyService.endWrite(endSelfStudyWriteReq, jwt);
+    }
+
+    @DeleteMapping("/{selfStudyId}")
+    public ResponseEntity<?> deleteSelfStudy(@RequestHeader(value = "x-access-token") String jwt, @PathVariable(name = "selfStudyId") String selfStudyId) {
+        return selfStudyService.deleteSelfStudy(selfStudyId, jwt);
     }
 }

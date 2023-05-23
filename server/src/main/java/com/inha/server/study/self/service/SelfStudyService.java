@@ -48,6 +48,28 @@ public class SelfStudyService {
         return formatter.format(new Date());
     }
 
+    public ResponseEntity<?> deleteSelfStudy(String selfStudyId, String jwt) {
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        SelfStudy study = selfStudyRepository.findById(selfStudyId).orElse(null);
+
+        if (study == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (!userId.equals(study.getUserId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        selfStudyRepository.delete(study);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     public ResponseEntity<SelfStudyScriptRes> getScript(String languageId, String type, String jwt) {
         List<Script> scriptList = scriptRepository.findAllByLanguageAndType(languageId, type);
 
@@ -125,39 +147,39 @@ public class SelfStudyService {
                 HttpStatus.OK);
     }
 
-    public HttpStatus endRead(EndSelfStudyReadReq endSelfStudyReadReq, String jwt) {
+    public ResponseEntity<?> endRead(EndSelfStudyReadReq endSelfStudyReadReq, String jwt) {
         if (getUserId(jwt) == null) {
-            return HttpStatus.UNAUTHORIZED;
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         SelfStudy study = selfStudyRepository.findById(endSelfStudyReadReq.getSelfStudyId()).orElse(null);
 
         if (study == null) {
-            return HttpStatus.NOT_FOUND;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         study.finishSelfStudyRead(endSelfStudyReadReq.getAnswers(), getTime());
 
         selfStudyRepository.save(study);
 
-        return HttpStatus.CREATED;
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    public HttpStatus endWrite(EndSelfStudyWriteReq endSelfStudyWriteReq, String jwt) {
+    public ResponseEntity<?> endWrite(EndSelfStudyWriteReq endSelfStudyWriteReq, String jwt) {
         if (getUserId(jwt) == null) {
-            return HttpStatus.UNAUTHORIZED;
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         SelfStudy study = selfStudyRepository.findById(endSelfStudyWriteReq.getSelfStudyId()).orElse(null);
 
         if (study == null) {
-            return HttpStatus.NOT_FOUND;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         study.finishSelfStudyWrite(endSelfStudyWriteReq.getAnswers(), getTime());
 
         selfStudyRepository.save(study);
 
-        return HttpStatus.CREATED;
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
