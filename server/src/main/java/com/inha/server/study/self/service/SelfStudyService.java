@@ -4,6 +4,7 @@ import com.inha.server.chatGPT.model.Script;
 import com.inha.server.chatGPT.repository.ScriptRepository;
 import com.inha.server.study.self.dto.reponse.SelfStudyScriptRes;
 import com.inha.server.study.self.dto.request.EndSelfStudyReadReq;
+import com.inha.server.study.self.dto.request.EndSelfStudyWriteReq;
 import com.inha.server.study.self.dto.request.SelfStudyReq;
 import com.inha.server.study.self.model.SelfStudy;
 import com.inha.server.study.self.repository.SelfStudyRepository;
@@ -103,6 +104,19 @@ public class SelfStudyService {
         SelfStudy study = selfStudyRepository.findById(endSelfStudyReadReq.getSelfStudyId()).get();
 
         study.finishSelfStudyRead(endSelfStudyReadReq.getScriptMapList(),formatter.format(new Date()));
+
+        selfStudyRepository.save(study);
+
+        return HttpStatus.OK;
+    }
+
+    public HttpStatus endWrite(EndSelfStudyWriteReq endSelfStudyWriteReq) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        SelfStudy study = selfStudyRepository.findById(endSelfStudyWriteReq.getSelfStudyId()).get();
+
+        study.finishSelfStudyWrite(endSelfStudyWriteReq.getScriptTextList(),formatter.format(new Date()));
 
         selfStudyRepository.save(study);
 

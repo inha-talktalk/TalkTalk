@@ -2,6 +2,7 @@ package com.inha.server.study.self.controller;
 
 import com.inha.server.study.self.dto.reponse.SelfStudyScriptRes;
 import com.inha.server.study.self.dto.request.EndSelfStudyReadReq;
+import com.inha.server.study.self.dto.request.EndSelfStudyWriteReq;
 import com.inha.server.study.self.dto.request.SelfStudyReq;
 import com.inha.server.study.self.dto.request.SelfStudyScriptReq;
 import com.inha.server.study.self.service.SelfStudyService;
@@ -37,5 +38,10 @@ public class SelfStudyController {
     @PostMapping("/read")
     public HttpStatus endRead(@RequestBody EndSelfStudyReadReq endSelfStudyReadReq) {
         return selfStudyService.endRead(endSelfStudyReadReq);
+    }
+
+    @PostMapping("/write")
+    public HttpStatus endWrite(@RequestBody EndSelfStudyWriteReq endSelfStudyWriteReq) {
+        return selfStudyService.endWrite(endSelfStudyWriteReq);
     }
 }
