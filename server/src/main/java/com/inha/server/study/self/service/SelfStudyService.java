@@ -139,7 +139,7 @@ public class SelfStudyService {
 
         selfStudyRepository.save(study);
 
-        return HttpStatus.OK;
+        return HttpStatus.CREATED;
     }
 
     public HttpStatus endWrite(EndSelfStudyWriteReq endSelfStudyWriteReq, String jwt) {
@@ -160,6 +160,6 @@ public class SelfStudyService {
 
         selfStudyRepository.save(study);
 
-        return HttpStatus.OK;
+        return HttpStatus.CREATED;
     }
 }
