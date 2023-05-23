@@ -3,11 +3,10 @@ package com.inha.server.study.self.model;
 import com.inha.server.chatGPT.model.Script.ScriptMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -25,8 +24,14 @@ public class SelfStudy {
     @Builder.Default
     private List<String> tags = new ArrayList<>();
     @Builder.Default
-    private List<ScriptMap> answers = new ArrayList<>();
+    private List<?> answers = new ArrayList<>();
 
     private String createdAt;
     private String finishedAt;
+
+    public void finishSelfStudyRead (List<ScriptMap> answers, String finishedAt) {
+        this.selfStudyType = "read";
+        this.answers = answers;
+        this.finishedAt = finishedAt;
+    }
 }
