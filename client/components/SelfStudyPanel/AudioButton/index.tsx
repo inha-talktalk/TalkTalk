@@ -34,6 +34,11 @@ function useAudio(url: string): [VoidFunction] {
   const stopPlaying = () => setPlaying(false);
 
   useEffect(() => {
+    audio?.pause();
+    stopPlaying();
+  }, [url, audio]);
+
+  useEffect(() => {
     setAudio(new Audio(url));
   }, [url]);
 
