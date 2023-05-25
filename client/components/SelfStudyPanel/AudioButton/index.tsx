@@ -5,9 +5,10 @@ import { toast } from 'react-toastify';
 
 interface AudioButtonProps {
   url: string;
+  disabled: boolean;
 }
 
-export default function AudioButton({ url }: AudioButtonProps) {
+export default function AudioButton({ url, disabled }: AudioButtonProps) {
   const { theme } = useGlobalTheme();
   const [toggle] = useAudio(url);
 
@@ -17,7 +18,7 @@ export default function AudioButton({ url }: AudioButtonProps) {
         size={36}
         color={theme.secondary}
         onClick={() => {
-          toggle();
+          if (!disabled) toggle();
         }}
       />
     </>
