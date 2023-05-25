@@ -9,4 +9,6 @@ public class LanguageDto {
 
     String label;
     String id;
+    String stt;
+    String tts;
 }
