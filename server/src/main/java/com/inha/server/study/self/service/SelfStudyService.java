@@ -182,4 +182,8 @@ public class SelfStudyService {
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    public int getSelfStudyCount(String userId) {
+        return selfStudyRepository.findAllByUserId(userId).size();
+    }
 }
