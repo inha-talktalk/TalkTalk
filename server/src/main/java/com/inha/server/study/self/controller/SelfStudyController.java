@@ -1,6 +1,7 @@
 package com.inha.server.study.self.controller;
 
 import com.inha.server.study.self.dto.reponse.SelfStudyCreateRes;
+import com.inha.server.study.self.dto.reponse.SelfStudyGetRes;
 import com.inha.server.study.self.dto.reponse.SelfStudyScriptRes;
 import com.inha.server.study.self.dto.request.EndSelfStudyReadReq;
 import com.inha.server.study.self.dto.request.EndSelfStudyWriteReq;
@@ -61,5 +62,11 @@ public class SelfStudyController {
     public ResponseEntity<?> deleteSelfStudy(@RequestHeader(value = "x-access-token") String jwt,
         @PathVariable(name = "selfStudyId") String selfStudyId) {
         return selfStudyService.deleteSelfStudy(selfStudyId, jwt);
+    }
+
+    @GetMapping("/{selfStudyId}")
+    public ResponseEntity<SelfStudyGetRes> getSelfStudy(
+        @PathVariable(name = "selfStudyId") String selfStudyId) {
+        return selfStudyService.getSelfStudy(selfStudyId);
     }
 }
