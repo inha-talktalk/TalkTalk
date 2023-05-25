@@ -2,17 +2,17 @@ package com.inha.server.mongodb.config;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
 import com.mongodb.connection.ConnectionPoolSettings;
+import com.mongodb.reactivestreams.client.MongoClient;
+import com.mongodb.reactivestreams.client.MongoClients;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
 
 @Configuration
-public class MongoDbConfig extends AbstractMongoClientConfiguration {
+public class ReactiveMongoDbConfig extends AbstractReactiveMongoConfiguration {
 
     @Value("${data.mongodb.uri}")
     private String uri;
@@ -25,8 +25,7 @@ public class MongoDbConfig extends AbstractMongoClientConfiguration {
     }
 
     @Bean
-    @Override
-    public MongoClient mongoClient() {
+    public MongoClient reactiveMongoClient() {
         final ConnectionString connectionString = new ConnectionString(uri);
         final MongoClientSettings.Builder mongoClientSettings = MongoClientSettings.builder()
             .applyConnectionString(connectionString)
@@ -42,4 +41,5 @@ public class MongoDbConfig extends AbstractMongoClientConfiguration {
             .maxConnectionIdleTime(20, TimeUnit.SECONDS)
             .maxConnectionLifeTime(60, TimeUnit.SECONDS).build();
     }
+
 }
