@@ -5,6 +5,8 @@ interface SelfStudyState {
   tags: string[];
   languageId: string;
   scriptType: string;
+  startDate: Date | null;
+  selfStudyId: string | null;
 }
 
 export const selfStudy = atom<SelfStudyState | null>({
