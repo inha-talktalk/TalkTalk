@@ -1,13 +1,14 @@
 import Button from '../Button';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { style } from './style';
-import { getDateString } from '@/utils/date';
+import { getDateString, getTimeDiffToString } from '@/utils/date';
 import Modal from '../Modal';
 import SelfStudySharePanel from '../SelfStudySharePanel';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { selfStudyStarted, submitSelfStudy } from '@/states/selfStudy';
+import { selfStudy, selfStudyStarted, submitSelfStudy } from '@/states/selfStudy';
 import { useRouter } from 'next/router';
+import { deleteSelfStudy, postStartSelfStudy } from '@/utils/api';
 
 interface SelfStudyControllerProps {
   type: 'read' | 'write';
@@ -28,6 +29,8 @@ export default function SelfStudyController({
   const [showModal, setShowModal] = useState<boolean>(false);
   const [_, setSubmit] = useRecoilState(submitSelfStudy);
   const [isSelfStudyStarted, setSelfStudyStarted] = useRecoilState(selfStudyStarted);
+  const [selfStudyInfo, setSelfStudyInfo] = useRecoilState(selfStudy);
+  const [duration, setDuration] = useState<string>('');
   const router = useRouter();
 
   const handleShareButtonClick = () => {
@@ -38,8 +41,16 @@ export default function SelfStudyController({
     if (isSelfStudyStarted) {
       setSubmit(true);
     } else {
-      // TODO: self study start api call
-      setSelfStudyStarted(true);
+      if (!selfStudyInfo) return;
+      (async () => {
+        const id = await postStartSelfStudy(
+          selfStudyInfo.title,
+          selfStudyInfo.scriptType,
+          selfStudyInfo.tags,
+        );
+        setSelfStudyInfo({ ...selfStudyInfo, startDate: new Date(), selfStudyId: id });
+        setSelfStudyStarted(true);
+      })();
     }
   };
 
@@ -47,6 +58,29 @@ export default function SelfStudyController({
     setSelfStudyStarted(false);
     router.push('/selfStudy');
   };
+
+  // to delete not finished self study
+  useEffect(() => {
+    const handleRouterChange = () => {
+      setSelfStudyInfo(null);
+      setSelfStudyStarted(false);
+      if (!selfStudyInfo?.selfStudyId) return;
+      deleteSelfStudy(selfStudyInfo?.selfStudyId);
+    };
+    router.events.on('routeChangeStart', handleRouterChange);
+
+    return () => router.events.off('routeChangeStart', handleRouterChange);
+  }, [router, selfStudyInfo?.selfStudyId, setSelfStudyInfo, setSelfStudyStarted]);
+
+  // to update duration strign
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (!selfStudyInfo?.startDate) return;
+      setDuration(getTimeDiffToString(selfStudyInfo.startDate, new Date()));
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [selfStudyInfo?.startDate]);
 
   return (
     <>
@@ -66,7 +100,7 @@ export default function SelfStudyController({
         <p css={style.time(theme.secondary)}>
           {status === 'progress' ? (
             <>
-              진행 시간: <span>10:10</span>
+              진행 시간: <span>{duration || '00:00:00'}</span>
             </>
           ) : (
             <>

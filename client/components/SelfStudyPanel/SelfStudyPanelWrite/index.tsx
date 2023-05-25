@@ -4,9 +4,10 @@ import { style } from '../style';
 import ChatInputBar from '@/components/ChatInputBar';
 import AudioButton from '../AudioButton';
 import { useRecoilState } from 'recoil';
-import { selfStudyStarted, submitSelfStudy } from '@/states/selfStudy';
+import { selfStudy, selfStudyStarted, submitSelfStudy } from '@/states/selfStudy';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
+import { postSelfStudyWrite } from '@/utils/api';
 
 interface SelfStudyPanelWriteProps {
   script: SelfStudyScriptResponse | null;
@@ -17,19 +18,27 @@ export default function SelfStudyPanelWrite({ script }: SelfStudyPanelWriteProps
   const [myChatList, setMyChatList] = useState<string[]>([]);
   const [submit, setSubmit] = useRecoilState(submitSelfStudy);
   const [isSelfStudyStarted, setSelfStudyStarted] = useRecoilState(selfStudyStarted);
+  const [selfstudyInfo, setSelfStudyInfo] = useRecoilState(selfStudy);
   const router = useRouter();
 
   useEffect(() => {
     if (!router.isReady) return;
 
     if (submit) {
-      // TODO: submit
-      router.push('/selfStudy');
-      toast.info('셀프 스터디를 완료했습니다.');
-      setSubmit(false);
-      setSelfStudyStarted(false);
+      (async () => {
+        if (!selfstudyInfo || selfstudyInfo.selfStudyId === null) return;
+        await postSelfStudyWrite(
+          selfstudyInfo.selfStudyId,
+          myChatList.map((chat) => ({ text: chat })),
+        );
+        router.push('/selfStudy');
+        toast.info('셀프 스터디를 완료했습니다.');
+        setSubmit(false);
+        setSelfStudyStarted(false);
+        setSelfStudyInfo(null);
+      })();
     }
-  }, [submit, router, setSubmit, setSelfStudyStarted]);
+  }, [submit, router, setSubmit, setSelfStudyStarted, selfstudyInfo, myChatList, setSelfStudyInfo]);
 
   if (!script) return <></>;
 
@@ -71,6 +80,7 @@ export default function SelfStudyPanelWrite({ script }: SelfStudyPanelWriteProps
                 ? script.scripts[myChatList.length].mp3Uri
                 : ''
             }
+            disabled={!isSelfStudyStarted}
           />
         </ChatInputBar>
       </div>
