@@ -28,21 +28,20 @@ public class MyPageService {
     private final ApplyStatusRepository applyStatusRepository;
 
     private static String getUserId(String jwt) {
-        String userId = TokenProvider.getSubject(jwt);
-
-        if (userId == null) {
-            throw new IllegalStateException();
+        String userId;
+        try {
+            userId = TokenProvider.getSubject(jwt);
+        } catch (Exception e) {
+            return null;
         }
         return userId;
     }
 
     @Transactional
     public ResponseEntity<ProfileInfoRes> getSelfProfile(String jwt) {
-        String userId;
+        String userId = getUserId(jwt);
 
-        try {
-            userId = getUserId(jwt);
-        } catch (Exception e) {
+        if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
@@ -73,11 +72,9 @@ public class MyPageService {
     @Transactional
     public HttpStatus updateProfileNameAndNickname(String jwt,
         ProfileNameAndNicknameReq profileReq) {
-        String userId;
+        String userId = getUserId(jwt);
 
-        try {
-            userId = getUserId(jwt);
-        } catch (Exception e) {
+        if (userId == null) {
             return HttpStatus.UNAUTHORIZED;
         }
 
@@ -98,14 +95,11 @@ public class MyPageService {
     @Transactional
 
     public HttpStatus updateProfileImg(String jwt, String updateURI) {
-        String userId;
+        String userId = getUserId(jwt);
 
-        try {
-            userId = getUserId(jwt);
-        } catch (Exception e) {
+        if (userId == null) {
             return HttpStatus.UNAUTHORIZED;
         }
-
         User user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
@@ -122,11 +116,9 @@ public class MyPageService {
 
     @Transactional
     public ResponseEntity<List<MyStudiesRes>> getApplyStudies(String jwt) {
-        String userId;
+        String userId = getUserId(jwt);
 
-        try {
-            userId = getUserId(jwt);
-        } catch (Exception e) {
+        if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
@@ -153,17 +145,13 @@ public class MyPageService {
 
     @Transactional
     public ResponseEntity<List<MyStudiesRes>> getStudies(String jwt, String status) {
-        String userId;
-        boolean pass = true;
-        if (status.equals("progress")) {
-            pass = false;
-        }
+        String userId = getUserId(jwt);
 
-        try {
-            userId = getUserId(jwt);
-        } catch (Exception e) {
+        if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
+        boolean pass = !status.equals("progress");
 
         List<ApplyStatus> applyStatusList = applyStatusRepository.findAllByUserIdAndAccepted(userId,
             true);
