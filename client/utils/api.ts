@@ -30,6 +30,17 @@ async function post<T>(url: string, body: object, functionName: string): Promise
   }
 }
 
+async function callDelete<T>(url: string, functionName: string): Promise<T> {
+  try {
+    return (await apiAxiosInstance.delete(url)).data;
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(`API call error ${functionName}`);
+    }
+    throw e;
+  }
+}
+
 async function patch<T>(url: string, body: object, functionName: string): Promise<T> {
   try {
     return (await apiAxiosInstance.patch(url, body)).data;
@@ -141,4 +152,33 @@ export async function getSelfStudyScripts(languageId: string, type: string) {
     `/self-study?languageId=${languageId}&type=${type}`,
     'getSelfStudyScripts',
   );
+}
+
+export async function postStartSelfStudy(selfStudyName: string, scriptId: string, tags: string[]) {
+  const res = await post<SelfStudyStartResponse>(
+    `/self-study/start`,
+    {
+      selfStudyName,
+      scriptId,
+      tags,
+    },
+    'postStartSelfStudy',
+  );
+
+  return res.selfStudyId;
+}
+
+export async function postSelfStudyWrite(selfStudyId: string, answers: { text: string }[]) {
+  await post(
+    '/self-study/write',
+    {
+      selfStudyId,
+      answers,
+    },
+    'postSelfStudyWrite',
+  );
+}
+
+export async function deleteSelfStudy(selfStudyId: string) {
+  await callDelete(`/self-study/${selfStudyId}`, 'deleteSelfStudy');
 }
