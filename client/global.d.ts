@@ -113,3 +113,7 @@ interface SelfStudyScriptResponse {
   scriptId: string;
   scripts: SelfStudyScript[];
 }
+
+interface SelfStudyStartResponse {
+  selfStudyId: string;
+}
