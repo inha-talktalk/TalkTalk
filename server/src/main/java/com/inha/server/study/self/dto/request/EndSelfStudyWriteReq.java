@@ -11,12 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class EndSelfStudyWriteReq {
     private String selfStudyId;
-    private List<ScriptText> answers;
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ScriptText {
-        String text;
-    }
+    private List<String> answers;
 }

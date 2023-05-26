@@ -1,7 +1,6 @@
 package com.inha.server.study.self.model;
 
 import com.inha.server.chatGPT.model.Script.ScriptMap;
-import com.inha.server.study.self.dto.request.EndSelfStudyWriteReq.ScriptText;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -35,7 +34,7 @@ public class SelfStudy {
         this.finishedAt = finishedAt;
     }
 
-    public void finishSelfStudyWrite(List<ScriptText> answers, String finishedAt) {
+    public void finishSelfStudyWrite(List<String> answers, String finishedAt) {
         this.selfStudyType = "write";
         this.answers = answers;
         this.finishedAt = finishedAt;
