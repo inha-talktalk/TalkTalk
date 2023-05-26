@@ -28,6 +28,9 @@ public class SelfStudy {
     private String createdAt;
     private String finishedAt;
 
+    @Builder.Default
+    private boolean isfinished = false;
+
     public void finishSelfStudyRead(List<ScriptMap> answers, String finishedAt) {
         this.selfStudyType = "read";
         this.answers = answers;
