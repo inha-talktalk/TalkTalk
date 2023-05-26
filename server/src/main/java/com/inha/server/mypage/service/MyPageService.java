@@ -9,6 +9,7 @@ import com.inha.server.study.group.model.ApplyStatus;
 import com.inha.server.study.group.model.GroupStudy;
 import com.inha.server.study.group.repository.ApplyStatusRepository;
 import com.inha.server.study.group.repository.GroupStudyRepository;
+import com.inha.server.study.group.service.GroupStudyService;
 import com.inha.server.study.self.service.SelfStudyService;
 import com.inha.server.user.model.User;
 import com.inha.server.user.repository.UserRepository;
@@ -202,6 +203,8 @@ public class MyPageService {
         }
 
         int selfStudyCnt = selfStudyService.getSelfStudyCount(userId);
+        String joinTime = userRepository.findById(userId).get().getJoinTime();
+        int groupStudyCnt = getStudies(jwt, "progress").getBody().size();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
