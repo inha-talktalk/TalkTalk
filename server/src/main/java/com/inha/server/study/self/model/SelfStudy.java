@@ -17,6 +17,7 @@ public class SelfStudy {
     private String id;
 
     private String userId;
+    private String languageId;
     private String selfStudyName;
     private String selfStudyType;
     private String scriptId;

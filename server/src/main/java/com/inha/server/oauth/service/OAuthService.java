@@ -8,7 +8,10 @@ import com.inha.server.oauth.model.KakaoTokens;
 import com.inha.server.user.util.TokenProvider;
 import com.inha.server.user.model.User;
 import com.inha.server.user.repository.UserRepository;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -114,6 +117,9 @@ public class OAuthService {
 
     User user = userRepository.findByEmail(email).orElse(null);
 
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
     if (user == null) {
       String nickname = "";
       String password = passwordEncoder.encode(UUID.randomUUID().toString());
@@ -123,6 +129,7 @@ public class OAuthService {
           .email(email)
           .kakaoId(kakaoId)
           .profileImage(profile)
+          .joinTime(formatter.format(new Date()))
           .build();
       userRepository.save(user);
     }
