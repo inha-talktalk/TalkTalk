@@ -11,6 +11,7 @@ import com.inha.server.study.self.model.SelfStudy;
 import com.inha.server.study.self.repository.SelfStudyRepository;
 import com.inha.server.user.model.UserScriptList;
 import com.inha.server.user.repository.UserScriptRepository;
+import com.inha.server.user.service.UserService;
 import com.inha.server.user.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import java.util.TimeZone;
 @RequiredArgsConstructor
 public class SelfStudyService {
 
+    private final UserService userService;
     private final ScriptRepository scriptRepository;
     private final UserScriptRepository userScriptRepository;
     private final SelfStudyRepository selfStudyRepository;
@@ -148,7 +150,9 @@ public class SelfStudyService {
     }
 
     public ResponseEntity<?> endRead(EndSelfStudyReadReq endSelfStudyReadReq, String jwt) {
-        if (getUserId(jwt) == null) {
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
