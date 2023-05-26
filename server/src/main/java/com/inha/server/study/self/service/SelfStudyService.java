@@ -128,9 +128,16 @@ public class SelfStudyService {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
+        Script script = scriptRepository.findById(selfStudyReq.getScriptId()).orElse(null);
+
+        if (script == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         SelfStudy selfStudy = selfStudyRepository.save(
                 SelfStudy.builder()
                         .userId(userId)
+                        .languageId(script.getLanguage())
                         .selfStudyName(selfStudyReq.getSelfStudyName())
                         .scriptId(selfStudyReq.getScriptId())
                         .tags(selfStudyReq.getTags())
