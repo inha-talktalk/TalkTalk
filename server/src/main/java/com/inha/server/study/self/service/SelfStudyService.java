@@ -61,7 +61,7 @@ public class SelfStudyService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (!userId.equals(study.getUserId())) {
+        if (!userId.equals(study.getUserId()) || study.getIsFinished()) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 

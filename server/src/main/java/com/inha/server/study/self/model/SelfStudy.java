@@ -27,21 +27,20 @@ public class SelfStudy {
 
     private String createdAt;
     private String finishedAt;
-
     @Builder.Default
-    private boolean isfinished = false;
+    private Boolean isFinished = false;
 
     public void finishSelfStudyRead(List<ScriptMap> answers, String finishedAt) {
         this.selfStudyType = "read";
         this.answers = answers;
         this.finishedAt = finishedAt;
-        this.isfinished = true;
+        this.isFinished = true;
     }
 
     public void finishSelfStudyWrite(List<String> answers, String finishedAt) {
         this.selfStudyType = "write";
         this.answers = answers;
         this.finishedAt = finishedAt;
-        this.isfinished = true;
+        this.isFinished = true;
     }
 }
