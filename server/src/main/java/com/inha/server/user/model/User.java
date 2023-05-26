@@ -17,7 +17,7 @@ public class User {
     private String nickname;
     private final String password;
     private String profileImage;
-    private final LocalDateTime joinTime;
+    private final String joinTime;
     @Id
     private String id;
 
