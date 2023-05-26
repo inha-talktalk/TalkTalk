@@ -27,10 +27,7 @@ export default function SelfStudyPanelWrite({ script }: SelfStudyPanelWriteProps
     if (submit) {
       (async () => {
         if (!selfstudyInfo || selfstudyInfo.selfStudyId === null) return;
-        await postSelfStudyWrite(
-          selfstudyInfo.selfStudyId,
-          myChatList.map((chat) => ({ text: chat })),
-        );
+        await postSelfStudyWrite(selfstudyInfo.selfStudyId, myChatList);
         router.push('/selfStudy');
         toast.info('셀프 스터디를 완료했습니다.');
         setSubmit(false);

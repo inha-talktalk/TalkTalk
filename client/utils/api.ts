@@ -168,7 +168,18 @@ export async function postStartSelfStudy(selfStudyName: string, scriptId: string
   return res.selfStudyId;
 }
 
-export async function postSelfStudyWrite(selfStudyId: string, answers: { text: string }[]) {
+export async function postSelfStudyWrite(selfStudyId: string, answers: string[]) {
+  await post(
+    '/self-study/write',
+    {
+      selfStudyId,
+      answers,
+    },
+    'postSelfStudyWrite',
+  );
+}
+
+export async function postSelfStudyRead(selfStudyId: string, answers: { text: string }[]) {
   await post(
     '/self-study/write',
     {
