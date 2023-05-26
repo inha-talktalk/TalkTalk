@@ -203,6 +203,10 @@ public class MyPageService {
 
         User user = userRepository.findById(userId).get();
 
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         return new ResponseEntity<>(
             AchievementRes.builder()
                 .teamMateCount(getStudies(jwt, "progress").getBody().size())
