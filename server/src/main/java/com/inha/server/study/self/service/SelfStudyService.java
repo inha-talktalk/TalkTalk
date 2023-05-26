@@ -184,6 +184,13 @@ public class SelfStudyService {
     }
 
     public int getSelfStudyCount(String userId) {
-        return selfStudyRepository.findAllByUserId(userId).size();
+        List<SelfStudy> selfStudyList = selfStudyRepository.findAllByUserId(userId);
+        int count = selfStudyList.size();
+        for (SelfStudy study : selfStudyList) {
+            if (study.getIsFinished()) continue;
+            count--;
+        }
+
+        return count;
     }
 }
