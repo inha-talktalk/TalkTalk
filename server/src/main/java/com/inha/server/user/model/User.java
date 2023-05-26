@@ -1,6 +1,8 @@
 package com.inha.server.user.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -11,6 +13,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "user")
 public class User {
 
+    @Id
+    private String id;
+
     private final Long kakaoId;
     private final String email;
     private String name;
@@ -18,8 +23,8 @@ public class User {
     private final String password;
     private String profileImage;
     private final String joinTime;
-    @Id
-    private String id;
+    @Builder.Default
+    private List<String> languageList = new ArrayList<>();
 
     public void setNameAndNickname(String name, String nickname) {
         this.name = name;
