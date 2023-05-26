@@ -35,11 +35,13 @@ public class SelfStudy {
         this.selfStudyType = "read";
         this.answers = answers;
         this.finishedAt = finishedAt;
+        this.isfinished = true;
     }
 
     public void finishSelfStudyWrite(List<String> answers, String finishedAt) {
         this.selfStudyType = "write";
         this.answers = answers;
         this.finishedAt = finishedAt;
+        this.isfinished = true;
     }
 }
