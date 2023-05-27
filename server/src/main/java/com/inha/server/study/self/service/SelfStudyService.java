@@ -1,7 +1,9 @@
 package com.inha.server.study.self.service;
 
 import com.inha.server.chatGPT.model.Script;
+import com.inha.server.chatGPT.model.Script.ScriptMap;
 import com.inha.server.chatGPT.repository.ScriptRepository;
+import com.inha.server.s3.service.S3Service;
 import com.inha.server.study.self.dto.reponse.SelfStudyCreateRes;
 import com.inha.server.study.self.dto.reponse.SelfStudyScriptRes;
 import com.inha.server.study.self.dto.request.EndSelfStudyReadReq;
@@ -13,12 +15,16 @@ import com.inha.server.user.model.UserScriptList;
 import com.inha.server.user.repository.UserScriptRepository;
 import com.inha.server.user.service.UserService;
 import com.inha.server.user.util.TokenProvider;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,6 +34,7 @@ import org.springframework.stereotype.Service;
 public class SelfStudyService {
 
     private final UserService userService;
+    private final S3Service s3Service;
     private final ScriptRepository scriptRepository;
     private final UserScriptRepository userScriptRepository;
     private final SelfStudyRepository selfStudyRepository;
@@ -157,21 +164,43 @@ public class SelfStudyService {
             HttpStatus.OK);
     }
 
-    public ResponseEntity<?> endRead(EndSelfStudyReadReq endSelfStudyReadReq, String jwt) {
+    public ResponseEntity<?> endReadTest(EndSelfStudyReadReq req, String jwt)
+        throws ParseException, IOException {
         String userId = getUserId(jwt);
 
         if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        SelfStudy study = selfStudyRepository.findById(endSelfStudyReadReq.getSelfStudyId())
+        SelfStudy study = selfStudyRepository.findById(req.getSelfStudyId())
             .orElse(null);
 
         if (study == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        study.finishSelfStudyRead(endSelfStudyReadReq.getAnswers(), getTime());
+        JSONParser jp = new JSONParser();
+
+        JSONArray ja = (JSONArray) jp.parse(req.getTextList());
+
+        List<String> textList = new ArrayList<>();
+
+        for (int i = 0; i < ja.size(); i++) {
+            textList.add((String) ja.get(i));
+        }
+
+        List<ScriptMap> answers = new ArrayList<>();
+
+        for (int i = 0; i < req.getFileList().size(); i++) {
+            answers.add(
+                new ScriptMap(
+                    textList.get(i),
+                    s3Service.upload(req.getFileList().get(i), "stt", jwt)
+                )
+            );
+        }
+
+        study.finishSelfStudyRead(answers, getTime());
 
         selfStudyRepository.save(study);
 
