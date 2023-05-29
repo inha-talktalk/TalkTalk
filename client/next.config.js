@@ -5,7 +5,7 @@ const nextConfig = (phase) => {
   const isDev = phase === PHASE_DEVELOPMENT_SERVER;
   if (isDev) {
     return {
-      reactStrictMode: true,
+      reactStrictMode: false,
       compiler: {
         emotion: true,
       },
