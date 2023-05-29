@@ -46,7 +46,7 @@ public class SelfStudyController {
     }
 
     @PostMapping("/read")
-    public ResponseEntity<?> test2(@RequestHeader(value = "x-access-token") String jwt,
+    public ResponseEntity<?> endRead(@RequestHeader(value = "x-access-token") String jwt,
         @ModelAttribute EndSelfStudyReadReq req)
         throws ParseException, IOException {
         return selfStudyService.endReadTest(req, jwt);
