@@ -71,6 +71,8 @@ interface LoginResponse {
 interface Language {
   label: string;
   id: string;
+  tts: string;
+  stt: string;
 }
 
 type LanguageResponse = Language[];

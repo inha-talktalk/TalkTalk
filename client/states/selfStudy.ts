@@ -4,6 +4,7 @@ interface SelfStudyState {
   title: string;
   tags: string[];
   languageId: string;
+  languaegStt: string;
   scriptType: string;
   startDate: Date | null;
   selfStudyId: string | null;
