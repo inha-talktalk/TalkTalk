@@ -13,7 +13,7 @@ export default function ViewSelfStudyRead() {
   };
   return (
     <div css={style.container}>
-      <SelfStudyPanel type={'readDone'} />
+      <SelfStudyPanel type={'readDone'} script={null} />
       <div>
         <SelfStudyController
           type={'read'}
@@ -21,6 +21,7 @@ export default function ViewSelfStudyRead() {
           tags={['#tag1', '#tag2']}
           status="done"
           time={new Date()}
+          script={null}
         />
         <InfoBanner status={'readDone'} />
       </div>

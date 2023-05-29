@@ -36,7 +36,7 @@ function StudyCardList({ studyList, isRegistered }: StudyCardListProps) {
             <p>스터디가 없습니다.</p>
           </div>
         ) : (
-          studyList.map((study, idx) => (
+          studyList.map((study) => (
             <StudyCard
               id={study.groupId}
               title={study.groupName}
