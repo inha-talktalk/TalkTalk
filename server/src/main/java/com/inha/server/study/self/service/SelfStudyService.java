@@ -5,6 +5,7 @@ import com.inha.server.chatGPT.model.Script.ScriptMap;
 import com.inha.server.chatGPT.repository.ScriptRepository;
 import com.inha.server.s3.service.S3Service;
 import com.inha.server.study.self.dto.reponse.SelfStudyCreateRes;
+import com.inha.server.study.self.dto.reponse.SelfStudyGetRes;
 import com.inha.server.study.self.dto.reponse.SelfStudyScriptRes;
 import com.inha.server.study.self.dto.request.EndSelfStudyReadReq;
 import com.inha.server.study.self.dto.request.EndSelfStudyWriteReq;
@@ -164,7 +165,7 @@ public class SelfStudyService {
             HttpStatus.OK);
     }
 
-    public ResponseEntity<?> endReadTest(EndSelfStudyReadReq req, String jwt)
+    public ResponseEntity<?> endRead(EndSelfStudyReadReq req, String jwt)
         throws ParseException, IOException {
         String userId = getUserId(jwt);
 
@@ -243,5 +244,34 @@ public class SelfStudyService {
         }
 
         return count;
+    }
+    public ResponseEntity<SelfStudyGetRes> getSelfStudy(String selfStudyId) {
+
+        SelfStudy study = selfStudyRepository.findById(selfStudyId).orElse(null);
+
+        if (study == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Script script = scriptRepository.findById(study.getScriptId()).orElse(null);
+
+        if (script == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(
+            SelfStudyGetRes.builder()
+                .userId(study.getUserId())
+                .selfStudyType(study.getSelfStudyType())
+                .scriptType(script.getType())
+                .selfStudyName(study.getSelfStudyName())
+                .tags(study.getTags())
+                .createdAt(study.getCreatedAt())
+                .finishedAt(study.getFinishedAt())
+                .scripts(script.getScripts())
+                .answers(study.getAnswers())
+                .build(),
+            HttpStatus.OK
+        );
     }
 }
