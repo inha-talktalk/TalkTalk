@@ -23,7 +23,7 @@ export default function SelfStudyReadPage() {
 
   useEffect(() => {
     if (!selfStudyData) {
-      router.replace('/selfStudy/create/write');
+      router.replace('/selfStudy/create/read');
       return;
     }
 
@@ -41,6 +41,7 @@ export default function SelfStudyReadPage() {
           title={'title'}
           tags={['#tag1', '#tag2']}
           time={new Date()}
+          script={script}
         />
         <InfoBanner status={'read'} />
       </div>

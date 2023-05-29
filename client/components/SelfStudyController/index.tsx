@@ -16,6 +16,7 @@ interface SelfStudyControllerProps {
   tags: string[];
   status?: 'progress' | 'done';
   time: Date;
+  script: SelfStudyScriptResponse | null;
 }
 
 export default function SelfStudyController({
@@ -24,6 +25,7 @@ export default function SelfStudyController({
   tags,
   status = 'progress',
   time,
+  script,
 }: SelfStudyControllerProps) {
   const { theme } = useGlobalTheme();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -41,11 +43,11 @@ export default function SelfStudyController({
     if (isSelfStudyStarted) {
       setSubmit(true);
     } else {
-      if (!selfStudyInfo) return;
+      if (!selfStudyInfo || !script) return;
       (async () => {
         const id = await postStartSelfStudy(
           selfStudyInfo.title,
-          selfStudyInfo.scriptType,
+          script.scriptId,
           selfStudyInfo.tags,
         );
         setSelfStudyInfo({ ...selfStudyInfo, startDate: new Date(), selfStudyId: id });

@@ -43,6 +43,7 @@ export default function SelfStudyWritePage() {
               title={selfStudyData.title}
               tags={selfStudyData.tags}
               time={new Date()}
+              script={script}
             />
             <InfoBanner status={'write'} />
           </div>
