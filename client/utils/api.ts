@@ -179,15 +179,8 @@ export async function postSelfStudyWrite(selfStudyId: string, answers: string[])
   );
 }
 
-export async function postSelfStudyRead(selfStudyId: string, answers: { text: string }[]) {
-  await post(
-    '/self-study/write',
-    {
-      selfStudyId,
-      answers,
-    },
-    'postSelfStudyWrite',
-  );
+export async function postSelfStudyRead(formData: FormData) {
+  await post('/self-study/read', formData, 'postSelfStudyWrite');
 }
 
 export async function deleteSelfStudy(selfStudyId: string) {
