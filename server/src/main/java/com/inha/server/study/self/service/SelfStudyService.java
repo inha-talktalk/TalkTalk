@@ -165,7 +165,7 @@ public class SelfStudyService {
             HttpStatus.OK);
     }
 
-    public ResponseEntity<?> endReadTest(EndSelfStudyReadReq req, String jwt)
+    public ResponseEntity<?> endRead(EndSelfStudyReadReq req, String jwt)
         throws ParseException, IOException {
         String userId = getUserId(jwt);
 
