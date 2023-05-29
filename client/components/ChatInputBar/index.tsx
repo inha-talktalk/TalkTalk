@@ -95,7 +95,14 @@ export default function ChatInputBar({
         disabled={disabled}
       />
       <div css={style.button}>
-        <IoSendSharp size={24} fill={theme.primary} css={style.sendImage} />
+        <IoSendSharp
+          size={24}
+          fill={theme.primary}
+          css={style.sendImage}
+          onClick={() => {
+            if (!disabled) onSend();
+          }}
+        />
       </div>
     </div>
   );
