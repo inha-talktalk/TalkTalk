@@ -1,10 +1,14 @@
 import Button from '../Button';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { style } from './style';
-import { getDateString } from '@/utils/date';
+import { getDateString, getTimeDiffToString } from '@/utils/date';
 import Modal from '../Modal';
 import SelfStudySharePanel from '../SelfStudySharePanel';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { selfStudy, selfStudyStarted, submitSelfStudy } from '@/states/selfStudy';
+import { useRouter } from 'next/router';
+import { deleteSelfStudy, postStartSelfStudy } from '@/utils/api';
 
 interface SelfStudyControllerProps {
   type: 'read' | 'write';
@@ -12,6 +16,7 @@ interface SelfStudyControllerProps {
   tags: string[];
   status?: 'progress' | 'done';
   time: Date;
+  script: SelfStudyScriptResponse | null;
 }
 
 export default function SelfStudyController({
@@ -20,13 +25,64 @@ export default function SelfStudyController({
   tags,
   status = 'progress',
   time,
+  script,
 }: SelfStudyControllerProps) {
   const { theme } = useGlobalTheme();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [_, setSubmit] = useRecoilState(submitSelfStudy);
+  const [isSelfStudyStarted, setSelfStudyStarted] = useRecoilState(selfStudyStarted);
+  const [selfStudyInfo, setSelfStudyInfo] = useRecoilState(selfStudy);
+  const [duration, setDuration] = useState<string>('');
+  const router = useRouter();
 
   const handleShareButtonClick = () => {
     setShowModal(true);
   };
+
+  const handleSubmitButtonClick = () => {
+    if (isSelfStudyStarted) {
+      setSubmit(true);
+    } else {
+      if (!selfStudyInfo || !script) return;
+      (async () => {
+        const id = await postStartSelfStudy(
+          selfStudyInfo.title,
+          script.scriptId,
+          selfStudyInfo.tags,
+        );
+        setSelfStudyInfo({ ...selfStudyInfo, startDate: new Date(), selfStudyId: id });
+        setSelfStudyStarted(true);
+      })();
+    }
+  };
+
+  const handleCancelButtonClick = () => {
+    setSelfStudyStarted(false);
+    router.push('/selfStudy');
+  };
+
+  // to delete not finished self study
+  useEffect(() => {
+    const handleRouterChange = () => {
+      setSelfStudyInfo(null);
+      setSelfStudyStarted(false);
+      if (!selfStudyInfo?.selfStudyId) return;
+      deleteSelfStudy(selfStudyInfo?.selfStudyId);
+    };
+    router.events.on('routeChangeStart', handleRouterChange);
+
+    return () => router.events.off('routeChangeStart', handleRouterChange);
+  }, [router, selfStudyInfo?.selfStudyId, setSelfStudyInfo, setSelfStudyStarted]);
+
+  // to update duration strign
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (!selfStudyInfo?.startDate) return;
+      setDuration(getTimeDiffToString(selfStudyInfo.startDate, new Date()));
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [selfStudyInfo?.startDate]);
 
   return (
     <>
@@ -46,7 +102,7 @@ export default function SelfStudyController({
         <p css={style.time(theme.secondary)}>
           {status === 'progress' ? (
             <>
-              진행 시간: <span>10:10</span>
+              진행 시간: <span>{duration || '00:00:00'}</span>
             </>
           ) : (
             <>
@@ -57,7 +113,13 @@ export default function SelfStudyController({
         <div css={style.buttonContainer}>
           {status === 'progress' ? (
             <>
-              <Button value={'완료'} width={'122px'} height={'48px'} fontSize={'20px'} />
+              <Button
+                value={isSelfStudyStarted ? '완료' : '시작'}
+                width={'122px'}
+                height={'48px'}
+                fontSize={'20px'}
+                onClick={handleSubmitButtonClick}
+              />
               <Button
                 value={'취소'}
                 width={'122px'}
@@ -65,6 +127,7 @@ export default function SelfStudyController({
                 fontSize={'20px'}
                 backgroundColor={theme.offWhite}
                 color={theme.darker}
+                onClick={handleCancelButtonClick}
               />
             </>
           ) : (

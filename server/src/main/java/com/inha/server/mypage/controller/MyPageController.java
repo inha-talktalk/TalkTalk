@@ -13,11 +13,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -85,7 +82,7 @@ public class MyPageController {
      * @RequestBody profileReq 변경하려는 정보
      * */
     @PatchMapping("/profile")
-    public HttpStatus updateProfileNameAndNickname(
+    public ResponseEntity<?> updateProfileNameAndNickname(
         @RequestHeader(value = "x-access-token") String jwt,
         @RequestBody ProfileNameAndNicknameReq profileReq) {
 
@@ -98,7 +95,7 @@ public class MyPageController {
      * @RequestParam uploadImg 변경하려는 이미지 MultipartFile
      * */
     @PostMapping("/profile/img")
-    public HttpStatus updateProfileImg(
+    public ResponseEntity<?> updateProfileImg(
         @RequestHeader(value = "x-access-token") String jwt,
         @RequestPart("imgFile") MultipartFile uploadImg) throws IOException {
 
@@ -130,14 +127,8 @@ public class MyPageController {
     }
 
     @GetMapping("/achieve")
-    public ResponseEntity<AchievementRes> getAchievement() {
-
-        AchievementRes achievementRes = AchievementRes.builder()
-            .teamMateCount(6)
-            .studyLanguageCount(2)
-            .joinTime(LocalDate.from(LocalDateTime.now()))
-            .completedSelfStudyCount(10)
-            .build();
-        return new ResponseEntity<>(achievementRes, HttpStatus.OK);
+    public ResponseEntity<AchievementRes> getAchievement(
+        @RequestHeader(value = "x-access-token") String jwt) {
+        return myPageService.getAchievement(jwt);
     }
 }

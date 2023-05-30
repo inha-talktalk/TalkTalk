@@ -14,31 +14,32 @@ import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 @Configuration
 public class MongoDbConfig extends AbstractMongoClientConfiguration {
 
-  @Value("${data.mongodb.uri}")
-  private String uri;
-  @Value("${data.mongodb.database}")
-  private String database;
+    @Value("${data.mongodb.uri}")
+    private String uri;
+    @Value("${data.mongodb.database}")
+    private String database;
 
-  @Override
-  protected String getDatabaseName() {
-    return database;
-  }
+    @Override
+    protected String getDatabaseName() {
+        return database;
+    }
 
-  @Bean
-  @Override
-  public MongoClient mongoClient() {
-    final ConnectionString connectionString = new ConnectionString(uri);
-    final MongoClientSettings.Builder mongoClientSettings = MongoClientSettings.builder()
-        .applyConnectionString(connectionString)
-        .applyToConnectionPoolSettings(builder -> builder.applySettings(connectionPoolSettings()));
-    return MongoClients.create(mongoClientSettings.build());
-  }
+    @Bean
+    @Override
+    public MongoClient mongoClient() {
+        final ConnectionString connectionString = new ConnectionString(uri);
+        final MongoClientSettings.Builder mongoClientSettings = MongoClientSettings.builder()
+            .applyConnectionString(connectionString)
+            .applyToConnectionPoolSettings(
+                builder -> builder.applySettings(connectionPoolSettings()));
+        return MongoClients.create(mongoClientSettings.build());
+    }
 
-  private ConnectionPoolSettings connectionPoolSettings() {
-    return ConnectionPoolSettings.builder()
-        .maxSize(50)
-        .maxWaitTime(20, TimeUnit.SECONDS)
-        .maxConnectionIdleTime(20, TimeUnit.SECONDS)
-        .maxConnectionLifeTime(60, TimeUnit.SECONDS).build();
-  }
+    private ConnectionPoolSettings connectionPoolSettings() {
+        return ConnectionPoolSettings.builder()
+            .maxSize(50)
+            .maxWaitTime(20, TimeUnit.SECONDS)
+            .maxConnectionIdleTime(20, TimeUnit.SECONDS)
+            .maxConnectionLifeTime(60, TimeUnit.SECONDS).build();
+    }
 }

@@ -7,6 +7,8 @@ import { style } from './style';
 import { useRouter } from 'next/router';
 import { getLanguages, getScriptTypes } from '@/utils/api';
 import { toast } from 'react-toastify';
+import { useRecoilState } from 'recoil';
+import { selfStudy } from '@/states/selfStudy';
 
 interface CreateSelfStudyProps {
   type: 'read' | 'write';
@@ -17,15 +19,21 @@ interface SelectValue {
   value: string;
 }
 
+interface LanguageSelectValue extends SelectValue {
+  stt: string;
+  tts: string;
+}
+
 export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
   const tagController = useTagController();
   const router = useRouter();
 
   const [title, setTitle] = useState<string>('');
-  const [languages, setLanguages] = useState<SelectValue[]>([]);
-  const [language, setLanguage] = useState<SelectValue | null>(null);
+  const [languages, setLanguages] = useState<LanguageSelectValue[]>([]);
+  const [language, setLanguage] = useState<LanguageSelectValue | null>(null);
   const [scriptTypes, setScriptTypes] = useState<SelectValue[]>([]);
   const [scriptType, setScriptType] = useState<SelectValue | null>(null);
+  const [_, setSelfStudy] = useRecoilState(selfStudy);
 
   const handleStartButtonClick = () => {
     if (title === '') {
@@ -38,6 +46,16 @@ export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
       return;
     }
 
+    setSelfStudy({
+      title: title,
+      tags: tagController.tags.map((tag) => tag.value),
+      languageId: language?.value || '',
+      scriptType: scriptType?.value || '',
+      languaegStt: language?.stt || '',
+      selfStudyId: null,
+      startDate: null,
+    });
+
     router.push(`/selfStudy/${type}`);
   };
 
@@ -48,6 +66,8 @@ export default function CreateSelfStudy({ type }: CreateSelfStudyProps) {
         (await getLanguages()).map((language) => ({
           label: language.label,
           value: language.id,
+          stt: language.stt,
+          tts: language.tts,
         })),
       );
     })();

@@ -1,6 +1,7 @@
 package com.inha.server.user.model;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -13,13 +14,15 @@ public class User {
 
     private final Long kakaoId;
     private final String email;
-    private String name;
-    private String nickname;
     private final String password;
-    private String profileImage;
-    private final LocalDateTime joinTime;
+    private final String joinTime;
     @Id
     private String id;
+    private String name;
+    private String nickname;
+    private String profileImage;
+    @Builder.Default
+    private List<String> languageList = new ArrayList<>();
 
     public void setNameAndNickname(String name, String nickname) {
         this.name = name;
@@ -28,5 +31,9 @@ public class User {
 
     public void setImgURI(String imgURI) {
         this.profileImage = imgURI;
+    }
+
+    public void addLanguage(String languageId) {
+        this.languageList.add(languageId);
     }
 }

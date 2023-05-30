@@ -24,6 +24,8 @@ public class LanguageService {
                 LanguageDto.builder()
                     .label(l.getName())
                     .id(l.getId())
+                    .stt(l.getStt())
+                    .tts(l.getTts())
                     .build()
             );
         }

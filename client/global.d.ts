@@ -71,6 +71,8 @@ interface LoginResponse {
 interface Language {
   label: string;
   id: string;
+  tts: string;
+  stt: string;
 }
 
 type LanguageResponse = Language[];
@@ -103,3 +105,17 @@ interface ScriptType {
 }
 
 type ScriptTypeResponse = ScriptType[];
+
+interface SelfStudyScript {
+  text: string;
+  mp3Uri: string;
+}
+
+interface SelfStudyScriptResponse {
+  scriptId: string;
+  scripts: SelfStudyScript[];
+}
+
+interface SelfStudyStartResponse {
+  selfStudyId: string;
+}

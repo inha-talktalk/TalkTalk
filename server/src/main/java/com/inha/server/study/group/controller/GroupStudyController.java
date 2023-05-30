@@ -40,14 +40,12 @@ public class GroupStudyController {
 
     @GetMapping("/list")
     public ResponseEntity<GetGroupStudyListRes> read(
-        @RequestHeader(value = "x-access-token") String jwt,
         @PageableDefault(size = 5, sort = "createdAt", direction = Direction.ASC) Pageable pageable) {
         return groupStudyService.getGroupStudyList(pageable);
     }
 
     @GetMapping("/search")
     public ResponseEntity<GetGroupStudyListRes> search(
-        @RequestHeader(value = "x-access-token") String jwt,
         @RequestParam String keyword,
         @PageableDefault(size = 5, sort = "createdAt", direction = Direction.ASC) Pageable pageable) {
         return groupStudyService.search(keyword, pageable);
