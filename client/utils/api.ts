@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_PATH;
 
@@ -14,6 +14,9 @@ async function get<T>(url: string, functionName: string): Promise<T> {
   } catch (e) {
     if (e instanceof Error) {
       console.error(`API call error ${functionName}`);
+      if (e instanceof AxiosError && e.response?.status === 401) {
+        globalThis.dispatchEvent(new Event('jwtExpired'));
+      }
     }
     throw e;
   }
@@ -25,6 +28,9 @@ async function post<T>(url: string, body: object, functionName: string): Promise
   } catch (e) {
     if (e instanceof Error) {
       console.error(`API call error ${functionName}`);
+      if (e instanceof AxiosError && e.response?.status === 401) {
+        globalThis.dispatchEvent(new Event('jwtExpired'));
+      }
     }
     throw e;
   }
@@ -36,6 +42,9 @@ async function callDelete<T>(url: string, functionName: string): Promise<T> {
   } catch (e) {
     if (e instanceof Error) {
       console.error(`API call error ${functionName}`);
+      if (e instanceof AxiosError && e.response?.status === 401) {
+        globalThis.dispatchEvent(new Event('jwtExpired'));
+      }
     }
     throw e;
   }
