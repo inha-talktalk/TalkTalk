@@ -41,7 +41,7 @@ public class GroupStudyService {
     public ResponseEntity<PostGroupStudyRes> create(String jwt, PostGroupStudyReq request) {
         String userId = getUserId(jwt);
         if (userId == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         Date groupDuration = request.getGroupDuration();
         GroupStudy groupStudy = insertGroupStudy(userId, request, groupDuration);
@@ -98,7 +98,7 @@ public class GroupStudyService {
 
         return new ResponseEntity<>(GetGroupStudyListRes.builder()
             .groupStudyList(groupStudyResList)
-            .totalPage((int) Math.ceil(totalPage/5.0))
+            .totalPage((int) Math.ceil(totalPage / 5.0))
             .currentPage(pageable.getPageNumber())
             .build(), HttpStatus.OK);
     }
@@ -120,7 +120,7 @@ public class GroupStudyService {
 
         return new ResponseEntity<>(GetGroupStudyListRes.builder()
             .groupStudyList(groupStudyResList)
-            .totalPage((int) Math.ceil(totalPage/5.0))
+            .totalPage((int) Math.ceil(totalPage / 5.0))
             .currentPage(currentPage)
             .build(), HttpStatus.OK);
     }
@@ -174,7 +174,10 @@ public class GroupStudyService {
         String userId = getUserId(jwt);
         GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
 
-        if (userId == null || groupStudy == null) {
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        if (groupStudy == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         if (!userId.equals(groupStudy.getOwnerId())) {
@@ -199,7 +202,11 @@ public class GroupStudyService {
     public ResponseEntity<WaitingListRes> apply(String jwt, String groupStudyId) {
         String userId = getUserId(jwt);
         GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
-        if (userId == null || groupStudy == null) {
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        if (groupStudy == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         String ownerId = groupStudy.getOwnerId();
@@ -232,10 +239,13 @@ public class GroupStudyService {
     public ResponseEntity<WaitingListRes> readWaitingList(String jwt, String groupStudyId) {
         String userId = getUserId(jwt);
         GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
-        if (groupStudy == null || userId == null) {
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        if (groupStudy == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         if (!userId.equals(groupStudy.getOwnerId())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -251,7 +261,11 @@ public class GroupStudyService {
         String userId) {
         String ownerId = getUserId(jwt);
         GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
-        if (groupStudy == null || ownerId == null) {
+
+        if (ownerId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        if (groupStudy == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -291,7 +305,10 @@ public class GroupStudyService {
         GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
         String userId = getUserId(jwt);
 
-        if (groupStudy == null || userId == null) {
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        if (groupStudy == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         String originOwnerId = groupStudy.getOwnerId();
@@ -317,7 +334,11 @@ public class GroupStudyService {
     public ResponseEntity<PostGroupStudyQuitRes> quit(String jwt, String groupStudyId) {
         GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
         String userId = getUserId(jwt);
-        if (groupStudy == null || userId == null) {
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        if (groupStudy == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
