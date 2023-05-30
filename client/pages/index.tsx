@@ -2,6 +2,7 @@ import Footer from '@/components/Footer';
 import PostCell from '@/components/PostCell';
 import { getGroupStudyList, getUserProfile } from '@/utils/api';
 import { css } from '@emotion/react';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
@@ -66,6 +67,9 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>TalkTalk</title>
+      </Head>
       <div css={style.mainImage}>
         <Image src={'/main.png'} alt={'main'} fill={true} />
       </div>

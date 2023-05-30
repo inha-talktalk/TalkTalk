@@ -4,6 +4,7 @@ import PostCell from '@/components/PostCell';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { getGroupStudyList, getGroupStudySearch, getUserProfile } from '@/utils/api';
 import { css } from '@emotion/react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useEffect, useState } from 'react';
@@ -75,9 +76,7 @@ export default function FindStudyGroupPage() {
     if (!isLoading) return;
 
     (async () => {
-      const searchResult = await (searchText === ''
-        ? getGroupStudyList()
-        : getGroupStudySearch(searchText, pageNum));
+      const searchResult = await getGroupStudySearch(searchText, pageNum);
       setTotalPageNum(searchResult.totalPage);
       setText(searchText);
       setGroupStudyList(
@@ -136,61 +135,66 @@ export default function FindStudyGroupPage() {
   };
 
   return (
-    <div css={style.container}>
-      <p css={style.title}>스터디 그룹 찾기</p>
-      <div css={style.searchContainer}>
-        <InputBar
-          width={810}
-          height={52}
-          text={text}
-          setText={setText}
-          onEnterClick={handleSearchButton}
-        />
-        <Button
-          value="검색"
-          width="76px"
-          height="52px"
-          fontSize="20px"
-          onClick={handleSearchButton}
-        />
-        <Button
-          value="초기화"
-          width="76px"
-          height="52px"
-          fontSize="20px"
-          color={theme.secondaryDark}
-          backgroundColor={theme.offWhite}
-        />
-      </div>
-      {groupStudyList.length > 0 &&
-        ownerList.length === groupStudyList.length &&
-        groupStudyList.map((groupStudy, idx) => (
-          <PostCell
-            owner={ownerList[idx]}
-            group={groupStudy}
-            key={groupStudy.groupId}
-            isLast={idx === groupStudyList.length - 1}
+    <>
+      <Head>
+        <title>TalkTalk - 스터디 그룹 찾기</title>
+      </Head>
+      <div css={style.container}>
+        <p css={style.title}>스터디 그룹 찾기</p>
+        <div css={style.searchContainer}>
+          <InputBar
+            width={810}
+            height={52}
+            text={text}
+            setText={setText}
+            onEnterClick={handleSearchButton}
           />
-        ))}
-      <div css={style.pageNumberContainer}>
-        ·
-        {Array(endPageNum - startPageNum + 1)
-          .fill(0)
-          .map((_, idx) => idx + startPageNum)
-          .map((val) => (
-            <React.Fragment key={val}>
-              <span
-                className={val === pageNum ? 'current-page' : ''}
-                onClick={() => {
-                  handlePageChange(val);
-                }}
-              >
-                {val}
-              </span>
-              ·
-            </React.Fragment>
+          <Button
+            value="검색"
+            width="76px"
+            height="52px"
+            fontSize="20px"
+            onClick={handleSearchButton}
+          />
+          <Button
+            value="초기화"
+            width="76px"
+            height="52px"
+            fontSize="20px"
+            color={theme.secondaryDark}
+            backgroundColor={theme.offWhite}
+          />
+        </div>
+        {groupStudyList.length > 0 &&
+          ownerList.length === groupStudyList.length &&
+          groupStudyList.map((groupStudy, idx) => (
+            <PostCell
+              owner={ownerList[idx]}
+              group={groupStudy}
+              key={groupStudy.groupId}
+              isLast={idx === groupStudyList.length - 1}
+            />
           ))}
+        <div css={style.pageNumberContainer}>
+          ·
+          {Array(endPageNum - startPageNum + 1)
+            .fill(0)
+            .map((_, idx) => idx + startPageNum)
+            .map((val) => (
+              <React.Fragment key={val}>
+                <span
+                  className={val === pageNum ? 'current-page' : ''}
+                  onClick={() => {
+                    handlePageChange(val);
+                  }}
+                >
+                  {val}
+                </span>
+                ·
+              </React.Fragment>
+            ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

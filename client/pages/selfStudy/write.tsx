@@ -4,6 +4,7 @@ import SelfStudyPanel from '@/components/SelfStudyPanel';
 import { selfStudy } from '@/states/selfStudy';
 import { getSelfStudyScripts } from '@/utils/api';
 import { css } from '@emotion/react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -34,6 +35,9 @@ export default function SelfStudyWritePage() {
 
   return (
     <>
+      <Head>
+        <title>TalkTalk - 셀프 스터디 쓰기</title>
+      </Head>
       {selfStudyData && (
         <div css={style.container}>
           <SelfStudyPanel type={'write'} script={script} />

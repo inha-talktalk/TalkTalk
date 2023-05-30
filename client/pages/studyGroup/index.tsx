@@ -2,6 +2,7 @@ import StudyCardList from '@/components/StudyCardList';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { getDoneStudy, getProgressStudy } from '@/utils/api';
 import { css } from '@emotion/react';
+import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
 export default function StudyGroupPage() {
@@ -44,12 +45,17 @@ export default function StudyGroupPage() {
   }, []);
 
   return (
-    <div css={style.container}>
-      <h1 css={style.title}>그룹 스터디</h1>
-      <h2>진행중인 스터디</h2>
-      <StudyCardList studyList={progressStudyList} />
-      <h2>완료된 스터디</h2>
-      <StudyCardList studyList={doneStudyList} />
-    </div>
+    <>
+      <Head>
+        <title>TalkTalk - 그룹 스터디 리스트</title>
+      </Head>
+      <div css={style.container}>
+        <h1 css={style.title}>그룹 스터디</h1>
+        <h2>진행중인 스터디</h2>
+        <StudyCardList studyList={progressStudyList} />
+        <h2>완료된 스터디</h2>
+        <StudyCardList studyList={doneStudyList} />
+      </div>
+    </>
   );
 }
