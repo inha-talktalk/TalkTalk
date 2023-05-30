@@ -89,7 +89,7 @@ public class GroupStudyService {
 
     @Transactional
     public ResponseEntity<GetGroupStudyListRes> getGroupStudyList(Pageable pageable) {
-        Integer totalPage = groupStudyRepository.findAll().size();
+        int totalPage = groupStudyRepository.findAll().size();
 
         List<GroupStudy> groupStudyList = groupStudyRepository.findAll(
             PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())).getContent();
@@ -98,7 +98,7 @@ public class GroupStudyService {
 
         return new ResponseEntity<>(GetGroupStudyListRes.builder()
             .groupStudyList(groupStudyResList)
-            .totalPage(totalPage)
+            .totalPage((int) Math.ceil(totalPage/5.0))
             .currentPage(pageable.getPageNumber())
             .build(), HttpStatus.OK);
     }
@@ -113,14 +113,14 @@ public class GroupStudyService {
         List<GroupStudy> groupStudyListWithPageable = groupStudyRepository.findByGroupNameContainingIgnoreCase(
             keyword, pageable);
 
-        Integer totalPage = groupStudyList.size();
+        int totalPage = groupStudyList.size();
         Integer currentPage = pageable.getPageNumber();
 
         List<GroupStudyRes> groupStudyResList = getGroupStudyResList(groupStudyListWithPageable);
 
         return new ResponseEntity<>(GetGroupStudyListRes.builder()
             .groupStudyList(groupStudyResList)
-            .totalPage(totalPage)
+            .totalPage((int) Math.ceil(totalPage/5.0))
             .currentPage(currentPage)
             .build(), HttpStatus.OK);
     }
