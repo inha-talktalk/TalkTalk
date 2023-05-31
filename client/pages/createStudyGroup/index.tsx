@@ -5,6 +5,7 @@ import TitleInputBar from '@/components/TitleInputBar';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { getLanguages, postGroupStudy } from '@/utils/api';
 import { css } from '@emotion/react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
@@ -141,82 +142,87 @@ export default function CreateGroupStudyPage() {
   }, [language, tagController.setTags]);
 
   return (
-    <div css={style.container}>
-      <TitleInputBar
-        width={548}
-        height={44}
-        placeholder="스터디 명"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <TagInputBar width={548} height={44} tagController={tagController} />
-      <div css={style.flex}>
-        <span>언어</span>
-        <div css={style.selectConteiner}>
-          <Select
-            options={languages}
-            onChange={(e) => setLanguage(e ?? languages[0])}
-            value={language}
-          />
-        </div>
-      </div>
-      <div css={style.flex}>
-        <span>스터디 인원 수</span>
-        <div css={style.selectConteiner}>
-          <Select
-            options={personnels}
-            onChange={(e) => setPersonnel(e?.value ?? 0)}
-            defaultValue={personnels[0]}
-          />
-        </div>
-      </div>
-      <div css={style.flex}>
-        <span>스터디 기간</span>
-        <div css={style.selectConteiner}>
-          <Select
-            options={duration}
-            defaultValue={duration[0]}
-            onChange={(e) => setIsAlways(e?.value ?? true)}
-          />
-        </div>
-      </div>
-      <div css={style.flex}>
-        <p></p>
-        {!isAlways && (
+    <>
+      <Head>
+        <title>TalkTalk - 그룹 스터디 생성</title>
+      </Head>
+      <div css={style.container}>
+        <TitleInputBar
+          width={548}
+          height={44}
+          placeholder="스터디 명"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <TagInputBar width={548} height={44} tagController={tagController} />
+        <div css={style.flex}>
+          <span>언어</span>
           <div css={style.selectConteiner}>
-            <Calendar
-              locale="ko"
-              minDate={new Date()}
-              minDetail="year"
-              calendarType="US"
-              onChange={(val) => {
-                if (val instanceof Date) {
-                  setFinishDate(val);
-                }
-              }}
+            <Select
+              options={languages}
+              onChange={(e) => setLanguage(e ?? languages[0])}
+              value={language}
             />
           </div>
-        )}
+        </div>
+        <div css={style.flex}>
+          <span>스터디 인원 수</span>
+          <div css={style.selectConteiner}>
+            <Select
+              options={personnels}
+              onChange={(e) => setPersonnel(e?.value ?? 0)}
+              defaultValue={personnels[0]}
+            />
+          </div>
+        </div>
+        <div css={style.flex}>
+          <span>스터디 기간</span>
+          <div css={style.selectConteiner}>
+            <Select
+              options={duration}
+              defaultValue={duration[0]}
+              onChange={(e) => setIsAlways(e?.value ?? true)}
+            />
+          </div>
+        </div>
+        <div css={style.flex}>
+          <p></p>
+          {!isAlways && (
+            <div css={style.selectConteiner}>
+              <Calendar
+                locale="ko"
+                minDate={new Date()}
+                minDetail="year"
+                calendarType="US"
+                onChange={(val) => {
+                  if (val instanceof Date) {
+                    setFinishDate(val);
+                  }
+                }}
+              />
+            </div>
+          )}
+        </div>
+        <TextArea height={416} width={528} text={content} setText={setContent} />
+        <div css={style.buttonContainer}>
+          <Button
+            value={'취소'}
+            width={'93px'}
+            height={'51px'}
+            fontSize={'20px'}
+            backgroundColor={theme.offWhite}
+            color={theme.black}
+            onClick={handleCancelButtonClick}
+          />
+          <Button
+            value={'등록'}
+            width={'93px'}
+            height={'51px'}
+            fontSize={'20px'}
+            onClick={handleSubmitButtonClick}
+          />
+        </div>
       </div>
-      <TextArea height={416} width={528} text={content} setText={setContent} />
-      <div css={style.buttonContainer}>
-        <Button
-          value={'취소'}
-          width={'93px'}
-          height={'51px'}
-          fontSize={'20px'}
-          backgroundColor={theme.offWhite}
-          color={theme.black}
-          onClick={handleCancelButtonClick}
-        />
-        <Button
-          value={'등록'}
-          width={'93px'}
-          height={'51px'}
-          fontSize={'20px'}
-          onClick={handleSubmitButtonClick}
-        />
-      </div>
-    </div>
+    </>
   );
 }

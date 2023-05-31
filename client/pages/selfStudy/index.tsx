@@ -4,6 +4,7 @@ import StudyCell from '@/components/StudyCell';
 import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { getSelfStudyList, getSelfStudy, getUserAchievement, getMyProfile } from '@/utils/api';
 import { css } from '@emotion/react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -66,29 +67,34 @@ export default function SelfStudy() {
   }, [selfStudyIdList]);
 
   return (
-    <div css={style.container}>
-      <h1 css={style.title(theme.secondary)}>
-        <span>{user?.userName ?? ''}님</span>의 성장 여정이예요.
-      </h1>
-      <MyAchievementList achievement={acheivement} />
-      <br />
-      <br />
-      <StudyBanner />
-      <br />
-      <br />
-      <h2>최근 스터디</h2>
-      {user &&
-        selfStudyList.slice(0, 5).map((selfStudy, idx, arr) => (
-          <StudyCell
-            selfStudy={selfStudy}
-            owner={user}
-            isLast={idx === arr.length - 1}
-            key={idx}
-            onClick={() => {
-              router.push(`/selfStudy/view/write`);
-            }}
-          /> // TODO: change idx to selfStudyId
-        ))}
-    </div>
+    <>
+      <Head>
+        <title>TalkTalk - 셀프 스터디</title>
+      </Head>
+      <div css={style.container}>
+        <h1 css={style.title(theme.secondary)}>
+          <span>{user?.userName ?? ''}님</span>의 성장 여정이예요.
+        </h1>
+        <MyAchievementList achievement={acheivement} />
+        <br />
+        <br />
+        <StudyBanner />
+        <br />
+        <br />
+        <h2>최근 스터디</h2>
+        {user &&
+          selfStudyList.slice(0, 5).map((selfStudy, idx, arr) => (
+            <StudyCell
+              selfStudy={selfStudy}
+              owner={user}
+              isLast={idx === arr.length - 1}
+              key={idx}
+              onClick={() => {
+                router.push(`/selfStudy/view/write`);
+              }}
+            /> // TODO: change idx to selfStudyId
+          ))}
+      </div>
+    </>
   );
 }

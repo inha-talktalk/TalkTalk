@@ -4,6 +4,7 @@ import SelfStudyPanel from '@/components/SelfStudyPanel';
 import { selfStudy } from '@/states/selfStudy';
 import { getSelfStudyScripts } from '@/utils/api';
 import { css } from '@emotion/react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -32,19 +33,26 @@ export default function SelfStudyReadPage() {
     })();
   }, [selfStudyData, router]);
 
+  if (!selfStudyData) return <></>;
+
   return (
-    <div css={style.container}>
-      <SelfStudyPanel type={'read'} script={script} />
-      <div>
-        <SelfStudyController
-          type={'read'}
-          title={'title'}
-          tags={['#tag1', '#tag2']}
-          time={new Date()}
-          script={script}
-        />
-        <InfoBanner status={'read'} />
+    <>
+      <Head>
+        <title>TalkTalk - 셀프 스터디 읽기</title>
+      </Head>
+      <div css={style.container}>
+        <SelfStudyPanel type={'read'} script={script} />
+        <div>
+          <SelfStudyController
+            type={'read'}
+            title={selfStudyData.title}
+            tags={selfStudyData.tags}
+            time={new Date()}
+            script={script}
+          />
+          <InfoBanner status={'read'} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

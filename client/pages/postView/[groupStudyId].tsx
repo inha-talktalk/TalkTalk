@@ -3,6 +3,7 @@ import { useGlobalTheme } from '@/styles/GlobalThemeContext';
 import { getGroupStudyPost, getUserProfile, postApplyGroupStudy } from '@/utils/api';
 import { css } from '@emotion/react';
 import { AxiosError } from 'axios';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -148,54 +149,59 @@ export default function PostViewPage() {
   }
 
   return (
-    <div css={style.container}>
-      <div css={style.postView}>
-        <div css={style.top}>
-          <div css={style.left}>
-            <div css={style.title}>
-              <Button
-                value="모집 중"
-                width="72px"
-                height="27px"
-                fontSize="14px"
-                backgroundColor={theme.secondary}
-              />
-              <p>{groupStudy.groupName}</p>
+    <>
+      <Head>
+        <title>TalkTalk - 그룹 스터디 상세</title>
+      </Head>
+      <div css={style.container}>
+        <div css={style.postView}>
+          <div css={style.top}>
+            <div css={style.left}>
+              <div css={style.title}>
+                <Button
+                  value="모집 중"
+                  width="72px"
+                  height="27px"
+                  fontSize="14px"
+                  backgroundColor={theme.secondary}
+                />
+                <p>{groupStudy.groupName}</p>
+              </div>
+              <p>2023.03.11 20:33 작성</p>
+              <p>모집기간: 상시 · 현재 인원 3</p>
             </div>
-            <p>2023.03.11 20:33 작성</p>
-            <p>모집기간: 상시 · 현재 인원 3</p>
+            <div css={style.right}>
+              <Image
+                css={style.profile}
+                src={owner.profileIconUrl}
+                alt="profile"
+                height={70}
+                width={70}
+              />
+              <p>{owner.nickName}</p>
+            </div>
           </div>
-          <div css={style.right}>
-            <Image
-              css={style.profile}
-              src={owner.profileIconUrl}
-              alt="profile"
-              height={70}
-              width={70}
+          <hr />
+          <div css={style.textContainer}>
+            <div css={style.text}>{groupStudy.introduction}</div>
+            <div css={style.tagContainer}>
+              {groupStudy.tags.map((tag, idx) => (
+                <span key={idx}>{tag}</span>
+              ))}
+            </div>
+          </div>
+          <hr />
+          <div css={style.buttonContainer}>
+            <Button
+              value="가입하기"
+              width="104px"
+              height="48px"
+              fontSize="20px"
+              onClick={handleApplyButtonClick}
             />
-            <p>{owner.nickName}</p>
           </div>
-        </div>
-        <hr />
-        <div css={style.textContainer}>
-          <div css={style.text}>{groupStudy.introduction}</div>
-          <div css={style.tagContainer}>
-            {groupStudy.tags.map((tag, idx) => (
-              <span key={idx}>{tag}</span>
-            ))}
-          </div>
-        </div>
-        <hr />
-        <div css={style.buttonContainer}>
-          <Button
-            value="가입하기"
-            width="104px"
-            height="48px"
-            fontSize="20px"
-            onClick={handleApplyButtonClick}
-          />
         </div>
       </div>
-    </div>
+    </>
   );
 }
