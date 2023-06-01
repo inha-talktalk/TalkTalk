@@ -19,7 +19,7 @@ export default function GroupStudySetting() {
 
   return (
     <div css={style.container(theme.offWhite)}>
-      {user.isOwner && <OnwerSetting user={user} />}
+      {user.isOwner && <OnwerSetting />}
 
       <Button
         value={'탈퇴하기'}

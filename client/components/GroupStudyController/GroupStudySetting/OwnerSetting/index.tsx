@@ -9,11 +9,7 @@ import { getUserProfile, getWatingList, postApproveUser, postDelegateUser } from
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 
-interface OwnerSettingProps {
-  user: GroupStudyUserInfo;
-}
-
-export default function OnwerSetting({ user }: OwnerSettingProps) {
+export default function OnwerSetting() {
   const { theme } = useGlobalTheme();
   const [isListFocused, setListFocused] = useState<boolean>(true);
 
