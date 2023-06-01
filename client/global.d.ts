@@ -95,6 +95,7 @@ interface MyStudy {
 type MyStudyResponse = MyStudy[];
 
 interface GroupStudyUserInfo extends UserProfile {
+  userId: string;
   isOnline: boolean;
   isOwner: boolean;
 }
@@ -118,4 +119,9 @@ interface SelfStudyScriptResponse {
 
 interface SelfStudyStartResponse {
   selfStudyId: string;
+}
+
+interface GroupStudyWatingListResponse {
+  groupId: string;
+  waitingList: string[];
 }
