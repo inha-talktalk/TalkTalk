@@ -15,6 +15,7 @@ export default function GroupStudyController({ groupId }: GroupStudyControllerPr
   const { theme } = useGlobalTheme();
   const [group, setGroup] = useState<GroupStudy | null>(null);
   const user = {
+    userId: 'asdfdsaf',
     userName: 'name',
     nickName: 'nickname',
     profileIconUrl:

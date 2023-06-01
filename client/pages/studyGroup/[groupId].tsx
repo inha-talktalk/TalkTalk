@@ -10,6 +10,7 @@ import { useRecoilState } from 'recoil';
 
 const mockUserList: GroupStudyUserInfo[] = [
   {
+    userId: 'asdf',
     userName: 'name',
     nickName: 'nickname',
     profileIconUrl:
@@ -20,6 +21,7 @@ const mockUserList: GroupStudyUserInfo[] = [
     email: 'dolphinlmg@naver.com',
   },
   {
+    userId: 'asdfasdfsadf',
     userName: 'name2',
     nickName: 'nickname2',
     profileIconUrl:

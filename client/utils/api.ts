@@ -195,3 +195,26 @@ export async function postSelfStudyRead(formData: FormData) {
 export async function deleteSelfStudy(selfStudyId: string) {
   await callDelete(`/self-study/${selfStudyId}`, 'deleteSelfStudy');
 }
+
+export async function postDelegateUser(groupStudyId: string, userId: string) {
+  return await post(
+    `/group-study/delegate?groupStudyId=${groupStudyId}&to=${userId}`,
+    {},
+    'postDelegateUser',
+  );
+}
+
+export async function getWatingList(groupId: string) {
+  return await get<GroupStudyWatingListResponse>(
+    `/group-study/waiting-list?groupStudyId=${groupId}`,
+    'getWaitingList',
+  );
+}
+
+export async function postApproveUser(groupId: string, userId: string) {
+  return await post(
+    `/group-study/approve?groupStudyId=${groupId}&userId=${userId}`,
+    {},
+    'postApproveUser',
+  );
+}
