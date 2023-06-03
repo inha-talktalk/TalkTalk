@@ -4,9 +4,7 @@ import com.inha.server.chatGPT.model.Script;
 import com.inha.server.chatGPT.model.Script.ScriptMap;
 import com.inha.server.chatGPT.repository.ScriptRepository;
 import com.inha.server.s3.service.S3Service;
-import com.inha.server.study.self.dto.reponse.SelfStudyCreateRes;
-import com.inha.server.study.self.dto.reponse.SelfStudyGetRes;
-import com.inha.server.study.self.dto.reponse.SelfStudyScriptRes;
+import com.inha.server.study.self.dto.reponse.*;
 import com.inha.server.study.self.dto.request.EndSelfStudyReadReq;
 import com.inha.server.study.self.dto.request.EndSelfStudyWriteReq;
 import com.inha.server.study.self.dto.request.SelfStudyReq;
@@ -16,19 +14,22 @@ import com.inha.server.user.model.UserScriptList;
 import com.inha.server.user.repository.UserScriptRepository;
 import com.inha.server.user.service.UserService;
 import com.inha.server.user.util.TokenProvider;
+import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -80,7 +81,7 @@ public class SelfStudyService {
     }
 
     public ResponseEntity<SelfStudyScriptRes> getScript(String languageId, String type,
-        String jwt) {
+                                                        String jwt) {
         List<Script> scriptList = scriptRepository.findAllByLanguageAndType(languageId, type);
 
         if (scriptList == null) {
@@ -99,14 +100,14 @@ public class SelfStudyService {
         }
 
         UserScriptList userScriptList = userScriptRepository.findByUserIdAndLanguageId(userId,
-            languageId).orElse(null);
+                languageId).orElse(null);
 
         if (userScriptList == null) {
             userScriptList = userScriptRepository.save(
-                UserScriptList.builder()
-                    .userId(userId)
-                    .languageId(languageId)
-                    .build()
+                    UserScriptList.builder()
+                            .userId(userId)
+                            .languageId(languageId)
+                            .build()
             );
         }
 
@@ -121,16 +122,16 @@ public class SelfStudyService {
         Script script = scriptRepository.findById(scriptId).get();
 
         return new ResponseEntity<>(
-            SelfStudyScriptRes.builder()
-                .scriptId(script.getId())
-                .scripts(script.getScripts())
-                .build(),
-            HttpStatus.OK
+                SelfStudyScriptRes.builder()
+                        .scriptId(script.getId())
+                        .scripts(script.getScripts())
+                        .build(),
+                HttpStatus.OK
         );
     }
 
     public ResponseEntity<SelfStudyCreateRes> startSelfStudy(SelfStudyReq selfStudyReq,
-        String jwt) {
+                                                             String jwt) {
         String userId = getUserId(jwt);
 
         if (userId == null) {
@@ -144,29 +145,29 @@ public class SelfStudyService {
         }
 
         SelfStudy selfStudy = selfStudyRepository.save(
-            SelfStudy.builder()
-                .userId(userId)
-                .languageId(script.getLanguage())
-                .selfStudyName(selfStudyReq.getSelfStudyName())
-                .scriptId(selfStudyReq.getScriptId())
-                .tags(selfStudyReq.getTags())
-                .createdAt(getTime())
-                .build()
+                SelfStudy.builder()
+                        .userId(userId)
+                        .languageId(script.getLanguage())
+                        .selfStudyName(selfStudyReq.getSelfStudyName())
+                        .scriptId(selfStudyReq.getScriptId())
+                        .tags(selfStudyReq.getTags())
+                        .createdAt(getTime())
+                        .build()
         );
 
         SelfStudyCreateRes.builder()
-            .selfStudyId(selfStudy.getId())
-            .build();
+                .selfStudyId(selfStudy.getId())
+                .build();
 
         return new ResponseEntity<>(
-            SelfStudyCreateRes.builder()
-                .selfStudyId(selfStudy.getId())
-                .build(),
-            HttpStatus.OK);
+                SelfStudyCreateRes.builder()
+                        .selfStudyId(selfStudy.getId())
+                        .build(),
+                HttpStatus.OK);
     }
 
     public ResponseEntity<?> endRead(EndSelfStudyReadReq req, String jwt)
-        throws ParseException, IOException {
+            throws ParseException, IOException {
         String userId = getUserId(jwt);
 
         if (userId == null) {
@@ -174,7 +175,7 @@ public class SelfStudyService {
         }
 
         SelfStudy study = selfStudyRepository.findById(req.getSelfStudyId())
-            .orElse(null);
+                .orElse(null);
 
         if (study == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -194,10 +195,10 @@ public class SelfStudyService {
 
         for (int i = 0; i < req.getFileList().size(); i++) {
             answers.add(
-                new ScriptMap(
-                    textList.get(i),
-                    s3Service.upload(req.getFileList().get(i), "stt", jwt)
-                )
+                    new ScriptMap(
+                            textList.get(i),
+                            s3Service.upload(req.getFileList().get(i), "stt", jwt)
+                    )
             );
         }
 
@@ -218,7 +219,7 @@ public class SelfStudyService {
         }
 
         SelfStudy study = selfStudyRepository.findById(endSelfStudyWriteReq.getSelfStudyId())
-            .orElse(null);
+                .orElse(null);
 
         if (study == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -245,6 +246,7 @@ public class SelfStudyService {
 
         return count;
     }
+
     public ResponseEntity<SelfStudyGetRes> getSelfStudy(String selfStudyId) {
 
         SelfStudy study = selfStudyRepository.findById(selfStudyId).orElse(null);
@@ -260,18 +262,36 @@ public class SelfStudyService {
         }
 
         return new ResponseEntity<>(
-            SelfStudyGetRes.builder()
-                .userId(study.getUserId())
-                .selfStudyType(study.getSelfStudyType())
-                .scriptType(script.getType())
-                .selfStudyName(study.getSelfStudyName())
-                .tags(study.getTags())
-                .createdAt(study.getCreatedAt())
-                .finishedAt(study.getFinishedAt())
-                .scripts(script.getScripts())
-                .answers(study.getAnswers())
-                .build(),
-            HttpStatus.OK
+                SelfStudyGetRes.builder()
+                        .userId(study.getUserId())
+                        .selfStudyType(study.getSelfStudyType())
+                        .scriptType(script.getType())
+                        .selfStudyName(study.getSelfStudyName())
+                        .tags(study.getTags())
+                        .createdAt(study.getCreatedAt())
+                        .finishedAt(study.getFinishedAt())
+                        .scripts(script.getScripts())
+                        .answers(study.getAnswers())
+                        .build(),
+                HttpStatus.OK
         );
+    }
+
+    public ResponseEntity<SelfStudyGetListRes> getSelfStudyList(String jwt, Pageable pageable) {
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Pageable pageReq = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+        List<SelfStudySimpleListRes> selfStudyList = selfStudyRepository.findAllByUserIdAndIsFinished(userId, true, pageReq);
+
+        return new ResponseEntity<>(SelfStudyGetListRes.builder()
+                .selfStudyList(selfStudyList)
+                .totalPage((int) Math.ceil(selfStudyList.size() / 5.0))
+                .currentPage(pageable.getPageNumber())
+                .build(),
+                HttpStatus.OK);
     }
 }
