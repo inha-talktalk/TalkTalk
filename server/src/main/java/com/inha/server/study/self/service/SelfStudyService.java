@@ -287,6 +287,12 @@ public class SelfStudyService {
         Pageable pageReq = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
         List<SelfStudySimpleListRes> selfStudyList = selfStudyRepository.findAllByUserIdAndIsFinished(userId, true, pageReq);
 
+        for (SelfStudySimpleListRes res : selfStudyList) {
+            res.setScript(
+                scriptRepository.findById(res.getScriptId()).get().getScripts()
+            );
+        }
+
         return new ResponseEntity<>(SelfStudyGetListRes.builder()
                 .selfStudyList(selfStudyList)
                 .totalPage((int) Math.ceil(selfStudyList.size() / 5.0))
