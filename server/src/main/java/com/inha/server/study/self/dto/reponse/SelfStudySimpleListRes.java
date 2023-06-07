@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Builder
 public class SelfStudySimpleListRes {
+    private String id;
     private String userId;
     private String scriptId;
     private String selfStudyType;
