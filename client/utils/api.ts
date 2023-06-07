@@ -77,8 +77,11 @@ export async function getUserAchievement() {
   return await get<UserAcheivementResponse>(`/user/achieve`, 'getUserAchievement');
 }
 
-export async function getSelfStudyList() {
-  return await get<SelfStudyListResponse>(`/self-study/list`, 'getSelfStudyList');
+export async function getSelfStudyList(page: number, size?: number) {
+  return await get<SelfStudyListResponse>(
+    `/self-study/list?page=${page - 1}&size=${size ?? '5'}`,
+    'getSelfStudyList',
+  );
 }
 
 export async function getSelfStudy(selfStudyId: string) {
