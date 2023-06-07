@@ -7,45 +7,30 @@ import ChatInputBar from '@/components/ChatInputBar';
 
 interface SelfStudyPanelWriteDoneProps {
   script: SelfStudyScriptResponse | null;
+  answers: SelfStudyWriteAnswer;
 }
 
-export default function SelfStudyPanelWriteDone({ script }: SelfStudyPanelWriteDoneProps) {
+export default function SelfStudyPanelWriteDone({ script, answers }: SelfStudyPanelWriteDoneProps) {
   const { theme } = useGlobalTheme();
   const [chatValue, setChatValue] = useState<string>('');
+
+  if (!script) return <></>;
 
   return (
     <div css={style.container}>
       <div css={style.bubbleContainer}>
-        <div className="left">
-          <ChatBubble position={'left'} value={'Hey! Long time no see, how have you been?'} />
-        </div>
-        <div className="right">
-          <ChatBubble position={'right'} value={'Hey! Long time no see, how have you been?'} />
-        </div>
-        <div className="left">
-          <ChatBubble
-            position={'left'}
-            value={`Hey, yeah it's been ages! I've been good, thanks for asking. How about you?`}
-          />
-        </div>
-        <div className="right">
-          <ChatBubble
-            position={'right'}
-            value={`Hey, yeah it's been ages! I've been good, thanks for asking. How about you?`}
-          />
-        </div>
-        <div className="left">
-          <ChatBubble
-            position={'left'}
-            value={`Hey, yeah it's been ages! I've been good, thanks for asking. How about you?`}
-          />
-        </div>
-        <div className="right">
-          <ChatBubble
-            position={'right'}
-            value={`Hey, yeah it's been ages! I've been good, thanks for asking. How about you?`}
-          />
-        </div>
+        {Array(script?.scripts.length)
+          .fill(0)
+          .map((_, idx) => (
+            <>
+              <div className="left">
+                <ChatBubble position={'left'} value={script.scripts[idx].text} />
+              </div>
+              <div className="right">
+                <ChatBubble position={'right'} value={answers[idx]} />
+              </div>
+            </>
+          ))}
       </div>
       <div css={style.chatInputContainer}>
         <ChatInputBar value={chatValue} onSend={() => {}} onChange={setChatValue} disabled>
