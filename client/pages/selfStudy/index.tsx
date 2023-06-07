@@ -6,7 +6,7 @@ import { getSelfStudyList, getSelfStudy, getUserAchievement, getMyProfile } from
 import { css } from '@emotion/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const style = {
   container: css`
@@ -22,15 +22,56 @@ const style = {
       color: ${color};
     }
   `,
+  pageNumberContainer: css`
+    padding: 15px 0 15px 0;
+    display: flex;
+    justify-content: center;
+
+    user-select: none;
+    cursor: pointer;
+
+    & > span {
+      width: 20px;
+      text-align: center;
+    }
+
+    & > span.current-page {
+      font-weight: bold;
+    }
+  `,
 };
 
 export default function SelfStudy() {
   const [acheivement, setAcheivement] = useState<UserAcheivement | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [selfStudyIdList, setSelfStudyIdList] = useState<SelfStudyList | null>(null);
   const [selfStudyList, setSelfStudyList] = useState<SelfStudy[]>([]);
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [totalPageNum, setTotalPageNum] = useState<number>(1);
+  const [startPageNum, setStartPageNum] = useState<number>(1);
+  const [endPageNum, setEndPageNum] = useState<number>(1);
+
   const { theme } = useGlobalTheme();
   const router = useRouter();
+
+  const handlePageNumClick = (pageNum: number) => {
+    if (!router.isReady) return;
+
+    router.push({
+      pathname: '/selfStudy',
+      query: {
+        pageNum,
+      },
+    });
+  };
+
+  // to get pageNum from router
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const pageNum = router.query.pageNum;
+
+    if (pageNum && !(pageNum instanceof Array) && !isNaN(+pageNum)) setPageNum(+pageNum);
+  }, [router]);
 
   // to get user achievement
   useEffect(() => {
@@ -49,22 +90,17 @@ export default function SelfStudy() {
   // to get selfStudyIdList
   useEffect(() => {
     (async () => {
-      setSelfStudyIdList(await getSelfStudyList());
+      const selfStudyResponse = await getSelfStudyList(pageNum);
+      setSelfStudyList(selfStudyResponse.selfStudyList);
+      setTotalPageNum(selfStudyResponse.totalPage + 1);
     })();
-  }, []);
+  }, [pageNum]);
 
-  // to get selfStudyList
+  // to set page num
   useEffect(() => {
-    (async () => {
-      if (selfStudyIdList) {
-        const selfStudyListPromises = selfStudyIdList.selfStudyIds.map((selfStudyId) =>
-          getSelfStudy(selfStudyId),
-        );
-
-        setSelfStudyList(await Promise.all(selfStudyListPromises));
-      }
-    })();
-  }, [selfStudyIdList]);
+    setStartPageNum(Math.max(1, pageNum - 5));
+    setEndPageNum(Math.min(totalPageNum, pageNum + 5));
+  }, [pageNum, totalPageNum]);
 
   return (
     <>
@@ -83,7 +119,7 @@ export default function SelfStudy() {
         <br />
         <h2>최근 스터디</h2>
         {user &&
-          selfStudyList.slice(0, 5).map((selfStudy, idx, arr) => (
+          selfStudyList.map((selfStudy, idx, arr) => (
             <StudyCell
               selfStudy={selfStudy}
               owner={user}
@@ -92,7 +128,26 @@ export default function SelfStudy() {
               onClick={() => {
                 router.push(`/selfStudy/view/write`);
               }}
-            /> // TODO: change idx to selfStudyId
+            />
+          ))}
+      </div>
+      <div css={style.pageNumberContainer}>
+        ·
+        {Array(endPageNum - startPageNum + 1)
+          .fill(0)
+          .map((_, idx) => idx + startPageNum)
+          .map((val) => (
+            <React.Fragment key={val}>
+              <span
+                className={val === pageNum ? 'current-page' : ''}
+                onClick={() => {
+                  handlePageNumClick(val);
+                }}
+              >
+                {val}
+              </span>
+              ·
+            </React.Fragment>
           ))}
       </div>
     </>
