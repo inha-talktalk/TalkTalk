@@ -126,7 +126,12 @@ export default function SelfStudy() {
               isLast={idx === arr.length - 1}
               key={idx}
               onClick={() => {
-                router.push(`/selfStudy/view/write`);
+                router.push({
+                  pathname: `/selfStudy/view/${selfStudy.selfStudyType}`,
+                  query: {
+                    studyId: selfStudy.id,
+                  },
+                });
               }}
             />
           ))}
