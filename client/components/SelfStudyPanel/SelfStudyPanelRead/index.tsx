@@ -45,9 +45,21 @@ export default function SelfStudyPanelRead({ script }: SelfStudyPanelReadProps) 
         form.append('selfStudyId', selfStudyInfo.selfStudyId);
 
         await postSelfStudyRead(form);
+
+        toast.info('셀프 스터디를 완료했습니다.');
+        router.push('/selfStudy');
       })();
     }
-  }, [myChatList, recordFileList, router.isReady, script, selfStudyInfo, setSubmit, submit]);
+  }, [
+    myChatList,
+    recordFileList,
+    router,
+    router.isReady,
+    script,
+    selfStudyInfo,
+    setSubmit,
+    submit,
+  ]);
 
   if (!script) return <></>;
 
@@ -71,6 +83,7 @@ export default function SelfStudyPanelRead({ script }: SelfStudyPanelReadProps) 
         <ChatInputBar
           value={value}
           onSend={() => {
+            if (myChatList.length === script.scripts.length) return;
             setMyChatList((list) => [...list, value]);
             resetValue();
           }}
