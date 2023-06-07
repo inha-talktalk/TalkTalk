@@ -47,16 +47,14 @@ interface UserAcheivement {
 type UserAcheivementResponse = UserAcheivement;
 
 interface SelfStudy {
+  id: string;
   userId: string;
   selfStudyType: string;
   selfStudyName: string;
   tags: string[];
   createdAt: string;
   finishedAt: string;
-  script: {
-    text: string;
-    mp3Uri: string;
-  }[];
+  script: SelfStudyScript[];
   answer: SelfStudyReadAnswer | SelfStudyWriteAnswer;
 }
 
@@ -68,11 +66,8 @@ interface SelfStudyResponse {
   tags: string[];
   createdAt: string;
   finishedAt: string;
-  scripts: {
-    text: string;
-    mp3Uri: string;
-  }[];
-  answers: string[];
+  scripts: SelfStudyScript[];
+  answers: SelfStudyReadAnswer[] | SelfStudyWriteAnswer;
 }
 
 interface SelfStudyList {
