@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-export default function useAudio(url: string): [VoidFunction] {
+export default function useAudio(url: string) {
   const [playing, setPlaying] = useState<boolean>(false);
 
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   const toggle = () => setPlaying(!playing);
+  const startPlaying = () => setPlaying(true);
   const stopPlaying = () => setPlaying(false);
 
   useEffect(() => {
@@ -15,6 +16,8 @@ export default function useAudio(url: string): [VoidFunction] {
   }, [url, audio]);
 
   useEffect(() => {
+    if (!url) return;
+
     setAudio(new Audio(url));
   }, [url]);
 
@@ -32,12 +35,19 @@ export default function useAudio(url: string): [VoidFunction] {
 
   useEffect(() => {
     if (!audio) return;
-    audio.addEventListener('ended', stopPlaying);
+
+    audio.addEventListener('ended', () => {
+      stopPlaying();
+    });
 
     return () => {
       audio.removeEventListener('ended', stopPlaying);
     };
-  });
+  }, [audio]);
 
-  return [toggle];
+  return {
+    toggle,
+    startPlaying,
+    stopPlaying,
+  };
 }

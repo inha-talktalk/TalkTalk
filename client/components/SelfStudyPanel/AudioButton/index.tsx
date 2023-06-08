@@ -9,7 +9,7 @@ interface AudioButtonProps {
 
 export default function AudioButton({ url, disabled }: AudioButtonProps) {
   const { theme } = useGlobalTheme();
-  const [toggle] = useAudio(url);
+  const { toggle } = useAudio(url);
 
   return (
     <>
