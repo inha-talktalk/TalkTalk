@@ -11,10 +11,12 @@ import com.inha.server.study.group.dto.response.PostGroupStudyQuitRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
 import com.inha.server.study.group.dto.response.WaitingListRes;
 import com.inha.server.study.group.service.GroupStudyService;
+import com.inha.server.user.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +37,9 @@ public class GroupStudyController {
     public ResponseEntity<PostGroupStudyRes> create(
         @RequestHeader(value = "x-access-token") String jwt,
         @RequestBody PostGroupStudyReq request) {
+        if (TokenProvider.getSubject(jwt) == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return groupStudyService.create(jwt, request);
     }
 
@@ -55,6 +60,9 @@ public class GroupStudyController {
     public ResponseEntity<GetGroupStudyPostDetailRes> read(
         @RequestHeader(value = "x-access-token") String jwt,
         @RequestParam(value = "groupStudyId") String groupStudyId) {
+        if (TokenProvider.getSubject(jwt) == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return groupStudyService.getGroupStudyDetail(groupStudyId);
     }
 
@@ -62,12 +70,18 @@ public class GroupStudyController {
     public ResponseEntity<PostGroupStudyEndRes> end(
         @RequestHeader(value = "x-access-token") String jwt,
         @RequestParam(value = "groupStudyId") String groupStudyId) {
+        if (TokenProvider.getSubject(jwt) == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return groupStudyService.end(jwt, groupStudyId);
     }
 
     @PostMapping("/apply")
     public ResponseEntity<WaitingListRes> apply(@RequestHeader(value = "x-access-token") String jwt,
         @RequestParam(value = "groupStudyId") String groupStudyId) {
+        if (TokenProvider.getSubject(jwt) == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return groupStudyService.apply(jwt, groupStudyId);
     }
 
@@ -75,6 +89,9 @@ public class GroupStudyController {
     public ResponseEntity<WaitingListRes> readWaitingList(
         @RequestHeader(value = "x-access-token") String jwt,
         @RequestParam(value = "groupStudyId") String groupStudyId) {
+        if (TokenProvider.getSubject(jwt) == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return groupStudyService.readWaitingList(jwt, groupStudyId);
     }
 
@@ -83,6 +100,9 @@ public class GroupStudyController {
         @RequestHeader(value = "x-access-token") String jwt,
         @RequestParam(value = "groupStudyId") String groupStudyId,
         @RequestParam(value = "userId") String userId) {
+        if (TokenProvider.getSubject(jwt) == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return groupStudyService.approve(jwt, groupStudyId, userId);
     }
 
@@ -91,6 +111,9 @@ public class GroupStudyController {
         @RequestHeader(value = "x-access-token") String jwt,
         @RequestParam(value = "groupStudyId") String groupStudyId,
         @RequestParam(value = "to") String changedOwnerId) {
+        if (TokenProvider.getSubject(jwt) == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return groupStudyService.delegate(jwt, groupStudyId, changedOwnerId);
     }
 
@@ -98,6 +121,9 @@ public class GroupStudyController {
     public ResponseEntity<PostGroupStudyQuitRes> quit(
         @RequestHeader(value = "x-access-token") String jwt,
         @RequestParam(value = "groupStudyId") String groupStudyId) {
+        if (TokenProvider.getSubject(jwt) == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return groupStudyService.quit(jwt, groupStudyId);
     }
 
@@ -105,6 +131,9 @@ public class GroupStudyController {
     public ResponseEntity<GetGroupStudyInfoRes> readInfo(
         @RequestHeader(value = "x-access-token") String jwt,
         @RequestParam(value = "groupStudyId") String groupStudyId) {
+        if (TokenProvider.getSubject(jwt) == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return groupStudyService.readInfo(groupStudyId);
     }
 }
