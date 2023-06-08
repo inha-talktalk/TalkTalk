@@ -32,7 +32,16 @@ export default function SelfStudySharePanel() {
           </>
         ) : (
           studyList.map((study, idx) => (
-            <StudyCard id={study.groupId} title={study.groupName} tags={study.tags} key={idx} />
+            <StudyCard
+              id={study.groupId}
+              title={study.groupName}
+              tags={study.tags}
+              key={idx}
+              buttonText="공유하기"
+              onButtonClick={() => {
+                // TODO: API 완성 후 공유하는 기능 추가
+              }}
+            />
           ))
         )}
       </div>
