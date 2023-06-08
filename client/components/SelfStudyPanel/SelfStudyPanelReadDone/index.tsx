@@ -4,6 +4,7 @@ import { AiFillPlayCircle } from 'react-icons/ai';
 import ChatBubble from '@/components/ChatBubble';
 import { style } from '../style';
 import ChatInputBar from '@/components/ChatInputBar';
+import useAudio from '@/utils/audio';
 
 interface SelfStudyPanelReadDoneProps {
   script: SelfStudyScriptResponse | null;
@@ -13,6 +14,9 @@ interface SelfStudyPanelReadDoneProps {
 export default function SelfStudyPanelReadDone({ script, answers }: SelfStudyPanelReadDoneProps) {
   const { theme } = useGlobalTheme();
   const [chatValue, setChatValue] = useState<string>('');
+  const [url, setUrl] = useState<string>('');
+
+  const { startPlaying, stopPlaying } = useAudio(url);
 
   if (!script) return <></>;
 
@@ -24,10 +28,30 @@ export default function SelfStudyPanelReadDone({ script, answers }: SelfStudyPan
           .map((_, idx) => (
             <>
               <div className="left">
-                <ChatBubble position={'left'} value={script.scripts[idx].text} />
+                <ChatBubble
+                  position={'left'}
+                  value={script.scripts[idx].text}
+                  onClick={() => {
+                    stopPlaying();
+                    setUrl(script.scripts[idx].mp3Uri);
+                    setTimeout(() => {
+                      startPlaying();
+                    }, 1);
+                  }}
+                />
               </div>
               <div className="right">
-                <ChatBubble position={'right'} value={answers[idx].text} />
+                <ChatBubble
+                  position={'right'}
+                  value={answers[idx].text}
+                  onClick={() => {
+                    stopPlaying();
+                    setUrl(answers[idx].mp3Uri);
+                    setTimeout(() => {
+                      startPlaying();
+                    }, 1);
+                  }}
+                />
               </div>
             </>
           ))}
