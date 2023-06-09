@@ -16,6 +16,7 @@ public class SelfStudyShare {
     private String groupId;
     private String userName;
     private String profileImage;
+    private String selfStudyType;
     private String selfStudyId;
     private String selfStudyName;
     private List<String> tags;
