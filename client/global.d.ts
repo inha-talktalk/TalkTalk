@@ -148,3 +148,35 @@ interface GroupStudyWatingListResponse {
   groupId: string;
   waitingList: string[];
 }
+
+interface GeneralChat {
+  id: string;
+  groupId: string;
+  senderId: string;
+  senderName: string;
+  profileImage: string;
+  content: { message: string };
+  createdAt: string;
+}
+
+interface GeneralChatListResponse {
+  generalChatList: GeneralChat[];
+  isFinished: boolean;
+}
+
+interface ShareChat {
+  id: string;
+  userName: string;
+  profileImage: string;
+  selfStudyId: string;
+  selfStudyName: string;
+  tags: string[];
+  createdAt: string;
+  sharedAt: string;
+  finishedAt: string;
+}
+
+interface ShareChatListResponse {
+  selfStudyList: ShareChat[];
+  finished: boolean;
+}
