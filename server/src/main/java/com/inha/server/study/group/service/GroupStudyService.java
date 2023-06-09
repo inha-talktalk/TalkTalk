@@ -385,12 +385,6 @@ public class GroupStudyService {
             .build(), HttpStatus.OK);
     }
 
-    public ResponseEntity<List<SelfStudyShare>> getSharedSelfStudyList(String groupStudyId) {
-        List<SelfStudyShare> selfStudyShareList = selfStudyShareRepository.findAllByGroupIdOrderBySharedAtAsc(groupStudyId).orElse(null);
-
-        return new ResponseEntity<>(selfStudyShareList, HttpStatus.OK);
-    }
-
     public ResponseEntity<GetSelfStudySharedListRes> getSharedSelfStudyListTest(String groupStudyId, String afterId, String beforeId, Integer size) {
         Stream<SelfStudyShare> sharedSelfStudyStream = null;
         boolean finished = false;
@@ -399,10 +393,20 @@ public class GroupStudyService {
             return  getFirst(groupStudyId, size);
         }
         else if(afterId.equals("null")) { // before 찾는 경우
-            sharedSelfStudyStream = getBefore(groupStudyId, beforeId, size);
+            try {
+                sharedSelfStudyStream = getBefore(groupStudyId, beforeId, size);
+            }
+            catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         }
         else if(beforeId.equals("null")) { // after 찾는 경우
-            sharedSelfStudyStream = getAfter(groupStudyId, afterId, size);
+            try {
+                sharedSelfStudyStream = getAfter(groupStudyId, afterId, size);
+            }
+            catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         }
 
         if (Arrays.asList(sharedSelfStudyStream).size() != size) {
@@ -421,6 +425,10 @@ public class GroupStudyService {
     private Stream<SelfStudyShare> getAfter(String groupStudyId, String afterId, Integer size) {
         List<SelfStudyShare> selfStudyShareList = selfStudyShareRepository.findAllByGroupIdOrderBySharedAtAsc(groupStudyId).orElse(null);
 
+        if (selfStudyShareList == null) {
+            throw new RuntimeException();
+        }
+
         int index = 0;
         for (SelfStudyShare s : selfStudyShareList) {
             if (s.getId().equals(afterId))
@@ -433,6 +441,10 @@ public class GroupStudyService {
 
     private Stream<SelfStudyShare> getBefore(String groupStudyId, String beforeId, Integer size) {
         List<SelfStudyShare> selfStudyShareList = selfStudyShareRepository.findAllByGroupIdOrderBySharedAtDesc(groupStudyId).orElse(null);
+
+        if (selfStudyShareList == null) {
+            throw new RuntimeException();
+        }
 
         int index = 0;
         for (SelfStudyShare s : selfStudyShareList) {
@@ -450,6 +462,10 @@ public class GroupStudyService {
     private ResponseEntity<GetSelfStudySharedListRes> getFirst(String groupStudyId, Integer size) {
         boolean finished = false;
         List<SelfStudyShare> selfStudyShareList = selfStudyShareRepository.findAllByGroupIdOrderBySharedAtAsc(groupStudyId).orElse(null);
+
+        if (selfStudyShareList == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         Stream<SelfStudyShare> stream = selfStudyShareList.stream().limit(size);
 

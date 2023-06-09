@@ -141,13 +141,7 @@ public class GroupStudyController {
         }
         return groupStudyService.readInfo(groupStudyId);
     }
-
     @GetMapping("/{groupStudyId}/share-chat")
-    public ResponseEntity<List<SelfStudyShare>> getSharedSelfStudyList(@PathVariable(name = "groupStudyId") String groupStudyId) {
-        return groupStudyService.getSharedSelfStudyList(groupStudyId);
-    }
-
-    @GetMapping("/{groupStudyId}/share-chat/test")
     public ResponseEntity<GetSelfStudySharedListRes> getSharedSelfStudyListTest(
         @PathVariable(name = "groupStudyId") String groupStudyId,
         @RequestParam(value = "after", defaultValue = "null") String afterId,
