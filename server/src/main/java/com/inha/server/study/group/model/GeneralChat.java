@@ -15,6 +15,7 @@ public class GeneralChat {
 
     private String groupId;
     private String senderId;
+    private String profileImage;
     private GeneralContent content;
     private String createdAt;
 }
