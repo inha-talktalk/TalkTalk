@@ -11,7 +11,6 @@ import com.inha.server.user.model.User;
 import com.inha.server.user.repository.UserRepository;
 import com.inha.server.user.util.TokenProvider;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -47,10 +46,17 @@ public class ChatService {
         List<GeneralChat> generalChatList = generalChatRepository.findByGroupId(groupStudyId);
 
         if (Objects.equals(before, "") && Objects.equals(after, "")) {
-            return new ResponseEntity<>(GetGeneralChatListRes.builder()
-                .generalChatList(generalChatList.subList(0, size))
-                .isFinished(true)
-                .build(), HttpStatus.OK);
+            if (size < generalChatList.size()) {
+                return new ResponseEntity<>(GetGeneralChatListRes.builder()
+                    .generalChatList(generalChatList.subList(0, size))
+                    .isFinished(true)
+                    .build(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(GetGeneralChatListRes.builder()
+                    .generalChatList(generalChatList.subList(0, generalChatList.size()))
+                    .isFinished(true)
+                    .build(), HttpStatus.OK);
+            }
         }
 
         if (!Objects.equals(before, "")) {
@@ -66,7 +72,7 @@ public class ChatService {
                 if (cutOffIndex - size <= 0) {
                     if (cutOffIndex == 0) {
                         return new ResponseEntity<>(GetGeneralChatListRes.builder()
-                            .generalChatList(Collections.emptyList())
+                            .generalChatList(generalChatList.subList(0, cutOffIndex + 1))
                             .isFinished(true)
                             .build(),
                             HttpStatus.OK);
@@ -101,7 +107,9 @@ public class ChatService {
                 if (cutOffIndex + size >= generalChatList.size() - 1) {
                     if (cutOffIndex == generalChatList.size() - 1) {
                         return new ResponseEntity<>(GetGeneralChatListRes.builder()
-                            .generalChatList(Collections.emptyList())
+                            .generalChatList(
+                                generalChatList.subList(cutOffIndex,
+                                    generalChatList.size()))
                             .isFinished(true)
                             .build(),
                             HttpStatus.OK);
