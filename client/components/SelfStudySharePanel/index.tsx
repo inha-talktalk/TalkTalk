@@ -5,9 +5,13 @@ import { getProgressStudy, postSelfStudyShare } from '@/utils/api';
 
 interface SelfStudySharePanelProps {
   selfStudyId: string;
+  onButtonClick?: VoidFunction;
 }
 
-export default function SelfStudySharePanel({ selfStudyId }: SelfStudySharePanelProps) {
+export default function SelfStudySharePanel({
+  selfStudyId,
+  onButtonClick,
+}: SelfStudySharePanelProps) {
   const [studyList, setStudyList] = useState<MyStudy[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
 
@@ -44,6 +48,7 @@ export default function SelfStudySharePanel({ selfStudyId }: SelfStudySharePanel
               buttonText="공유하기"
               onButtonClick={() => {
                 postSelfStudyShare(selfStudyId, study.groupId);
+                onButtonClick?.();
               }}
             />
           ))

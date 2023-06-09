@@ -98,7 +98,10 @@ export default function SelfStudyController({
     <>
       {status === 'done' && (
         <Modal setShow={setShowModal} isShow={showModal}>
-          <SelfStudySharePanel selfStudyId={doneStudyId} />
+          <SelfStudySharePanel
+            selfStudyId={doneStudyId}
+            onButtonClick={() => setShowModal(false)}
+          />
         </Modal>
       )}
       <div css={style.container}>

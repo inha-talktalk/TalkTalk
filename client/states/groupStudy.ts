@@ -9,7 +9,7 @@ export type Channels = 'general' | 'share';
 
 export const selectedChannelState = atom<Channels>({
   key: 'selectedChannel',
-  default: 'share',
+  default: 'general',
 });
 
 export const voiceChannelUserListState = atom<UserProfile[]>({
