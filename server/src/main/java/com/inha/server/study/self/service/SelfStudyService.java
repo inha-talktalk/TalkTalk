@@ -330,6 +330,7 @@ public class SelfStudyService {
                 .groupId(groupId)
                 .userName(user.getName())
                 .profileImage(user.getProfileImage())
+                .selfStudyType(selfStudy.getSelfStudyType())
                 .selfStudyId(selfStudy.getId())
                 .selfStudyName(selfStudy.getSelfStudyName())
                 .tags(selfStudy.getTags())
