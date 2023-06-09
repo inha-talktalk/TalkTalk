@@ -88,6 +88,7 @@ public class ChatService {
         GeneralChat generalChat = GeneralChat.builder()
             .groupId(groupStudyId)
             .senderId(userId)
+            .senderName(user.getName())
             .profileImage(user.getProfileImage())
             .content(GeneralContent.builder()
                 .message(req.getMessage())
