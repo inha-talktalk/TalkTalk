@@ -45,9 +45,9 @@ public class ChatService {
         }
         List<GeneralChat> generalChatList = generalChatRepository.findByGroupId(groupStudyId);
 
-        if (Objects.equals(before, "") && Objects.equals(after, "") && size == null) {
+        if (Objects.equals(before, "") && Objects.equals(after, "")) {
             return new ResponseEntity<>(GetGeneralChatListRes.builder()
-                .generalChatList(generalChatList)
+                .generalChatList(generalChatList.subList(0, size))
                 .isFinished(true)
                 .build(), HttpStatus.OK);
         }

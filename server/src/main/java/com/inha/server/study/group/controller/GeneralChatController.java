@@ -39,7 +39,7 @@ public class GeneralChatController {
     public ResponseEntity<GetGeneralChatListRes> read(
         @RequestHeader(value = "x-access-token") String jwt,
         @PathVariable String groupStudyId,
-        @RequestParam String after, @RequestParam String before, @RequestParam(required = false) Integer size) {
+        @RequestParam String after, @RequestParam String before, @RequestParam Integer size) {
         if (TokenProvider.getSubject(jwt) == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
