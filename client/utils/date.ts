@@ -11,6 +11,13 @@ export function getDateString(date: Date) {
     .padStart(2, '0')}`;
 }
 
+export function getFullDateString(date: Date) {
+  return `${getDateString(date)} ${date.getHours().toString().padStart(2, '0')}:${date
+    .getMinutes()
+    .toString()
+    .padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+}
+
 export function getTimeDiffToString(date1: Date, date2: Date) {
   var diff = date2.getTime() - date1.getTime();
 
