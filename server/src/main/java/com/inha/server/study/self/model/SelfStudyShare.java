@@ -13,6 +13,7 @@ public class SelfStudyShare {
     @Id
     private String id;
 
+    private String groupId;
     private String userName;
     private String profileImage;
     private String selfStudyId;
