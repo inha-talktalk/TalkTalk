@@ -4,6 +4,7 @@ import com.inha.server.study.group.dto.request.PostGroupStudyReq;
 import com.inha.server.study.group.dto.response.GetGroupStudyInfoRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyPostDetailRes;
+import com.inha.server.study.group.dto.response.GetSelfStudySharedListRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyEndRes;
@@ -14,6 +15,7 @@ import com.inha.server.study.group.service.GroupStudyService;
 import com.inha.server.study.self.model.SelfStudyShare;
 import com.inha.server.user.util.TokenProvider;
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -143,5 +145,15 @@ public class GroupStudyController {
     @GetMapping("/{groupStudyId}/share-chat")
     public ResponseEntity<List<SelfStudyShare>> getSharedSelfStudyList(@PathVariable(name = "groupStudyId") String groupStudyId) {
         return groupStudyService.getSharedSelfStudyList(groupStudyId);
+    }
+
+    @GetMapping("/{groupStudyId}/share-chat/test")
+    public ResponseEntity<GetSelfStudySharedListRes> getSharedSelfStudyListTest(
+        @PathVariable(name = "groupStudyId") String groupStudyId,
+        @RequestParam(value = "after", defaultValue = "null") String afterId,
+        @RequestParam(value = "before", defaultValue = "null") String beforeId,
+        @RequestParam(value = "size", defaultValue = "5") Integer size
+    ) {
+        return groupStudyService.getSharedSelfStudyListTest(groupStudyId, afterId, beforeId, size);
     }
 }

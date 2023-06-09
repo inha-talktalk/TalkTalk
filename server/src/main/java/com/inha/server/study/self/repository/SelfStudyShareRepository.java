@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SelfStudyShareRepository extends MongoRepository<SelfStudyShare, String> {
     Optional<List<SelfStudyShare>> findAllByGroupIdOrderBySharedAtAsc(String groupStudyId);
+
+    Optional<List<SelfStudyShare>> findAllByGroupIdOrderBySharedAtDesc(String groupStudyId);
 }
