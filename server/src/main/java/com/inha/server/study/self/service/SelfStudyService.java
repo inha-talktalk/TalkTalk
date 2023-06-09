@@ -327,6 +327,7 @@ public class SelfStudyService {
 
         selfStudyShareRepository.save(
             SelfStudyShare.builder()
+                .groupId(groupId)
                 .userName(user.getName())
                 .profileImage(user.getProfileImage())
                 .selfStudyId(selfStudy.getId())
