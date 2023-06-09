@@ -46,10 +46,17 @@ public class ChatService {
         List<GeneralChat> generalChatList = generalChatRepository.findByGroupId(groupStudyId);
 
         if (Objects.equals(before, "") && Objects.equals(after, "")) {
-            return new ResponseEntity<>(GetGeneralChatListRes.builder()
-                .generalChatList(generalChatList.subList(0, size))
-                .isFinished(true)
-                .build(), HttpStatus.OK);
+            if (size < generalChatList.size()) {
+                return new ResponseEntity<>(GetGeneralChatListRes.builder()
+                    .generalChatList(generalChatList.subList(0, size))
+                    .isFinished(true)
+                    .build(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(GetGeneralChatListRes.builder()
+                    .generalChatList(generalChatList.subList(0, generalChatList.size()))
+                    .isFinished(true)
+                    .build(), HttpStatus.OK);
+            }
         }
 
         if (!Objects.equals(before, "")) {
