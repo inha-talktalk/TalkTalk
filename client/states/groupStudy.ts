@@ -9,7 +9,7 @@ export type Channels = 'general' | 'share';
 
 export const selectedChannelState = atom<Channels>({
   key: 'selectedChannel',
-  default: 'general',
+  default: 'share',
 });
 
 export const voiceChannelUserListState = atom<UserProfile[]>({
@@ -28,4 +28,14 @@ export const voiceChannelUserListState = atom<UserProfile[]>({
 export const muteState = atom<boolean>({
   key: 'isMute',
   default: false,
+});
+
+export const generalChatListState = atom<GeneralChat[]>({
+  key: 'generalChat',
+  default: [],
+});
+
+export const shareChatListState = atom<ShareChat[]>({
+  key: 'shareChat',
+  default: [],
 });
