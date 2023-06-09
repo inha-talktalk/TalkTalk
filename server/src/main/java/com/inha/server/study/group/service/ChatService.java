@@ -48,7 +48,7 @@ public class ChatService {
 
         if (Objects.equals(before, "") && Objects.equals(after, "")) {
             return new ResponseEntity<>(GetGeneralChatListRes.builder()
-                .generalChatList(generalChatList.subList(0, size))
+                .generalChatList(generalChatList.subList(0, generalChatList.size()))
                 .isFinished(true)
                 .build(), HttpStatus.OK);
         }
