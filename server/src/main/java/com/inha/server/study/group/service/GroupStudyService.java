@@ -15,6 +15,8 @@ import com.inha.server.study.group.model.ApplyStatus;
 import com.inha.server.study.group.model.GroupStudy;
 import com.inha.server.study.group.repository.ApplyStatusRepository;
 import com.inha.server.study.group.repository.GroupStudyRepository;
+import com.inha.server.study.self.model.SelfStudyShare;
+import com.inha.server.study.self.repository.SelfStudyShareRepository;
 import com.inha.server.user.util.TokenProvider;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GroupStudyService {
 
     private final GroupStudyRepository groupStudyRepository;
+    private final SelfStudyShareRepository selfStudyShareRepository;
     private final ApplyStatusRepository applyStatusRepository;
 
     public ResponseEntity<PostGroupStudyRes> create(String jwt, PostGroupStudyReq request) {
@@ -376,5 +379,11 @@ public class GroupStudyService {
             .ownerId(groupStudy.getOwnerId())
             .createdAt(groupStudy.getCreatedAt())
             .build(), HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<SelfStudyShare>> getSharedSelfStudyList(String groupStudyId) {
+        List<SelfStudyShare> selfStudyShareList = selfStudyShareRepository.findAllByGroupIdOrderBySharedAtAsc(groupStudyId).orElse(null);
+
+        return new ResponseEntity<>(selfStudyShareList, HttpStatus.OK);
     }
 }

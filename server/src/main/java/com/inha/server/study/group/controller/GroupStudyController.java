@@ -11,7 +11,9 @@ import com.inha.server.study.group.dto.response.PostGroupStudyQuitRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
 import com.inha.server.study.group.dto.response.WaitingListRes;
 import com.inha.server.study.group.service.GroupStudyService;
+import com.inha.server.study.self.model.SelfStudyShare;
 import com.inha.server.user.util.TokenProvider;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -19,6 +21,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -135,5 +138,10 @@ public class GroupStudyController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         return groupStudyService.readInfo(groupStudyId);
+    }
+
+    @GetMapping("/{groupStudyId}/share-chat")
+    public ResponseEntity<List<SelfStudyShare>> getSharedSelfStudyList(@PathVariable(name = "groupStudyId") String groupStudyId) {
+        return groupStudyService.getSharedSelfStudyList(groupStudyId);
     }
 }
