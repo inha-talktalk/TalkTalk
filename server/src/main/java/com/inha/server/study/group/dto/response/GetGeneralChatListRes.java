@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GetGeneralChatListRes {
 
-    private List<GeneralChat> groupStudyList;
-    private Integer totalPage;
-    private Integer currentPage;
+    private List<GeneralChat> generalChatList;
+    private Boolean isFinished;
 }
