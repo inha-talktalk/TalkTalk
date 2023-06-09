@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,5 +71,13 @@ public class SelfStudyController {
             @RequestHeader(value = "x-access-token") String jwt,
             @PageableDefault(size = 5, sort = "createdAt") Pageable pageable) {
         return selfStudyService.getSelfStudyList(jwt, pageable);
+    }
+
+    @PostMapping("/{selfStudyId}")
+    public ResponseEntity<HttpStatus> postShare(
+        @RequestHeader(value = "x-access-token") String jwt,
+        @PathVariable(name = "selfStudyId") String selfStudyId,
+        @RequestParam(name = "to") String groupId) {
+        return selfStudyService.postSare(jwt ,selfStudyId, groupId);
     }
 }

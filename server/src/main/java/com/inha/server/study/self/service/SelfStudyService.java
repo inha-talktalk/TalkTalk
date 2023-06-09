@@ -4,13 +4,19 @@ import com.inha.server.chatGPT.model.Script;
 import com.inha.server.chatGPT.model.Script.ScriptMap;
 import com.inha.server.chatGPT.repository.ScriptRepository;
 import com.inha.server.s3.service.S3Service;
+import com.inha.server.study.group.model.GroupStudy;
+import com.inha.server.study.group.repository.GroupStudyRepository;
 import com.inha.server.study.self.dto.reponse.*;
 import com.inha.server.study.self.dto.request.EndSelfStudyReadReq;
 import com.inha.server.study.self.dto.request.EndSelfStudyWriteReq;
 import com.inha.server.study.self.dto.request.SelfStudyReq;
 import com.inha.server.study.self.model.SelfStudy;
+import com.inha.server.study.self.model.SelfStudyShare;
 import com.inha.server.study.self.repository.SelfStudyRepository;
+import com.inha.server.study.self.repository.SelfStudyShareRepository;
+import com.inha.server.user.model.User;
 import com.inha.server.user.model.UserScriptList;
+import com.inha.server.user.repository.UserRepository;
 import com.inha.server.user.repository.UserScriptRepository;
 import com.inha.server.user.service.UserService;
 import com.inha.server.user.util.TokenProvider;
@@ -37,9 +43,12 @@ public class SelfStudyService {
 
     private final UserService userService;
     private final S3Service s3Service;
+    private final UserRepository userRepository;
     private final ScriptRepository scriptRepository;
     private final UserScriptRepository userScriptRepository;
     private final SelfStudyRepository selfStudyRepository;
+    private final GroupStudyRepository groupStudyRepository;
+    private final SelfStudyShareRepository selfStudyShareRepository;
 
     private static String getUserId(String jwt) {
         String userId;
@@ -299,5 +308,37 @@ public class SelfStudyService {
                 .currentPage(pageable.getPageNumber())
                 .build(),
                 HttpStatus.OK);
+    }
+
+    public ResponseEntity<HttpStatus> postSare(String jwt, String selfStudyId, String groupId) {
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        User user = userRepository.findById(userId).get();
+        SelfStudy selfStudy = selfStudyRepository.findById(selfStudyId).orElse(null);
+        GroupStudy groupStudy = groupStudyRepository.findById(groupId).orElse(null);
+
+        if (selfStudy == null || groupStudy == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        selfStudyShareRepository.save(
+            SelfStudyShare.builder()
+                .groupId(groupId)
+                .userName(user.getName())
+                .profileImage(user.getProfileImage())
+                .selfStudyId(selfStudy.getId())
+                .selfStudyName(selfStudy.getSelfStudyName())
+                .tags(selfStudy.getTags())
+                .sharedAt(getTime())
+                .createdAt(selfStudy.getCreatedAt())
+                .finishedAt(selfStudy.getFinishedAt())
+                .build()
+        );
+
+        return  new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

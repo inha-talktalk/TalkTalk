@@ -4,6 +4,7 @@ import com.inha.server.study.group.dto.request.PostGroupStudyReq;
 import com.inha.server.study.group.dto.response.GetGroupStudyInfoRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyPostDetailRes;
+import com.inha.server.study.group.dto.response.GetSelfStudySharedListRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyEndRes;
@@ -11,7 +12,10 @@ import com.inha.server.study.group.dto.response.PostGroupStudyQuitRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyRes;
 import com.inha.server.study.group.dto.response.WaitingListRes;
 import com.inha.server.study.group.service.GroupStudyService;
+import com.inha.server.study.self.model.SelfStudyShare;
 import com.inha.server.user.util.TokenProvider;
+import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -19,6 +23,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -135,5 +140,14 @@ public class GroupStudyController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         return groupStudyService.readInfo(groupStudyId);
+    }
+    @GetMapping("/{groupStudyId}/share-chat")
+    public ResponseEntity<GetSelfStudySharedListRes> getSharedSelfStudyListTest(
+        @PathVariable(name = "groupStudyId") String groupStudyId,
+        @RequestParam(value = "after", defaultValue = "null") String afterId,
+        @RequestParam(value = "before", defaultValue = "null") String beforeId,
+        @RequestParam(value = "size", defaultValue = "5") Integer size
+    ) {
+        return groupStudyService.getSharedSelfStudyListTest(groupStudyId, afterId, beforeId, size);
     }
 }

@@ -4,6 +4,7 @@ import com.inha.server.study.group.dto.request.PostGroupStudyReq;
 import com.inha.server.study.group.dto.response.GetGroupStudyInfoRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyListRes;
 import com.inha.server.study.group.dto.response.GetGroupStudyPostDetailRes;
+import com.inha.server.study.group.dto.response.GetSelfStudySharedListRes;
 import com.inha.server.study.group.dto.response.GroupStudyRes;
 import com.inha.server.study.group.dto.response.PostDelegateRes;
 import com.inha.server.study.group.dto.response.PostGroupStudyAcceptRes;
@@ -15,14 +16,19 @@ import com.inha.server.study.group.model.ApplyStatus;
 import com.inha.server.study.group.model.GroupStudy;
 import com.inha.server.study.group.repository.ApplyStatusRepository;
 import com.inha.server.study.group.repository.GroupStudyRepository;
+import com.inha.server.study.self.model.SelfStudyShare;
+import com.inha.server.study.self.repository.SelfStudyShareRepository;
 import com.inha.server.user.util.TokenProvider;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GroupStudyService {
 
     private final GroupStudyRepository groupStudyRepository;
+    private final SelfStudyShareRepository selfStudyShareRepository;
     private final ApplyStatusRepository applyStatusRepository;
 
     public ResponseEntity<PostGroupStudyRes> create(String jwt, PostGroupStudyReq request) {
@@ -376,5 +383,102 @@ public class GroupStudyService {
             .ownerId(groupStudy.getOwnerId())
             .createdAt(groupStudy.getCreatedAt())
             .build(), HttpStatus.OK);
+    }
+
+    public ResponseEntity<GetSelfStudySharedListRes> getSharedSelfStudyListTest(String groupStudyId, String afterId, String beforeId, Integer size) {
+        Stream<SelfStudyShare> sharedSelfStudyStream = null;
+        boolean finished = false;
+        // 둘 다 null 값인 경우
+        if (afterId.equals("null") && beforeId.equals("null")) {
+            return  getFirst(groupStudyId, size);
+        }
+        else if(afterId.equals("null")) { // before 찾는 경우
+            try {
+                sharedSelfStudyStream = getBefore(groupStudyId, beforeId, size);
+            }
+            catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        else if(beforeId.equals("null")) { // after 찾는 경우
+            try {
+                sharedSelfStudyStream = getAfter(groupStudyId, afterId, size);
+            }
+            catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+
+        if (Arrays.asList(sharedSelfStudyStream).size() != size) {
+            finished = true;
+        }
+
+        return new ResponseEntity<>(
+            GetSelfStudySharedListRes.builder()
+                .finished(finished)
+                .selfStudyList(sharedSelfStudyStream)
+                .build(),
+            HttpStatus.OK
+        );
+    }
+
+    private Stream<SelfStudyShare> getAfter(String groupStudyId, String afterId, Integer size) {
+        List<SelfStudyShare> selfStudyShareList = selfStudyShareRepository.findAllByGroupIdOrderBySharedAtAsc(groupStudyId).orElse(null);
+
+        if (selfStudyShareList == null) {
+            throw new RuntimeException();
+        }
+
+        int index = 0;
+        for (SelfStudyShare s : selfStudyShareList) {
+            if (s.getId().equals(afterId))
+                break;
+            index++;
+        }
+
+        return  selfStudyShareList.stream().skip(index+1).limit(size);
+    }
+
+    private Stream<SelfStudyShare> getBefore(String groupStudyId, String beforeId, Integer size) {
+        List<SelfStudyShare> selfStudyShareList = selfStudyShareRepository.findAllByGroupIdOrderBySharedAtDesc(groupStudyId).orElse(null);
+
+        if (selfStudyShareList == null) {
+            throw new RuntimeException();
+        }
+
+        int index = 0;
+        for (SelfStudyShare s : selfStudyShareList) {
+            if (s.getId().equals(beforeId))
+                break;
+            index++;
+        }
+
+        Stream<SelfStudyShare> ss =  selfStudyShareList.stream().skip(index+1).limit(size);
+
+        return ss.sorted(Comparator.comparing((SelfStudyShare s)-> s.getSharedAt()));
+
+    }
+
+    private ResponseEntity<GetSelfStudySharedListRes> getFirst(String groupStudyId, Integer size) {
+        boolean finished = false;
+        List<SelfStudyShare> selfStudyShareList = selfStudyShareRepository.findAllByGroupIdOrderBySharedAtAsc(groupStudyId).orElse(null);
+
+        if (selfStudyShareList == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Stream<SelfStudyShare> stream = selfStudyShareList.stream().limit(size);
+
+        if (size >= selfStudyShareList.size()) {
+            finished = true;
+        }
+
+        return new ResponseEntity<>(
+            GetSelfStudySharedListRes.builder()
+                .finished(finished)
+                .selfStudyList(stream)
+                .build(),
+            HttpStatus.OK
+        );
     }
 }
