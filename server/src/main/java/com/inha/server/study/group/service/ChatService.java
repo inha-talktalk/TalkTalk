@@ -13,10 +13,9 @@ import com.inha.server.user.util.TokenProvider;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.TimeZone;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,9 +30,8 @@ public class ChatService {
     private final UserRepository userRepository;
 
     @Transactional
-    public ResponseEntity<GetGeneralChatListRes> getGeneralChatList(String jwt,
-        String groupStudyId,
-        Pageable pageable) {
+    public ResponseEntity<GetGeneralChatListRes> getGeneralChatList(String jwt, String groupStudyId,
+        String after, String before, Integer size) {
         String userId = getUserId(jwt);
         GroupStudy groupStudy = groupStudyRepository.findById(groupStudyId).orElse(null);
 
@@ -45,17 +43,88 @@ public class ChatService {
         if (!studyMate.contains(userId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+        List<GeneralChat> generalChatList = generalChatRepository.findByGroupId(groupStudyId);
 
-        List<GeneralChat> generalChatList = generalChatRepository.findAllByGroupId(groupStudyId,
-            PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())).getContent();
+        if (Objects.equals(before, "") && Objects.equals(after, "") && size == null) {
+            return new ResponseEntity<>(GetGeneralChatListRes.builder()
+                .generalChatList(generalChatList)
+                .isFinished(true)
+                .build(), HttpStatus.OK);
+        }
 
-        int totalPage = generalChatRepository.findByGroupId(groupStudyId).size();
+        if (!Objects.equals(before, "")) {
+            int cutOffIndex = -1;
+            for (int i = 0; i < generalChatList.size(); i++) {
+                GeneralChat chat = generalChatList.get(i);
+                if (chat.getId().equals(before)) {
+                    cutOffIndex = i;
+                    break;
+                }
+            }
+            if (cutOffIndex != -1) {
+                if (cutOffIndex - size <= 0) {
+                    if (cutOffIndex == 0) {
+                        return new ResponseEntity<>(GetGeneralChatListRes.builder()
+                            .generalChatList(generalChatList.subList(0, cutOffIndex + 1))
+                            .isFinished(true)
+                            .build(),
+                            HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>(GetGeneralChatListRes.builder()
+                            .generalChatList(generalChatList.subList(0, cutOffIndex))
+                            .isFinished(true)
+                            .build(),
+                            HttpStatus.OK);
+                    }
+                } else {
+                    return new ResponseEntity<>(GetGeneralChatListRes.builder()
+                        .generalChatList(
+                            generalChatList.subList(cutOffIndex - size, cutOffIndex))
+                        .isFinished(false)
+                        .build(),
+                        HttpStatus.OK);
+                }
+            }
+        }
 
-        return new ResponseEntity<>(GetGeneralChatListRes.builder()
-            .groupStudyList(generalChatList)
-            .totalPage((int) Math.ceil(totalPage / 5.0))
-            .currentPage(pageable.getPageNumber())
-            .build(), HttpStatus.OK);
+        if (!Objects.equals(after, "")) {
+            int cutOffIndex = -1;
+            for (int i = 0; i < generalChatList.size(); i++) {
+                GeneralChat chat = generalChatList.get(i);
+                if (chat.getId().equals(after)) {
+                    cutOffIndex = i;
+                    break;
+                }
+            }
+            if (cutOffIndex != -1) {
+                if (cutOffIndex + size >= generalChatList.size() - 1) {
+                    if (cutOffIndex == generalChatList.size() - 1) {
+                        return new ResponseEntity<>(GetGeneralChatListRes.builder()
+                            .generalChatList(
+                                generalChatList.subList(cutOffIndex,
+                                    generalChatList.size()))
+                            .isFinished(true)
+                            .build(),
+                            HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>(GetGeneralChatListRes.builder()
+                            .generalChatList(
+                                generalChatList.subList(cutOffIndex + 1, generalChatList.size()))
+                            .isFinished(true)
+                            .build(),
+                            HttpStatus.OK);
+                    }
+                } else {
+                    return new ResponseEntity<>(GetGeneralChatListRes.builder()
+                        .generalChatList(
+                            generalChatList.subList(cutOffIndex + 1, cutOffIndex + size + 1))
+                        .isFinished(false)
+                        .build(),
+                        HttpStatus.OK);
+                }
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     private static String getUserId(String jwt) {
