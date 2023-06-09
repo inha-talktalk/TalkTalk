@@ -221,3 +221,35 @@ export async function postApproveUser(groupId: string, userId: string) {
     'postApproveUser',
   );
 }
+
+export async function getGeneralChatList(
+  groupId: string,
+  size: number = 10,
+  after?: string,
+  before?: string,
+) {
+  return await get<GeneralChatListResponse>(
+    `/group-study/${groupId}/general-chat?after=${after ?? ''}&before=${before ?? ''}&size=${size}`,
+    'getGeneralChatList',
+  );
+}
+
+export async function postGeneralChat(groupId: string, message: string) {
+  return await post(`/group-study/${groupId}/general-chat`, { message }, 'postGeneralChat');
+}
+
+export async function postSelfStudyShare(id: string, to: string) {
+  await post(`/self-study/${id}?to=${to}`, {}, 'postSelfStudyShare');
+}
+
+export async function getShareChatList(
+  groupId: string,
+  size: number = 10,
+  after?: string,
+  before?: string,
+) {
+  return await get<ShareChatListResponse>(
+    `/group-study/${groupId}/share-chat?after=${after ?? ''}&before=${before ?? ''}&size=${size}`,
+    'getShareChat',
+  );
+}
