@@ -9,17 +9,24 @@ interface StudyCardProps {
   title: string;
   tags: string[];
   isRegistered?: boolean;
+  buttonText?: string;
+  onButtonClick?: VoidFunction;
 }
 
-function StudyCard({ id, title, tags, isRegistered }: StudyCardProps) {
+function StudyCard({ id, title, tags, isRegistered, buttonText, onButtonClick }: StudyCardProps) {
   const { theme } = useGlobalTheme();
   const router = useRouter();
 
-  const handleButtonClick = () => {
-    if (isRegistered !== undefined && isRegistered === false) return;
+  const buttonValue =
+    buttonText ?? (isRegistered !== undefined && isRegistered === false ? '대기중' : '들어가기');
 
-    router.push(`/studyGroup/${id}`);
-  };
+  const handleButtonClick =
+    onButtonClick ??
+    (() => {
+      if (isRegistered !== undefined && isRegistered === false) return;
+
+      router.push(`/studyGroup/${id}`);
+    });
 
   return (
     <div css={style.container}>
@@ -33,7 +40,7 @@ function StudyCard({ id, title, tags, isRegistered }: StudyCardProps) {
         ))}
       </div>
       <Button
-        value={isRegistered !== undefined && isRegistered === false ? '대기중' : '들어가기'}
+        value={buttonValue}
         width={'219px'}
         height={'33px'}
         fontSize={'16px'}

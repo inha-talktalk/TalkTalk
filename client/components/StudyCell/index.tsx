@@ -20,7 +20,7 @@ function StudyCell({ selfStudy, owner, isLast, onClick }: StudyCellProps) {
       <p css={style.content}>
         {selfStudy.script.reduce((acc, cur) => {
           if (acc.length > 150) return acc;
-          return `${acc}${cur}`;
+          return `${acc}${cur.text}`;
         }, '')}
       </p>
       <div css={style.tagContainer(theme.blueWhite)}>

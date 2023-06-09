@@ -47,22 +47,45 @@ interface UserAcheivement {
 type UserAcheivementResponse = UserAcheivement;
 
 interface SelfStudy {
+  id: string;
   userId: string;
+  selfStudyType: string;
   selfStudyName: string;
-  selfStudyId: string;
-  files: []; // TODO: 추후에 구현 예정
-  duration: number;
   tags: string[];
-  script: string[];
+  createdAt: string;
+  finishedAt: string;
+  script: SelfStudyScript[];
+  answer: SelfStudyReadAnswer | SelfStudyWriteAnswer;
 }
 
-type SelfStudyResponse = SelfStudy;
+interface SelfStudyResponse {
+  userId: string;
+  selfStudyType: string;
+  scriptType: string;
+  selfStudyName: string;
+  tags: string[];
+  createdAt: string;
+  finishedAt: string;
+  scripts: SelfStudyScript[];
+  answers: SelfStudyReadAnswer[] | SelfStudyWriteAnswer;
+}
 
 interface SelfStudyList {
   selfStudyIds: string[];
 }
 
-type SelfStudyListResponse = SelfStudyList;
+interface SelfStudyReadAnswer {
+  text: string;
+  mp3Uri: string;
+}
+
+type SelfStudyWriteAnswer = string[];
+
+interface SelfStudyListResponse {
+  selfStudyList: SelfStudy[];
+  totalPage: number;
+  currentPage: number;
+}
 
 interface LoginResponse {
   token: string;
