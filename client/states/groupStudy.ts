@@ -29,3 +29,13 @@ export const muteState = atom<boolean>({
   key: 'isMute',
   default: false,
 });
+
+export const generalChatListState = atom<GeneralChat[]>({
+  key: 'generalChat',
+  default: [],
+});
+
+export const shareChatListState = atom<ShareChat[]>({
+  key: 'shareChat',
+  default: [],
+});

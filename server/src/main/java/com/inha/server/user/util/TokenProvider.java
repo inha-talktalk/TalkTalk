@@ -2,6 +2,7 @@ package com.inha.server.user.util;
 
 import com.inha.server.user.model.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -14,35 +15,39 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenProvider {
 
-  private static String secret;
-  private final Long tokenValidityInSeconds;
+    private static String secret;
+    private final Long tokenValidityInSeconds;
 
-  public TokenProvider(@Value("${jwt.secret}") String secret,
-      @Value("${jwt.token-validity-in-seconds}") Long tokenValidityInSeconds) {
-    TokenProvider.secret = secret;
-    this.tokenValidityInSeconds = tokenValidityInSeconds;
-  }
+    public TokenProvider(@Value("${jwt.secret}") String secret,
+        @Value("${jwt.token-validity-in-seconds}") Long tokenValidityInSeconds) {
+        TokenProvider.secret = secret;
+        this.tokenValidityInSeconds = tokenValidityInSeconds;
+    }
 
-  public static String getSubject(String jwt) {
-    Claims claims = Jwts.parserBuilder()
-        .setSigningKey(Decoders.BASE64.decode(secret))
-        .build()
-        .parseClaimsJws(jwt)
-        .getBody();
-    return claims.getSubject();
-  }
+    public static String getSubject(String jwt) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                .setSigningKey(Decoders.BASE64.decode(secret))
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
+            return claims.getSubject();
+        } catch (ExpiredJwtException e) {
+            return null;
+        }
+    }
 
-  public String createToken(User user) {
-    byte[] keyBytes = Decoders.BASE64.decode(secret);
-    Key key = Keys.hmacShaKeyFor(keyBytes);
+    public String createToken(User user) {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        Key key = Keys.hmacShaKeyFor(keyBytes);
 
-    long now = new Date().getTime();
-    Date validity = new Date(now + this.tokenValidityInSeconds);
+        long now = new Date().getTime();
+        Date validity = new Date(now + this.tokenValidityInSeconds);
 
-    return Jwts.builder()
-        .setSubject(user.getId())
-        .signWith(key, SignatureAlgorithm.HS512)
-        .setExpiration(validity)
-        .compact();
-  }
+        return Jwts.builder()
+            .setSubject(user.getId())
+            .signWith(key, SignatureAlgorithm.HS512)
+            .setExpiration(validity)
+            .compact();
+    }
 }

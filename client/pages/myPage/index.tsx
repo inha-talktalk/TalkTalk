@@ -15,6 +15,7 @@ import {
 } from '@/utils/api';
 import { DEAFULT_PLACEHOLDER_GRAY } from '@/utils/image';
 import { css } from '@emotion/react';
+import Head from 'next/head';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -131,78 +132,86 @@ export default function MyPage() {
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!!e.target.files?.[0]) {
       newProfileImage.push(e.target.files[0]);
+      const imageUrl = URL.createObjectURL(e.target.files[0]);
+      setImageUrl(imageUrl);
+      toast.info('저장하려면 프로필 업데이트 버튼을 눌러주세요');
     }
   };
 
   return (
-    <div css={style.container}>
-      <h1 css={style.title}>
-        <span>{titleName}님</span>의 성장 여정이예요.
-      </h1>
-      <MyAchievementList achievement={achievement} />
+    <>
+      <Head>
+        <title>TalkTalk - 마이페이지</title>
+      </Head>
+      <div css={style.container}>
+        <h1 css={style.title}>
+          <span>{titleName}님</span>의 성장 여정이예요.
+        </h1>
+        <MyAchievementList achievement={achievement} />
 
-      <br />
-      <br />
-      <h2>프로필</h2>
-      <div css={style.profile}>
-        <div>
-          <p>이름</p>
-          <InputBar width={350} text={name} setText={setName} />
-          <p>닉네임</p>
-          <InputBar width={350} text={nickName} setText={setNickName} />
-          <p>이메일</p>
-          <div css={style.profileEmail}>
-            <InputBar width={350} text={email} setText={setEmail} />
-            &nbsp; &nbsp;
-            <Button value={'확인'} width={'50px'} height={'42px'} fontSize={'16px'} />
-          </div>
-          <br />
-          <br />
-          <Button
-            value={'프로필 업데이트'}
-            width={'130px'}
-            height={'38px'}
-            fontSize={'16px'}
-            onClick={handleProfileUpdateButtonClick}
-          />
-        </div>
-        <div css={style.profileImageContainer}>
-          <LazyImage
-            src={imageUrl}
-            alt={'프로필 이미지'}
-            width={200}
-            height={200}
-            innerCss={style.profileImage}
-          />
-          <label htmlFor="profile-file">
+        <br />
+        <br />
+        <h2>프로필</h2>
+        <div css={style.profile}>
+          <div>
+            <p>이름</p>
+            <InputBar width={350} text={name} setText={setName} />
+            <p>닉네임</p>
+            <InputBar width={350} text={nickName} setText={setNickName} />
+            <p>이메일</p>
+            <div css={style.profileEmail}>
+              <InputBar width={350} text={email} setText={setEmail} />
+              &nbsp; &nbsp;
+              <Button value={'확인'} width={'50px'} height={'42px'} fontSize={'16px'} />
+            </div>
+            <br />
+            <br />
             <Button
-              value={'수정'}
-              width={'48px'}
+              value={'프로필 업데이트'}
+              width={'130px'}
               height={'38px'}
               fontSize={'16px'}
-              innerCss={style.profileImageButton}
+              onClick={handleProfileUpdateButtonClick}
             />
-          </label>
-          <input
-            type="file"
-            id="profile-file"
-            onChange={handleImageChange}
-            css={css`
-              display: none;
-            `}
-          />
+          </div>
+          <div css={style.profileImageContainer}>
+            <LazyImage
+              src={imageUrl}
+              alt={'프로필 이미지'}
+              width={200}
+              height={200}
+              innerCss={style.profileImage}
+            />
+            <label htmlFor="profile-file">
+              <Button
+                value={'수정'}
+                width={'48px'}
+                height={'38px'}
+                fontSize={'16px'}
+                innerCss={style.profileImageButton}
+              />
+            </label>
+            <input
+              type="file"
+              id="profile-file"
+              onChange={handleImageChange}
+              css={css`
+                display: none;
+              `}
+            />
+          </div>
+        </div>
+        <div>
+          <br />
+          <br />
+          <h2>진행중인 스터디</h2>
+          <StudyCardList studyList={progressStudyList} />
+          <h2>완료된 스터디</h2>
+          <StudyCardList studyList={doneStudyList} />
+          <h2>신청한 스터디</h2>
+          <StudyCardList studyList={applyStudyList} isRegistered={false} />
         </div>
       </div>
-      <div>
-        <br />
-        <br />
-        <h2>진행중인 스터디</h2>
-        <StudyCardList studyList={progressStudyList} />
-        <h2>완료된 스터디</h2>
-        <StudyCardList studyList={doneStudyList} />
-        <h2>신청한 스터디</h2>
-        <StudyCardList studyList={applyStudyList} isRegistered={false} />
-      </div>
-    </div>
+    </>
   );
 }

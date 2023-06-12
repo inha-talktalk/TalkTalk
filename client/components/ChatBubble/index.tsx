@@ -4,9 +4,10 @@ import { css } from '@emotion/react';
 interface ChatBubbleProps {
   position: 'left' | 'right';
   value: string;
+  onClick?: VoidFunction;
 }
 
-export default function ChatBubble({ position, value }: ChatBubbleProps) {
+export default function ChatBubble({ position, value, onClick }: ChatBubbleProps) {
   const { theme } = useGlobalTheme();
   const style = {
     container: css`
@@ -31,5 +32,9 @@ export default function ChatBubble({ position, value }: ChatBubbleProps) {
     `,
   };
 
-  return <div css={[style.container, style[position]]}>{value}</div>;
+  return (
+    <div css={[style.container, style[position]]} onClick={() => onClick?.()}>
+      {value}
+    </div>
+  );
 }

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_PATH;
 
@@ -14,6 +14,9 @@ async function get<T>(url: string, functionName: string): Promise<T> {
   } catch (e) {
     if (e instanceof Error) {
       console.error(`API call error ${functionName}`);
+      if (e instanceof AxiosError && e.response?.status === 401) {
+        globalThis.dispatchEvent(new Event('jwtExpired'));
+      }
     }
     throw e;
   }
@@ -25,6 +28,9 @@ async function post<T>(url: string, body: object, functionName: string): Promise
   } catch (e) {
     if (e instanceof Error) {
       console.error(`API call error ${functionName}`);
+      if (e instanceof AxiosError && e.response?.status === 401) {
+        globalThis.dispatchEvent(new Event('jwtExpired'));
+      }
     }
     throw e;
   }
@@ -36,6 +42,9 @@ async function callDelete<T>(url: string, functionName: string): Promise<T> {
   } catch (e) {
     if (e instanceof Error) {
       console.error(`API call error ${functionName}`);
+      if (e instanceof AxiosError && e.response?.status === 401) {
+        globalThis.dispatchEvent(new Event('jwtExpired'));
+      }
     }
     throw e;
   }
@@ -68,8 +77,11 @@ export async function getUserAchievement() {
   return await get<UserAcheivementResponse>(`/user/achieve`, 'getUserAchievement');
 }
 
-export async function getSelfStudyList() {
-  return await get<SelfStudyListResponse>(`/self-study/list`, 'getSelfStudyList');
+export async function getSelfStudyList(page: number, size?: number) {
+  return await get<SelfStudyListResponse>(
+    `/self-study/list?page=${page - 1}&size=${size ?? '5'}`,
+    'getSelfStudyList',
+  );
 }
 
 export async function getSelfStudy(selfStudyId: string) {
@@ -185,4 +197,59 @@ export async function postSelfStudyRead(formData: FormData) {
 
 export async function deleteSelfStudy(selfStudyId: string) {
   await callDelete(`/self-study/${selfStudyId}`, 'deleteSelfStudy');
+}
+
+export async function postDelegateUser(groupStudyId: string, userId: string) {
+  return await post(
+    `/group-study/delegate?groupStudyId=${groupStudyId}&to=${userId}`,
+    {},
+    'postDelegateUser',
+  );
+}
+
+export async function getWatingList(groupId: string) {
+  return await get<GroupStudyWatingListResponse>(
+    `/group-study/waiting-list?groupStudyId=${groupId}`,
+    'getWaitingList',
+  );
+}
+
+export async function postApproveUser(groupId: string, userId: string) {
+  return await post(
+    `/group-study/approve?groupStudyId=${groupId}&userId=${userId}`,
+    {},
+    'postApproveUser',
+  );
+}
+
+export async function getGeneralChatList(
+  groupId: string,
+  size: number = 10,
+  after?: string,
+  before?: string,
+) {
+  return await get<GeneralChatListResponse>(
+    `/group-study/${groupId}/general-chat?after=${after ?? ''}&before=${before ?? ''}&size=${size}`,
+    'getGeneralChatList',
+  );
+}
+
+export async function postGeneralChat(groupId: string, message: string) {
+  return await post(`/group-study/${groupId}/general-chat`, { message }, 'postGeneralChat');
+}
+
+export async function postSelfStudyShare(id: string, to: string) {
+  await post(`/self-study/${id}?to=${to}`, {}, 'postSelfStudyShare');
+}
+
+export async function getShareChatList(
+  groupId: string,
+  size: number = 10,
+  after?: string,
+  before?: string,
+) {
+  return await get<ShareChatListResponse>(
+    `/group-study/${groupId}/share-chat?after=${after ?? ''}&before=${before ?? ''}&size=${size}`,
+    'getShareChat',
+  );
 }

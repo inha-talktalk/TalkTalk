@@ -1,9 +1,17 @@
 import { useEffect, useState } from 'react';
 import StudyCard from '../StudyCard';
 import { style } from './style';
-import { getProgressStudy } from '@/utils/api';
+import { getProgressStudy, postSelfStudyShare } from '@/utils/api';
 
-export default function SelfStudySharePanel() {
+interface SelfStudySharePanelProps {
+  selfStudyId: string;
+  onButtonClick?: VoidFunction;
+}
+
+export default function SelfStudySharePanel({
+  selfStudyId,
+  onButtonClick,
+}: SelfStudySharePanelProps) {
   const [studyList, setStudyList] = useState<MyStudy[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
 
@@ -32,7 +40,17 @@ export default function SelfStudySharePanel() {
           </>
         ) : (
           studyList.map((study, idx) => (
-            <StudyCard id={study.groupId} title={study.groupName} tags={study.tags} key={idx} />
+            <StudyCard
+              id={study.groupId}
+              title={study.groupName}
+              tags={study.tags}
+              key={idx}
+              buttonText="공유하기"
+              onButtonClick={() => {
+                postSelfStudyShare(selfStudyId, study.groupId);
+                onButtonClick?.();
+              }}
+            />
           ))
         )}
       </div>

@@ -33,6 +33,7 @@ export default function SelfStudyController({
   const [isSelfStudyStarted, setSelfStudyStarted] = useRecoilState(selfStudyStarted);
   const [selfStudyInfo, setSelfStudyInfo] = useRecoilState(selfStudy);
   const [duration, setDuration] = useState<string>('');
+  const [doneStudyId, setDoneStudyId] = useState<string>('');
   const router = useRouter();
 
   const handleShareButtonClick = () => {
@@ -61,6 +62,15 @@ export default function SelfStudyController({
     router.push('/selfStudy');
   };
 
+  useEffect(() => {
+    if (status === 'done') {
+      const id = router.query.studyId;
+      if (!id || typeof id !== 'string') return;
+
+      setDoneStudyId(id);
+    }
+  }, [router.query.studyId, status]);
+
   // to delete not finished self study
   useEffect(() => {
     const handleRouterChange = () => {
@@ -88,7 +98,10 @@ export default function SelfStudyController({
     <>
       {status === 'done' && (
         <Modal setShow={setShowModal} isShow={showModal}>
-          <SelfStudySharePanel />
+          <SelfStudySharePanel
+            selfStudyId={doneStudyId}
+            onButtonClick={() => setShowModal(false)}
+          />
         </Modal>
       )}
       <div css={style.container}>

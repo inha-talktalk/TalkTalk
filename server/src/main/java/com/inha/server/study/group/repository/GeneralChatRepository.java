@@ -1,17 +1,17 @@
 package com.inha.server.study.group.repository;
 
 import com.inha.server.study.group.model.GeneralChat;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import org.springframework.data.mongodb.repository.Tailable;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
 
 @Repository
-public interface GeneralChatRepository extends ReactiveMongoRepository<GeneralChat, String> {
+public interface GeneralChatRepository extends MongoRepository<GeneralChat, String> {
 
-    @Tailable
-    @Query("{groupId: ?0}")
-    Flux<GeneralChat> findByGroupId(String groupId);
+    List<GeneralChat> findByGroupId(String groupId);
+
+    Page<GeneralChat> findAllByGroupId(String groupId, Pageable pageable);
 
 }

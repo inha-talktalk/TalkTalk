@@ -3,12 +3,14 @@ import GroupStudyController from '@/components/GroupStudyController';
 import UserList from '@/components/UserList';
 import { userListState } from '@/states/groupStudy';
 import { css } from '@emotion/react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 const mockUserList: GroupStudyUserInfo[] = [
   {
+    userId: 'asdf',
     userName: 'name',
     nickName: 'nickname',
     profileIconUrl:
@@ -19,6 +21,7 @@ const mockUserList: GroupStudyUserInfo[] = [
     email: 'dolphinlmg@naver.com',
   },
   {
+    userId: 'asdfasdfsadf',
     userName: 'name2',
     nickName: 'nickname2',
     profileIconUrl:
@@ -46,38 +49,43 @@ export default function GroupStudyPage() {
   }, [setUserList]);
 
   return (
-    <div
-      css={css`
-        width: 100%;
-        height: 100%;
-        user-select: none;
-        display: flex;
-      `}
-    >
-      <div
-        css={css`
-          height: 100%;
-          float: left;
-        `}
-      >
-        <GroupStudyController groupId={groupId} />
-      </div>
+    <>
+      <Head>
+        <title>TalkTalk - 그룹 스터디</title>
+      </Head>
       <div
         css={css`
           width: 100%;
           height: 100%;
+          user-select: none;
+          display: flex;
         `}
       >
-        <GroupStudyChat />
+        <div
+          css={css`
+            height: 100%;
+            float: left;
+          `}
+        >
+          <GroupStudyController groupId={groupId} />
+        </div>
+        <div
+          css={css`
+            width: 100%;
+            height: 100%;
+          `}
+        >
+          <GroupStudyChat />
+        </div>
+        <div
+          css={css`
+            height: 100%;
+            float: right;
+          `}
+        >
+          <UserList />
+        </div>
       </div>
-      <div
-        css={css`
-          height: 100%;
-          float: right;
-        `}
-      >
-        <UserList />
-      </div>
-    </div>
+    </>
   );
 }
